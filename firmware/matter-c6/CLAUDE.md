@@ -10,6 +10,7 @@ csatlakozni Balázs Matter hálózatára (**Home Assistant + Thread border route
   connectedhomeip repót klónozni, és a host toolokat (chip-tool) sem kell lefordítani.
 - ESP-IDF: **v5.5.5** (ezt írja elő a példa és a v1.6 CI), helye: `~/esp/esp-idf-v5.5.5`
 - `components/app_reset/` = `examples/common/app_reset` másolata (BOOT 5 s → gyári visszaállítás)
+- `common/utils/common_macros.h` = `examples/common/utils` másolata (csak ez a fejléc kell)
 
 Eltérések az upstreamtől (szándékosak):
 - `firmware/sdkconfig.defaults.esp32c6` = upstream `sdkconfig.defaults.c6_thread` + DevKit gomb/LED sorok
