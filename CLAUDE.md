@@ -37,3 +37,14 @@ Checkpoint = **hardveren tesztelt**, működő állapot. Közben sima commitok m
 
 Visszaállás egy checkpointra: `git switch -c probalkozas cp-01-esphome-demo` (új ágon), vagy csak megnézni:
 `git checkout cp-01-esphome-demo` (detached HEAD – vissza: `git switch main`).
+
+## Projekt kontextus
+@docs/kontextus/ATTEKINTES.md
+
+További háttér, csak ha a téma előkerül: `docs/kontextus/DONTESEK.md` (döntésnapló), `docs/kontextus/beszelgetesek/` (claude.ai chat-jegyzetek), `docs/kontextus/NAPLO.md` (munkanapló).
+
+### A kontextus karbantartása
+- Érdemi munkamenet végén javasolj egy `NAPLO.md` bejegyzést (ez is módosítás → kérdezz előtte).
+- Új döntés → új sor a `DONTESEK.md`-ben; ha az állapot vagy egy nyitott kérdés változik → `ATTEKINTES.md`.
+- A `beszelgetesek/` jegyzeteit Claude a claude.ai oldalon írja; te ezeket csak commitolod, nem írod át.
+- Az `ATTEKINTES.md` maradjon rövid (kb. 150 sor alatt), mert minden munkamenetben betöltődik.
