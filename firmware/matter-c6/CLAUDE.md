@@ -34,14 +34,17 @@ Port: automatikusan az első `/dev/ttyACM*`/`/dev/ttyUSB*`; felülírás: `PORT=
 
 Szabályok:
 - **`idf.py monitor` itt nem működik** (nincs TTY) → `bash mt.sh log`.
+- **`bash mt.sh log` a beépített USB porton (303a:1001) `--reset` nélkül is újraindítja a C6-ot** (port nyitáskor).
+  Párosításnál ezért előbb a log, és csak a `Commissioning window opened` után jöhet a telefon.
 - **`sudo`-t ne futtass** – írd ki a pontos parancsot, és Balázs futtatja a saját terminálában.
 - Hosszú lépésnél (setup, első build) előre szólj, mennyi ideig tart; ne szakítsd meg.
 - Ha `sdkconfig.defaults*`-t módosítasz, a meglévő `firmware/sdkconfig` felülírja → `bash mt.sh clean`, majd build.
 
 ## Párosító adatok (fejlesztői teszt értékek)
 QR: `MT:Y.K9042C00KA0648G00` · manuális kód: `3497-011-2332` · passcode 20202021 · discriminator 3840 ·
-VID 0xFFF1 / PID 0x8000. A `matter-qr.png` ezt tartalmazza (dekódolással ellenőrizve). Flashelés után a boot logban
-nézd meg, hogy a kiírt `SetupQRCode` egyezik-e; ha nem, szólj Balázsnak, és a logbeli kódot használja.
+VID 0xFFF1 / PID 0x8000. A `matter-qr.png` ezt tartalmazza (dekódolással ellenőrizve). A boot log a `SetupQRCode`-ot
+**nem** írja ki (esp_matter 1.5); ellenőrzés az `Advertise commission parameter vendorID=65521 productID=32768
+discriminator=3840` sorból (a passcode a teszt adatforrás alapértéke, 20202021).
 
 ## Párosítás Home Assistantba (Balázs csinálja a telefonon – README.md-ben lépésenként)
 Előfeltétel: HA-ban Matter integráció + Thread integrációban a preferált hálózatnak van border routere; a Thread
@@ -54,6 +57,9 @@ Mit nézz a logban párosítás közben:
 - `SRP ... registered` / `Commissioning complete` → HA eléri, kész
 - Ha a „Thread hálózathoz csatlakozás” lépésnél áll meg: a telefonon nincs (vagy nem a preferált) Thread
   dataset, vagy a telefon/C6 messze van a border routertől.
+- Androidon **két fabric** jön létre: előbb a Google (`VendorId 0x6006`), majd a HA (`VendorId 0x134B`).
+- Ha a HA lépés így bukik: `AttestationRequest successful` → `ArmFailSafe (0s)` → `Commissioning failed: 32`, akkor
+  a HA Matter Server add-onban nincs bekapcsolva az **Enable test-net DCL usage** (a teszt DAC-ot nem fogadja el).
 - Sikertelen próbálkozások után: BOOT 5 s (gyári reset), vagy `erase` + `flash`, és újra.
 
 ## Vissza ESPHome-ra

@@ -16,6 +16,10 @@ Első alkalommal kb. 30–45 perc (ESP-IDF telepítés + első Matter build). A 
 4. **Csak Androidon:** a teszt eszközt fel kell venni a Google Home Developer Console-ban
    (console.home.google.com, ugyanazzal a Google fiókkal, ami a telefonon van): új projekt → Matter integráció →
    **Vendor ID: 0xFFF1 (teszt)**, **Product ID: 0x8000**. Enélkül Androidon elhasal a párosítás.
+   A *Product name* és a *Device type* (Light) is kötelező, utána **Save** – kész, ha „Ready to test”-et ír.
+5. **Teszt tanúsítvány elfogadása:** *Settings → Add-ons → Matter Server → Configuration* →
+   **Enable test-net DCL usage** be → Save → az add-on **Restart**. Enélkül a HA az eszköz-hitelesítésnél
+   (attesztáció) elutasítja a fejlesztői firmware-t („error code 1”).
 
 ## 3. Párosítás
 1. Bluetooth be, telefon a C6 és a border router közelében.
