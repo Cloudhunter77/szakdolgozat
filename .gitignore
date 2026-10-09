@@ -1,0 +1,32 @@
+# --- Titkok (soha ne kerüljenek a repóba) ---
+secrets.yaml
+*.pem
+.env
+
+# --- ESPHome ---
+.esphome/
+
+# --- ESP-IDF / ESP-Matter ---
+build/
+managed_components/
+sdkconfig
+sdkconfig.old
+# a dependencies.lock szándékosan NINCS itt: commitoljuk (reprodukálható build)
+
+# --- Python ---
+__pycache__/
+*.pyc
+.venv/
+
+# --- KiCad (későbbi hardver mappához) ---
+*-backups/
+*.kicad_prl
+fp-info-cache
+*.lck
+
+# --- Szerkesztő / OS ---
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
