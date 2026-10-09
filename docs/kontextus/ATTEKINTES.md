@@ -11,7 +11,7 @@ vezérlő a **Home Assistant**. Az ESPHome a gyors prototípusokhoz/demókhoz ke
 
 ## Aktuális állapot (2026-10-09)
 - ✅ `firmware/esphome-demo` – ESPHome vezérlő demó a C6-on, hardveren tesztelve → `cp-01-esphome-demo`
-- ✅ `firmware/matter-c6` – ESP-Matter, Thread; párosítva HA-ba (+ Google), a board LED-je HA-ból vezérelhető
+- ✅ `firmware/matter-c6` – ESP-Matter, Thread; párosítva HA-ba (+ Google), a board LED-je HA-ból vezérelhető (szín csak részben)
   → `cp-02-matter-thread-ha`. Következő: ModuNode endpointok (relé + ajtó) a gyári lámpa helyett
 - 🔜 Breadboard áramkör (relé/LED kimenet, AH1911 ajtóérzékelő) a demóhoz
 - 📄 A tervezési dokumentáció (`ModuNode-Design-Reference.md`) és a BOM (`ModuNode_Prototipus_BOM.xlsx`)
@@ -61,6 +61,7 @@ BTA225B-600B triac · NE556-os 12 V LED-szalag vezérlő panel · ATWINC1500 (Mo
 - [x] Matter firmware első build + párosítás HA-ba (Thread) → `cp-02` (2026-10-09)
 - [ ] ModuNode Matter endpointok: `on_off_plugin_unit` (relé, GPIO18) + `contact_sensor` (ajtó, GPIO19)
 - [ ] `tools/serial_log.py`: ne resetelje a C6-ot porton nyitáskor (beépített USB)
+- [ ] Matter LED driver: XY színmód (`MoveToColor`, `CurrentX`/`CurrentY`) kezelése – most csak piros/kék megy
 - [ ] Schrack relék pontos típuskódja (RT314024 / RT114024 / RP310024?), DC tekercs-e, footprint → BOM és
       Design Reference §6 frissítése; a §8 board-méretbecslés (2×2, 55–65 × 40–45 mm) újragondolása
 - [ ] PCF8574 → TCA9554 csere a relé boardon (javaslat, nincs véglegesítve)

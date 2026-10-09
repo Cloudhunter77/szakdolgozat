@@ -32,8 +32,10 @@ Visszaállás: `git switch -c <uj-ag> <tag>` · megtekintés: `git checkout <tag
 - ESP32-C6 Matter firmware (`firmware/matter-c6`, esp-matter `managed_component_light` alapon, ESP-IDF v5.5.5,
   `esp_matter` 1.5.1), Thread FTD build
 - Párosítás Androidról a HA appal: Thread hálóra csatlakozik (routerré lép elő), két fabric: Google + Home Assistant
-- A board RGB LED-je (Extended Color Light, endpoint 1) HA-ból vezérelhető: ki/be, fényerő, szín
-- BOOT 5 s gyári visszaállítás → tiszta újrapárosítás
+- A board RGB LED-je (Extended Color Light, endpoint 1) HA-ból vezérelhető: ki/be, fényerő
+- BOOT rövid nyomás → ki/be, az állapot azonnal frissül a HA-ban; BOOT 5 s gyári visszaállítás → tiszta újrapárosítás
+- **Ismert hiba:** a szín csak részben megy (piros, kék). A HA a színválasztóból XY koordinátát küld
+  (`MoveToColor`), a driver (`app_driver.cpp`) viszont csak a hue/saturation és a színhőmérséklet attribútumot kezeli
 
 **Hogyan lett tesztelve**
 - ESP32-C6 board a beépített USB-n (`/dev/ttyACM0`), Linux Mint alól fordítva és flashelve (`mt.sh`)

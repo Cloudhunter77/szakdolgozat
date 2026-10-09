@@ -4,8 +4,8 @@
 
 ## Röviden
 Egy ESP32-C6 mikrovezérlőn futó **Matter** firmware **Thread** hálózaton keresztül csatlakozott az otthoni
-**Home Assistant** (HA) rendszerhez. A board beépített RGB LED-je a HA-ból kapcsolható, a fényereje és a színe is
-állítható. A teljes lánc működik: Bluetooth-os párosítás → Thread háló → border router → Home Assistant. Ez
+**Home Assistant** (HA) rendszerhez. A board beépített RGB LED-je a HA-ból kapcsolható és a fényereje állítható; a
+node gombjával kapcsolt állapot azonnal megjelenik a HA-ban. A színállítás még csak részben működik (lásd 5. fejezet). A teljes lánc működik: Bluetooth-os párosítás → Thread háló → border router → Home Assistant. Ez
 a ModuNode platform végleges kommunikációs alapja. A következő lépés a gyári „lámpa” helyett a saját
 ModuNode funkciók (relé, ajtóérzékelő) beépítése.
 
@@ -96,7 +96,7 @@ A sikeres próbálkozás idővonala. Az idő a node bekapcsolásától számít,
 | 90,1 s | Attesztáció (HA) | A HA is ellenőrzi a tanúsítványt, most már elfogadja |
 | 91,2 s | `Added new fabric at index: 0x2` | **Home Assistant** fabric (VendorId 0x134B) |
 | 93,2 s | `Commissioning completed successfully` | **Kész: a node két vezérlőhöz tartozik** |
-| 214 s- | `MOVE_TO_LEVEL_WITH_ON_OFF`, OnOff, szín | A HA-ból érkező vezérlő parancsok |
+| 214 s- | `MOVE_TO_LEVEL_WITH_ON_OFF` | A HA-ból érkező vezérlő parancsok (fényerő) |
 
 A Google lépés hosszú (kb. 46 s) a telefon és a Google felhő oldalán telt el. A HA lépés kb. 8 s alatt lement.
 
@@ -109,8 +109,9 @@ A Google lépés hosszú (kb. 46 s) a telefon és a Google felhő oldalán telt 
 | 2 | A telefon elakadt a „Generating Matter credentials” lépésnél, a node-hoz el sem jutott | A Google Home Developer Console-ban a teszt eszköz (VID/PID) nem volt elmentve | Integráció kitöltése és mentése („Ready to test”) |
 | 3 | A Google párosítás után a HA 4-szer egymás után elutasította a node-ot („error code 1”) | A firmware a Matter **teszt** tanúsítványláncával (Test PAA) jelentkezik, a HA Matter Server pedig alapból csak a CSA éles listáján (DCL) szereplő gyártókat fogadja el | HA Matter Server add-on: **„Enable test-net DCL usage”** bekapcsolva. Ezt a log mintázata árulta el: attesztáció → a HA azonnal megszakít (`ArmFailSafe(0)`) |
 | 4 | A soros log figyelése újraindította a node-ot | A beépített USB-soros port megnyitásakor a vezérlőjelek reset-parancsnak számítanak | Megkerülés: előbb a log, és csak a nyitott párosítási ablak után a telefon. Végleges javítás: teendő |
+| 5 | **Nyitott:** a színek közül csak a piros és a kék jelenik meg | A HA a színválasztóból `MoveToColor` parancsot küld XY koordinátákkal (a logban pl. zöld: X 11272 / Y 48365). A gyári driver csak a hue/saturation és a színhőmérséklet attribútumot kezeli, az XY-t eldobja; bootkor `Color mode not supported` | Driver bővítés: XY → HSV/RGB átváltás (következő lépések) |
 
-**Tanulság:** a hibák nem a firmware-ben voltak. A firmware minden lépésben helyesen válaszolt. A
+**Tanulság:** a párosítási hibák nem a firmware-ben voltak, a firmware minden lépésben helyesen válaszolt. A
 környezetben kellett két dolgot beállítani: a fejlesztői tanúsítványok elfogadását a Google és a HA oldalán.
 
 ---
@@ -118,14 +119,15 @@ környezetben kellett két dolgot beállítani: a fejlesztői tanúsítványok e
 ## 6. Mit teszteltünk, és mit még nem
 **Tesztelve (2026-10-09, egy darab C6 boardon):**
 - Párosítás Android telefonról a HA appal, Thread hálóra, két fabricbe (Google + HA)
-- A HA-ból: **ki/be kapcsolás, fényerő, szín** → a board LED-je követi (szemmel ellenőrizve és a logban)
+- A HA-ból: **ki/be kapcsolás, fényerő** → a board LED-je követi (szemmel ellenőrizve és a logban)
+- A BOOT gomb rövid nyomása → a LED kapcsol, és az állapot **azonnal** frissül a HA-ban (a node jelenti a változást)
+- Szín: **csak részben** – piros és kék megjelenik, a többi nem (ok: 5. fejezet, 5. pont)
 - A node Thread routerré lépett elő (`child -> router`)
 - Gyári visszaállítás (BOOT 5 s) → tiszta újrapárosítás
 
 **Még nem tesztelve / nem mérve:**
 - Hosszú távú stabilitás (órák, napok), újracsatlakozás áramszünet vagy border router újraindítás után
 - Késleltetés (parancstól a LED-ig) és fogyasztás számszerűen
-- A BOOT gomb rövid nyomásának visszajelzése a HA-ban
 - Több node egy hálóban, iPhone-os párosítás, OTA frissítés
 
 ---
@@ -210,6 +212,8 @@ folyamat egy `mt.sh` scriptből fut.
 4. **Breadboard áramkör** a relé- és érzékelő oldalhoz. Utána a NYÁK tervezés (I/O expander: TCA9554, mert a
    PCF8574 bekapcsoláskor meghúzná a reléket).
 5. Fejlesztői eszköz javítás: a soros log ne indítsa újra a node-ot.
+6. LED driver: az XY színmód kezelése (`CurrentX`/`CurrentY` → HSV), hogy minden szín működjön. A végleges
+   ModuNode node-on ez kevésbé lényeges, mert ott relé és érzékelő lesz, az RGB LED csak állapotjelző.
 
 ---
 
