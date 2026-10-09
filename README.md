@@ -7,7 +7,7 @@ Home Assistanttal; a köztes lépések ESPHome-on készültek.
 | Mappa | Tartalom | Állapot |
 |---|---|---|
 | [`firmware/esphome-demo/`](firmware/esphome-demo/) | ESPHome vezérlő demó: relé, ajtóérzékelő, Kézi/Automata mód, webes felület | ✅ hardveren tesztelve |
-| [`firmware/matter-c6/`](firmware/matter-c6/) | ESP-Matter alapú firmware, Matter over Thread, Home Assistant | 🚧 fejlesztés alatt |
+| [`firmware/matter-c6/`](firmware/matter-c6/) | ESP-Matter alapú firmware, Matter over Thread, Home Assistant | ✅ párosítva HA-ba (cp-02) |
 | [`docs/`](docs/) | Tervek, jegyzetek | |
 
 A tesztelt, visszaállítható állapotok listája: [`CHECKPOINTS.md`](CHECKPOINTS.md).
