@@ -24,8 +24,9 @@ endpointok. Az ESPHome a gyors prototípusokhoz/demókhoz kell.
 ## Architektúra (D18–D23)
 - Vezérlő–modul ≤ 0,5 m. **JST-XH, 4 tű: +24 V, GND, CAN_H, CAN_L.** Lezárás: 120 Ω a vezérlőn + lezáródugó
   a lánc végén.
-- **Modul-busz: CAN** (C6: 2 TWAI vezérlő, CAN FD nélkül; transceiver pl. TCAN330). Feltétel: az STM32-ben legyen
-  CAN, különben I²C + INT + láncvezeték.
+- **Modul-busz: CAN** (C6: 2 TWAI vezérlő, CAN FD nélkül; transceiver pl. TCAN330 – 3,3 V-os CAN meghajtó IC).
+- **Modul MCU (D26): STM32F303RET6** (Cortex-M4F, 72 MHz, 512 KB flash, LQFP64, bxCAN), 8 db. CAN: PA11/PA12.
+  A gyári ROM bootloader nem tud CAN-t → saját bootloader. Csereút: STM32G431RBT6 (hasonló lábkiosztás, FDCAN).
 - **Okos modulok:** automatikus címkiosztás az STM32 UID-jával, egységes regisztertábla, firmware-frissítés a buszon
   bootloaderrel. A NYÁK-on: SWD, BOOT0 pad, ≥ 64 KB flash.
 - **Matter:** Aggregator + modulonként Bridged Node endpoint, Reachable attribútum, UID → endpoint az NVS-ben;
@@ -67,7 +68,7 @@ lábkiosztást feltételeznek (a pontos lap típusa nincs rögzítve). A végleg
 - **Ajtóérzékelés:** AH1911 Hall-kapcsoló + mágnes (push-pull, 1,6–5,5 V, mágnesnél LOW = csukva). A lézeres
   modul (40 mA, lézer) csak ott, ahova nem fér mágnes.
 
-**Készlet (amiről szó volt):** ~50 db Schrack 24 V SPDT relé · ~20 db STM32 (típus még nincs meg) · 5 db AH1911 ·
+**Készlet (amiről szó volt):** ~50 db Schrack 24 V SPDT relé · 8 db STM32F303RET6 · 5 db AH1911 ·
 12 db lézeres közelítésérzékelő · IRFP064N, FDP2532, IRL3713, IRF5305, SUM110P08-11L · BC546B, 2N3904, BC857B ·
 WNS20S100C Schottky · BTA225B-600B triac · NE556-os 12 V LED-szalag vezérlő panel · PCA9685 modul ·
 ATWINC1500 (ModuNode-hoz nem kell). Reflow-kemence van.
@@ -84,10 +85,10 @@ ATWINC1500 (ModuNode-hoz nem kell). Reflow-kemence van.
   megbeszélés a claude.ai „szakdolgozat” Projektben.
 
 ## Nyitott kérdések / teendők
-- [ ] **Az STM32-k pontos típusa** (van-e CAN, mekkora a flash) → eldönti a buszt (D19). **Ez most blokkol.**
+- [x] Az STM32-k típusa: STM32F303RET6, van CAN → marad a CAN-busz (D19, D26) (2026-10-11)
 - [ ] **Sample-kérések most** (TI, ADI, onsemi, Würth, Coilcraft, Phoenix; lista:
       `beszelgetesek/2026-10-10-node-modul-architektura.md`), a szállítás 1–2 hét
-- [ ] NYÁK: modulmag + vezérlő + 3 modul kapcsolási rajza (1. hét), layout (2. hét), rendelés ≈ 2026-10-31
+- [ ] **NYÁK: modulmag** (F303RET6 + TCAN330 + LMR36006 buck + 2 JST + SWD) + vezérlő + 3 modul kapcsolási rajza (1. hét), layout (2. hét), rendelés ≈ 2026-10-31
 - [ ] JST típus: XH (3 A/tű) vagy PH (2 A/tű); lezáródugó
 - [ ] Modul-protokoll és regisztertábla specifikáció; bootloader (a NYÁK-rendelés után)
 - [ ] HA: futás közben hozzáadott endpoint tesztje (matterjs-server #1016 / PR #1077)
@@ -98,7 +99,6 @@ ATWINC1500 (ModuNode-hoz nem kell). Reflow-kemence van.
 - [ ] Matter LED driver: XY színmód – a D16 után okafogyott (az RGB LED állapotjelző lesz)
 - [ ] Schrack relék pontos típuskódja (RT314024 / RT114024 / RP310024?), DC tekercs-e, footprint → BOM és
       Design Reference §6 frissítése; a §8 board-méretbecslés (2×2, 55–65 × 40–45 mm) újragondolása
-- [ ] PCF8574 → TCA9554 (D04): valószínűleg okafogyott, mert a modul STM32-je hajtja az ULN2803A-t
 - [x] LED-szalag: 24 V, CCT 3000/6000 K, 16 W/m, 18 m, 15 A-es táp (2026-10-10)
 - [ ] NE556-os panel 24 V-ra: van-e rajta már stabilizátor (fekete, fém fülű alkatrész)? Ha nincs: 78L12 kell;
       az IRL3713 helyére FDP2532

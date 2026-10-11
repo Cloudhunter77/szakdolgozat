@@ -66,10 +66,14 @@ Mit nézz a logban párosítás közben:
 `../esphome-demo` mappában `esphome run modunode-c6.yaml --device /dev/ttyACM0` – felülírja a Matter firmware-t.
 
 ## Következő fázis (csak ha Balázs kéri)
-A gyári lámpa helyett ModuNode endpointok, a meglévő ESPHome demó logikájával:
-- Endpoint: `on_off_plugin_unit` → Relé 1 (GPIO18)
-- Endpoint: `contact_sensor` (BooleanState) → ajtó (GPIO19, AH1911: push-pull, mágnesnél LOW)
-- A helyi vezérlés (ajtó → relé, késleltetett lekapcsolás) a firmware-ben fusson, ne a HA-ban; a GPIO
-  eseményt ISR-ből ne közvetlenül `attribute::update`-tel írd, hanem `chip::DeviceLayer::SystemLayer()`/
-  `PlatformMgr().ScheduleWork` vagy saját task útján.
-- Az RGB LED maradjon állapotjelző. Minden módosítás után build, és a logból ellenőrizd az endpointokat.
+A gyári lámpa helyett **Matter-híd** (D21, `docs/kontextus/DONTESEK.md`): a node ESP32-C6 vezérlő, a modulok
+(LED, relé, szenzor; mindegyiken STM32F303RET6) CAN-buszon csatlakoznak, és bridged endpointként jelennek meg.
+- Aggregator endpoint + modulonként Bridged Node endpoint (pl. `on_off_plugin_unit` a relének, `contact_sensor`
+  az ajtónak, Color Temperature Light a CCT LED-modulnak). Minta: esp-matter `examples/bridge_apps/blemesh_bridge`.
+- Bridged Device Basic Information: UniqueID = STM32 UID, **Reachable** (kihúzott modul → nem elérhető).
+- UID → endpoint az NVS-ben; endpoint-ID-t nem használ újra. A bridge-re váltás egyszer újrapárosítással jár.
+- Első lépés NYÁK nélkül: a DevKiten szimulált modulok (pl. BOOT gomb ad hozzá egyet) → kiderül, hogy a HA
+  kezeli-e a futás közben hozzáadott endpointot (matterjs-server #1016 / PR #1077).
+- GPIO/CAN eseményt ISR-ből ne közvetlenül `attribute::update`-tel írd, hanem `PlatformMgr().ScheduleWork`
+  vagy saját task útján. Az RGB LED maradjon állapotjelző. Minden módosítás után build, és a logból ellenőrizd
+  az endpointokat.

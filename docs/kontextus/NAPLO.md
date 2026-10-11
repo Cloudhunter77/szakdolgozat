@@ -14,6 +14,14 @@ Sablon:
 
 ---
 
+## 2026-10-11 – Bemutató után: architektúra behúzva, STM32 azonosítva
+- Csináltuk: a claude.ai-ból jött bundle (D15–D25, node/modul architektúra, 2 chat-jegyzet) behúzva és pusholva;
+  a lejárt GitHub token megújítva (`gh auth login`); a modul MCU azonosítva.
+- Eredmény: modul MCU = STM32F303RET6 (8 db, van bxCAN) → a CAN-busz marad (D19, D26); D04 elvetve;
+  a `matter-c6/CLAUDE.md` következő fázisa a Matter-híd (D21).
+- Nyitott: sample-kérések; modulmag kapcsolási rajz (EDA program még nincs eldöntve); lábkiosztás ellenőrzése az
+  adatlapból (F303 ↔ G431, AN5093); a HA dinamikus endpoint teszt a DevKiten.
+
 ## 2026-10-09 – Matter over Thread: első build és párosítás HA-ba
 - Csináltuk: projekt kontextus commit; ESP-IDF v5.5.5 setup; Matter build (hiányzó `common_macros.h` pótolva);
   erase + flash; párosítás a HA appból (Android).
