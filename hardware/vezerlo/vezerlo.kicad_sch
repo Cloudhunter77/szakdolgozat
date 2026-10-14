@@ -1,0 +1,19 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "3174659e-ee30-4b36-b75c-104ab159bd1b")
+	(paper "A4")
+	(title_block
+		(title "Vezérlő (ESP32-C6)")
+		(date "2026-10-14")
+		(rev "v1")
+		(company "Moduláris okosotthon platform – szakdolgozat")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

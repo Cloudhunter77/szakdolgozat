@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "modularis")(type "KiCad")(uri "${KIPRJMOD}/../lib/modularis.pretty")(options "")(descr "Moduláris okosotthon platform – saját footprintek"))
+)

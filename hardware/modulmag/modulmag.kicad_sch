@@ -1,0 +1,19 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "a48d5fee-492f-485a-b5c4-b13ab07cf39d")
+	(paper "A4")
+	(title_block
+		(title "Modulmag (közös: STM32F303 + izolált CAN + táp)")
+		(date "2026-10-14")
+		(rev "v1")
+		(company "Moduláris okosotthon platform – szakdolgozat")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

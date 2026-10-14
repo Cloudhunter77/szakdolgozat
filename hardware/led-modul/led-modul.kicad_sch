@@ -1,0 +1,19 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "f185dbc7-3edd-48a8-b606-e9976d223d99")
+	(paper "A4")
+	(title_block
+		(title "LED-modul (6 csatorna)")
+		(date "2026-10-14")
+		(rev "v1")
+		(company "Moduláris okosotthon platform – szakdolgozat")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

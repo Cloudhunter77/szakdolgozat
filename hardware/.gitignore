@@ -1,0 +1,10 @@
+# KiCad – helyi, gépfüggő vagy újragenerálható fájlok
+*-backups/
+*.kicad_prl
+fp-info-cache
+*.lck
+\#auto_saved_files\#
+_autosave-*
+*.bak
+# exportok (kicad-cli-vel bármikor újragyárthatók)
+out/

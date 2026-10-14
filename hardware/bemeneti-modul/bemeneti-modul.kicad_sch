@@ -1,0 +1,19 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "be8f6912-95d1-4c2e-bee4-f1a3868af096")
+	(paper "A4")
+	(title_block
+		(title "Általános bemeneti modul (16 bemenet)")
+		(date "2026-10-14")
+		(rev "v1")
+		(company "Moduláris okosotthon platform – szakdolgozat")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)

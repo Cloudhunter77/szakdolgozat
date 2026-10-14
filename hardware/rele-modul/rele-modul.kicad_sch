@@ -1,0 +1,19 @@
+(kicad_sch
+	(version 20260306)
+	(generator "eeschema")
+	(generator_version "10.0")
+	(uuid "92ced773-b2e1-46f4-acde-f620fb4c4f10")
+	(paper "A4")
+	(title_block
+		(title "Relémodul (4 relé)")
+		(date "2026-10-14")
+		(rev "v1")
+		(company "Moduláris okosotthon platform – szakdolgozat")
+	)
+	(lib_symbols)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)
