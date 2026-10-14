@@ -8,6 +8,7 @@ Specifikációk: `docs/kontextus/MODULMAG-SPEC.md`, `docs/kontextus/VEZERLO-SPEC
 | `modulmag/` | a modulmag **egyetlen** kapcsolási lapja; a három modul hierarchikus lapként használja (`../modulmag/modulmag.kicad_sch`), a saját projektje csak az önálló ellenőrzéshez kell |
 | `vezerlo/` | ESP32-C6 vezérlő |
 | `led-modul/`, `rele-modul/`, `bemeneti-modul/` | a modulok (modulmag + a saját részük) |
+| `gen/` | a vázlatok generátora: `gen/build.sh <lap>` → `<lap>.py` → `.kicad_sch` + ERC, netlista, PDF az `out/`-ba. **Felülírja a kézi elrendezést** – elrendezés után már csak kézzel módosítsd a lapot |
 
 Laponként külön projekt = külön NYÁK, külön gerber. A modulmagot csak egy helyen kell javítani.
 

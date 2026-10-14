@@ -9,3 +9,4 @@ _autosave-*
 # exportok (kicad-cli-vel bármikor újragyárthatók)
 out/
 .history/
+gen/kilib/
