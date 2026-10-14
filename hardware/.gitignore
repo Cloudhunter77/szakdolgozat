@@ -8,3 +8,4 @@ _autosave-*
 *.bak
 # exportok (kicad-cli-vel bármikor újragyárthatók)
 out/
+.history/
