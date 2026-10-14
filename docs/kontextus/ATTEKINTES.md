@@ -1,113 +1,134 @@
-# ModuNode – projekt áttekintés (Claude-nak)
+# Moduláris okosotthon platform (korábban ModuNode) – projekt áttekintés (Claude-nak)
 
-> Ezt a fájlt a gyökér `CLAUDE.md` minden munkamenet elején betölti. Legyen **tömör és naprakész**:
-> ha valami változik (döntés, állapot, nyitott kérdés), itt is frissüljön. Részletek: `DONTESEK.md`,
-> `beszelgetesek/`, `NAPLO.md`. Utolsó frissítés: 2026-10-11.
+> Ezt a fájlt a gyökér `CLAUDE.md` minden munkamenet elején betölti. Legyen **tömör és naprakész** (kb. 150 sor
+> alatt): ha valami változik, itt is frissüljön; a részletek a specifikációkban, a `DONTESEK.md`-ben és a
+> `beszelgetesek/`-ben. Utolsó frissítés: 2026-10-14.
 
 ## Cél
-Szakdolgozat: **ModuNode – moduláris okosotthon platform**. Egy **node** = ESP32-C6 vezérlő + JST-láncon
-csatlakozó **modulok** (LED, relé, szenzor), mindegyik modulon saját STM32. A node-ok **Matter over Thread**
-(vagy WiFi/Ethernet) kapcsolattal mennek a **Home Assistant**-hoz; a node Matter-híd, a modulok bridged
-endpointok. Az ESPHome a gyors prototípusokhoz/demókhoz kell.
+Szakdolgozat: **Moduláris okosotthon platform** (korábbi munkanév: ModuNode, D26). Egy **node** = ESP32-C6
+vezérlő + JST-XH láncon csatlakozó **modulok** (LED, relé, általános bemeneti), mindegyik modulon saját STM32
+(STM32F303RET6). A node **Matter-híd** (Thread / Wi-Fi / Ethernet) a **Home Assistant** felé, a modulok bridged
+endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24 V-ra tervezünk**; a későbbi ötletek:
+`V2-OTLETEK.md`.
 
-## Aktuális állapot (2026-10-11)
-- ✅ `firmware/esphome-demo` – ESPHome vezérlő demó a C6-on, hardveren tesztelve → `cp-01-esphome-demo`
-- ✅ `firmware/matter-c6` – ESP-Matter, Thread; párosítva HA-ba (+ Google), a board LED-je HA-ból vezérelhető
-  (szín csak részben) → `cp-02-matter-thread-ha`
-- ✅ Breadboard 24 V LED-meghajtó, 2 csatorna (GPIO20/21, NPN + FDP2532, ≤ 1 kHz), bemérve (D15)
-- 📝 CCT szalag firmware (D16): Claude Code-prompt kész, **még nincs lefuttatva** – a breadboardos prototípushoz
-- 📐 Végleges architektúra eldöntve (D17–D25): node + okos modulok, CAN-busz, Matter-híd
-- ⏰ **NYÁK-rendelés legkésőbb ≈ 2026-10-31:** vezérlő + LED- + relé- + szenzormodul (D25)
-- 📄 A tervezési dokumentáció (`ModuNode-Design-Reference.md`) és a BOM (`ModuNode_Prototipus_BOM.xlsx`)
-  egyelőre a Windows-os `Documents\szakdolgozat` mappában van, **nincs a repóban**.
+## Aktuális állapot (2026-10-14)
+- ✅ `firmware/esphome-demo` → `cp-01-esphome-demo` · ✅ `firmware/matter-c6` (Thread, HA-ba párosítva, szín csak
+  részben) → `cp-02-matter-thread-ha` · ✅ breadboard 24 V-os LED-meghajtó, 2 csatorna (D15)
+- 📝 CCT szalag firmware (D16): prompt kész, **még nincs lefuttatva**
+- 🔌 **Kapcsolási specifikációk készen (javaslat, függetlenül ellenőrizve):** `MODULMAG-SPEC.md` (a három modul közös
+  magja, lábkiosztás mindhárom modulra) és `VEZERLO-SPEC.md` (ESP32-C6 vezérlő). Balázs 2026-10-13 óta rajzol KiCad-ben.
+- 📦 `SAMPLE-KERESEK.md` – **most kell elküldeni a kéréseket** (TI az 1. prioritás)
+- 📋 `NYAK-ELOKESZITES.md` – ami a rajz/layout előtt még nyitott
+- ⏰ **NYÁK-rendelés legkésőbb ≈ 2026-10-31** (vezérlő + LED- + relé- + bemeneti modul, D25)
+- 📄 A régi Design Reference és BOM a Windows-os `Documents\szakdolgozat` mappában van (nincs a repóban); a beadható
+  2 oldalas docx-specifikáció **elavult** (még I²C/I²S busz, MCU nélküli modulok, audió).
 
-## Architektúra (D18–D23)
-- Vezérlő–modul ≤ 0,5 m. **JST-XH, 4 tű: +24 V, GND, CAN_H, CAN_L.** Lezárás: 120 Ω a vezérlőn + lezáródugó
-  a lánc végén.
-- **Modul-busz: CAN** (C6: 2 TWAI vezérlő, CAN FD nélkül; transceiver pl. TCAN330 – 3,3 V-os CAN meghajtó IC).
-- **Modul MCU (D26): STM32F303RET6** (Cortex-M4F, 72 MHz, 512 KB flash, LQFP64, bxCAN), 8 db. CAN: PA11/PA12.
-  A gyári ROM bootloader nem tud CAN-t → saját bootloader. Csereút: STM32G431RBT6 (hasonló lábkiosztás, FDCAN).
-- **Okos modulok:** automatikus címkiosztás az STM32 UID-jával, egységes regisztertábla, firmware-frissítés a buszon
-  bootloaderrel. A NYÁK-on: SWD, BOOT0 pad, ≥ 64 KB flash.
-- **Matter:** Aggregator + modulonként Bridged Node endpoint, Reachable attribútum, UID → endpoint az NVS-ben;
-  új modul újrapárosítás nélkül. A váltás a mostani firmware-ről egyszer újrapárosítással jár.
-- **Állapot:** busz- vagy vezérlőkiesésnél a modul tartja az utolsó állapotot; a hiteles állapot a vezérlőnél.
-- **Táp:** a láncon csak logikai táp; nagyáramú modulnak saját sorkapocs + biztosíték; csillagpont; TVS + P-FET a
-  24 V bemeneten; modulonként ≥ 60 V-os buck.
-- **Közös „modulmag”:** STM32 + CAN transceiver + 60 V-os buck + 2 JST + SWD + állapot LED + lezáró jumper.
+## Architektúra (részletek: a két spec)
+- **Busz (D28, D33, D38, D52):** JST-XH 4 tű – **1 V_BUS (5 V), 2 GND_BUS, 3 CAN_L, 4 CAN_H**, laponként 2 átmenő
+  XH; nincs 24 V a láncon. Modulonként **galvanikusan leválasztott CAN** (ISO1042BDWVR, ±70 V, 5 kVrms – csak
+  TI-sample-ből; ha nem jön: nem izolált breakout a padekre, D36). Lezárás: sima 120 Ω jumperrel, csak a lánc két
+  végén. CAN-bitráta firmware-ből állítható (D34).
+- **V_BUS:** a vezérlő adja – P78E05 (5,0 V ± 3 %) + TPS2553 (382/425/476 mA); a modulon legrosszabb esetben
+  ~4,7 V (ISO1042: ≥ 4,5 V). Modul-oldali védelem: PTC 0,5 A + 5 V-os TVS; a 24 V-os félredugás elleni teljes
+  védelem **nyitott (D55)**.
+- **Modul-MCU (D27):** STM32F303RET6, 8 db; CAN PA11/PA12; saját CAN-bootloader kell (a ROM-é nem tud CAN-t);
+  MCU-független protokoll + vékony hardverréteg (`can_hw`, `pwm_hw`, `flash_hw`). Kvarc 8 MHz.
+- **Modulmag tápja (D56, D57):** 24 V → F1 → SS16 → (10 Ω) → SMBJ28A + **47 µF elkó (kötelező)** → P78E05 (5 V) →
+  NCP1117 (3,3 V). A P78E05 max. 36 V → **a 24 V-os tápot ≤ 26 V-ra állítani.** A bemeneti modul a V_BUS-ról jár
+  (TLV75533, B változat).
+- **Lábkiosztás (D54, CubeMX-ben ellenőrizni):** modulmag: CAN PA11/12, USART1 PC4/5, SWD, HSE, HW-ID PC0,
+  VIN_SENSE PC1, LED PC13. LED-modul: TIM1 PA8–10 + TIM8 PC6–8, I_SENSE PA7, DAC1 PA4, DRV_EN PB12. Relé: PB12–15.
+  Bemeneti: 16 bemenet külön EXTI-vonalon, I²C1 PB8/9.
+- **Modulok (v1):**
+  - **LED (D43, D47, D53):** 6 csatorna (2 × RGB / 3 × CCT / 6 × egyszínű), low-side → a közös vezeték a +24 V;
+    3 × [+24 V, CHa, CHb]; 10 A/csatorna, össz. 20 A; UCC27524 + 60 V-os FET, 25 kHz. Mérés: 24 V a biztosíték
+    előtt/után, össz-áram (1 mΩ + INA181A2) → COMP2 + DAC-küszöb → TIM1/TIM8 break (hardveres lekapcsolás).
+    A modulmag a 20 A-es főbiztosíték előtt ágazik le.
+  - **Relé:** 4 Schrack relé + ULN2803A; típus és COM/NO/NC **nyitott**; fogyasztásmérés v2 (D37).
+  - **Általános bemeneti (D44, D48, D51):** 16 bemenet külön 3 tűs JST-PH-n, bővítő tüske nélkül; soros R + ESD +
+    opcionális osztó; HDC3020.
+  - **Vezérlő (D45, D58–D61):** ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U, ugyanarra a footprintre), W5500 +
+    MagJack (opcionálisan beültetve), TCAN1044AV (±58 V), USB-C (táp busz nélkül), 2 XH, RGB LED + táp-LED;
+    3,3 V: LMR36015; 5 V: P78E05. A V_BUS hardveresen csak 24 V mellett kapcsol be.
+- **Mechanika (D50, javaslat):** DIN 43880-as ház-forma, a NYÁK a ház alján; felső váll: 24 V + busz + jumper,
+  alsó váll: terepi csatlakozók, előlap: LED-ek fényvezetővel. 4 M (~66 × 85 mm NYÁK) a vezérlő, LED- és
+  relémodul, 6 M (~100 × 85 mm) a bemeneti modul. NYÁK: 4 réteg, SMD csak felül, stencil (D42).
+- **Okos modulok (D20, D31):** UID-alapú címkiosztás, egységes regisztertábla, firmware-frissítés a buszon;
+  protokoll CANopen-fogalmakkal (heartbeat, SDO/PDO-szerű, LSS-szerű).
+- **Matter (D21):** Aggregator + modulonként Bridged Node endpoint (UID → endpoint az NVS-ben); új modul
+  újrapárosítás nélkül. **Állapot (D22):** kiesésnél a modul tartja az utolsó állapotot.
+- **Tűzvédelem (D30, javaslat):** biztosíték a forrás oldalán, LED-táp ágakra bontva (≤ 100 W/ág), push-in sorkapocs
+  + érvéghüvely, álmennyezetben V-0 vagy fém ház, relémodul elosztódobozban; firmware-NTC csak harmadik réteg.
 
 ## Hardver – amit tudni kell
-**ESP32-C6:** egymagos 160 MHz RISC-V, **nincs PSRAM** (külső sem), **nincs Classic Bluetooth** (csak BLE 5.3),
-WiFi 6 **csak 2,4 GHz**, IEEE 802.15.4 (Thread/Zigbee), 2 TWAI (CAN) vezérlő. A konfigok ESP32-C6-DevKitC-1
-lábkiosztást feltételeznek (a pontos lap típusa nincs rögzítve). A végleges NYÁK-ra tervezett modul: ESP32-C6-WROOM-1-N16 (16 MB flash).
+**ESP32-C6:** egymagos 160 MHz RISC-V, **nincs PSRAM**, **nincs Classic BT** (BLE 5.3), Wi-Fi 6 **csak 2,4 GHz**,
+802.15.4 (Thread/Zigbee – egyszerre csak az egyik), 2 TWAI, **nincs Ethernet-MAC** (→ W5500 SPI-n), egy ADC (GPIO0–6).
+A demó-konfigok DevKitC-1-es lábakat feltételeznek:
 
-| Láb | Használat | Megjegyzés |
+| Láb (DevKit) | Használat | Megjegyzés |
 |---|---|---|
-| GPIO8 | WS2812 RGB LED | strapping; a D16 szerint állapotjelző lesz |
+| GPIO8 | WS2812 RGB LED | strapping; a D16 szerint állapotjelző |
 | GPIO9 | BOOT gomb | strapping |
-| GPIO18 | Relé 1 / kimenet (demó) | |
-| GPIO19 | Ajtó bemenet (demó) | belső felhúzás |
-| GPIO20 | LED-szalag meleg (WW), breadboard | D16, nem végleges |
-| GPIO21 | LED-szalag hideg (CW), breadboard | D16, nem végleges |
-| kerülendő | GPIO4, 5, 8, 9, 15 (strapping) · 12–13 (USB) · 16–17 (UART0 konzol) | |
+| GPIO18 / GPIO19 | relé (demó) / ajtó bemenet (demó) | a vezérlő NYÁK-ján CAN_TX / CAN_RX! |
+| GPIO20 / GPIO21 | LED-szalag WW / CW (breadboard, D16) | a NYÁK-on VBUS_EN / VBUS_FAULT |
+| kerülendő | GPIO4, 5, 8, 9, 15 (strapping) · 12–13 (USB) · 16–17 (UART0) | |
 
 **Tervezési elvek:**
-- **Bekapcsoláskor minden kimenet biztosan KI.** A PCF8574 bootkor HIGH-ba áll (a relék meghúznak). Az NPN
-  szintillesztő invertál, és boot alatt felvillantja a LED-et. Firmware-ben `restore_mode: ALWAYS_OFF`.
-- **I²C címek** (a modulon belüli buszon): a TCA9554/PCF8574 0x20–0x27, az „A” változatuk 0x38–0x3F →
-  **ütközik az ADE7953-mal**.
-- **24 V-os sín:** a MOSFET gate max. ±20 V → 12 V-os driver-táp. A 24 V-os sínhez **60 V-os FET** (a hosszú
-  szalagvezeték tüskéi miatt).
-- **LED-meghajtás (D17):** gate driver (UCC27524, 12 V) + 60 V-os normál FET (pl. IPD053N06N), 25 kHz,
-  csatornánként 10 A; a PWM-et a modul STM32-je adja. A breadboardon NPN + FDP2532, ≤ 1 kHz (D15).
-  A logic-level-FET-es irány (D06) elvetve.
-- **EMC (D24):** fázistolás és frekvencia-dithering, 22–47 Ω gate-ellenállás, CAN ESD-dióda + osztott lezárás;
-  snubber / CM fojtó / ferrit csak footprintként.
-- **Relék:** 24 V-os tekercs (nincs 3. tápsín), ULN2803A meghajtó, 4 csatornás board. Az ULN2803A-t a modul
-  STM32-je közvetlenül hajthatja.
-- **Ajtóérzékelés:** AH1911 Hall-kapcsoló + mágnes (push-pull, 1,6–5,5 V, mágnesnél LOW = csukva). A lézeres
-  modul (40 mA, lézer) csak ott, ahova nem fér mágnes.
+- **Bekapcsoláskor minden kimenet KI** (firmware: `restore_mode: ALWAYS_OFF`; a gate driverek EN-je lehúzva; a CAN
+  TXD-k felhúzva → recesszív busz).
+- **24 V-os sín:** 60 V-os FET, 12 V-os gate-driver-táp (MC78L12); EMC: fázistolás, dithering, gate-ellenállás,
+  CM fojtó / snubber csak footprint (D24).
+- **ISO1042:** DWV tok (7,5 mm széles test) – **nem a sima SOIC-8**; alatta az izolációs rés minden rétegen.
+- **P78E05-1000:** SIP-3, 1 +VIN · 2 GND · 3 +VOUT, 8–36 V be, 10,4 mm magas. **NCP1117ST33:** SOT-223, kimenetén
+  tantál (ESR ~33 mΩ–2,2 Ω). **LMR36015** (csak a vezérlőn): VQFN-HR, reflow + stencil, a B (1 MHz) változat.
+- **XH vs. PH:** XH a busz (2,5 mm), PH az érzékelők (2,0 mm) – nem dughatók egymásba.
+- **Ajtóérzékelés:** AH1911 Hall + mágnes (mágnesnél LOW = csukva).
 
-**Készlet (amiről szó volt):** ~50 db Schrack 24 V SPDT relé · 8 db STM32F303RET6 · 5 db AH1911 ·
-12 db lézeres közelítésérzékelő · IRFP064N, FDP2532, IRL3713, IRF5305, SUM110P08-11L · BC546B, 2N3904, BC857B ·
-WNS20S100C Schottky · BTA225B-600B triac · NE556-os 12 V LED-szalag vezérlő panel · PCA9685 modul ·
-ATWINC1500 (ModuNode-hoz nem kell). Reflow-kemence van.
+**Készlet:** ~50 Schrack 24 V SPDT relé · 8 STM32F303RET6 · ~200 P78E05-1000 · NCP1117ST33 (tekercs) · 5 AH1911
+(a komódhoz ≥ 6 kell) · 74HCT14D (36) · WS2812C-2020 · LM3940, LM2576S, ACS758, LM2902/2904, IRFR1205, BT137,
+LH1522 · IRFP064N, FDP2532, IRL3713, IRF5305, SUM110P08 · W5500-modul (breadboard-teszthez) · reflow-kemence.
+Részletek: `beszelgetesek/2026-10-14-alkatreszkeszlet-p78e05.md`. Az AliExpress-rendelésből kimaradt az
+SCT-013-030 (v2) és az ULN2803A.
 
 ## Szoftver / környezet
-- Fejlesztői gép: MSI laptop, **Linux Mint (Cinnamon)** dual boot. Balázs Linuxban kezdő.
+- Fejlesztői gép: MSI laptop, **Linux Mint (Cinnamon)**; Balázs Linuxban kezdő. EDA: **KiCad**.
 - ESPHome 2026.9 venv: `~/.venvs/esphome` · ESP-IDF **v5.5.5**: `~/esp/esp-idf-v5.5.5`
-- Matter: `espressif/esp_matter` ~1.5.0 (lockolva: 1.5.1) managed komponens (esp-matter `release/v1.6` példa alapján).
-  Nem kell connectedhomeip klón, és chip-tool sincs.
-- Otthoni Matter hálózat: **Home Assistant + Thread border router**. Párosítás a HA Companion appal
-  (Androidon a teszt VID 0xFFF1 / PID 0x8000 kell a Google Home Developer Console-ba). HA Matter Server:
-  OHF matter.js 1.4.0 add-on, **„Enable test-net DCL usage” bekapcsolva** (különben a teszt DAC-ot elutasítja).
-- Repó: `Cloudhunter77/szakdolgozat`. Commit és push a laptopról, a helyi Claude Code-dal. Tervezés és
-  megbeszélés a claude.ai „szakdolgozat” Projektben.
+- Matter: `espressif/esp_matter` ~1.5.0 (lockolva: 1.5.1) managed komponens; nincs connectedhomeip klón, chip-tool sem.
+- Otthon: **Home Assistant + Thread border router**; párosítás a HA Companion appal (Android: teszt VID 0xFFF1 /
+  PID 0x8000 a Google Home Developer Console-ban); HA Matter Server: **„Enable test-net DCL usage” bekapcsolva**.
+- Repó: `Cloudhunter77/szakdolgozat`; tervezés a claude.ai „szakdolgozat” Projektben – a `docs/kontextus/` a két
+  hely közös anyaga (D13).
 
 ## Nyitott kérdések / teendők
-- [x] Az STM32-k típusa: STM32F303RET6, van CAN → marad a CAN-busz (D19, D26) (2026-10-11)
-- [ ] **Sample-kérések most** (TI, ADI, onsemi, Würth, Coilcraft, Phoenix; lista:
-      `beszelgetesek/2026-10-10-node-modul-architektura.md`), a szállítás 1–2 hét
-- [ ] **NYÁK: modulmag** (F303RET6 + TCAN330 + LMR36006 buck + 2 JST + SWD) + vezérlő + 3 modul kapcsolási rajza (1. hét), layout (2. hét), rendelés ≈ 2026-10-31
-- [ ] JST típus: XH (3 A/tű) vagy PH (2 A/tű); lezáródugó
-- [ ] Modul-protokoll és regisztertábla specifikáció; bootloader (a NYÁK-rendelés után)
-- [ ] HA: futás közben hozzáadott endpoint tesztje (matterjs-server #1016 / PR #1077)
-- [ ] CCT firmware (D16) lefuttatása Claude Code-dal a breadboardon (checkpoint javaslat: `cp-03-cct-szalag`)
-- [ ] CCT szalag: a 16 W/m a két szín együtt vagy színenként? (→ `CCT_MAX_SUM`); a 18 m-hez betáplálási pontok
-- [ ] ModuNode Matter endpointok (relé, ajtó) → a bridge-architektúrában modulok bridged endpointjai lesznek (D21)
-- [ ] `tools/serial_log.py`: ne resetelje a C6-ot porton nyitáskor (beépített USB)
-- [ ] Matter LED driver: XY színmód – a D16 után okafogyott (az RGB LED állapotjelző lesz)
-- [ ] Schrack relék pontos típuskódja (RT314024 / RT114024 / RP310024?), DC tekercs-e, footprint → BOM és
-      Design Reference §6 frissítése; a §8 board-méretbecslés (2×2, 55–65 × 40–45 mm) újragondolása
-- [x] LED-szalag: 24 V, CCT 3000/6000 K, 16 W/m, 18 m, 15 A-es táp (2026-10-10)
-- [ ] NE556-os panel 24 V-ra: van-e rajta már stabilizátor (fekete, fém fülű alkatrész)? Ha nincs: 78L12 kell;
-      az IRL3713 helyére FDP2532
-- [ ] AH1911-ből csak 5 db van – több ajtóhoz rendelni kell
-- [ ] Design Reference + BOM bekerüljön-e a repóba (`docs/`)
+- [ ] **Sample-kérések most** (`SAMPLE-KERESEK.md`); ha a TI elutasít: LMR36015 és W5500 megvenni, transceiverekhez
+      tartalék (D36, D60)
+- [ ] **D55** – V_BUS túlfeszültség-védelem: TVS + PTC marad, vagy TPS2660 minden modulon – Balázs dönt
+- [ ] **Schrack relé** pontos típuskódja + COM/NO/NC – **blokkoló** a relémodulhoz
+- [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/F2/PTC/USB-C/gombok típusa;
+      W5500 MDI-hálózat a WIZnet-referencián; MagJack lábkiosztása; RGB LED + 74HCT14 vagy WS2812B-V5)
+- [ ] **DIN-ház kiválasztása** (pl. Camdenboss CNMB) → NYÁK-méret, furatok, vállmagasság (P78E05 + elkó!)
+- [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil
+- [ ] Beszerzés: AH1911 (+ mágnesek), W5500 + MagJack + 25 MHz, 1 mΩ-os sönt, JST-XH/PH, kvarcok, elkók, USB-C aljzat
+- [ ] NYÁK: kapcsolási rajzok (10-13 – 10-19), layout (10-20 – 10-26), rendelés ≈ 10-31
+- [ ] Firmware később: LED-modul (önteszt, árammintavétel, 20 A-es összegkorlát, DAC-küszöb, kiégett biztosíték
+      jelzése), csatorna-csoportosítás a regisztertáblában → Matter-lámpák; modul-protokoll + bootloader; vezérlő:
+      V_BUS-kezelés (VIN_SENSE / VBUS_SENSE / FAULT)
+- [ ] CCT firmware (D16) a breadboardon (`cp-03-cct-szalag` javaslat); 16 W/m a két szín együtt vagy külön?
+- [ ] HA: futás közben hozzáadott endpoint tesztje (matterjs-server #1016 / PR #1077); Matter-színmód (HS/XY) az
+      RGB-csoportokhoz
+- [ ] `tools/serial_log.py`: ne resetelje a C6-ot porton nyitáskor
+- [ ] Beadható specifikáció (docx) frissítése; névcsere (D26) a repóban (CLAUDE.md, README) és a dokumentumokban
+- [ ] NE556-os panel 24 V-ra: van-e rajta stabilizátor? Ha nincs: 78L12; az IRL3713 helyére FDP2532
+- [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló (mi, mikor, miért, honnan)
-- `NAPLO.md` – a helyi Claude Code munkamenet-naplója
-- `beszelgetesek/` – a claude.ai chatek jegyzetei (csak akkor olvasd, ha a téma előkerül)
-- `../matter-tanulasi-terv.md` – 4 órás Matter labor terv. Klasszikus ESP32-re és esp-matter v1.5-re
-  készült, a C6-ra igazítani kell.
+- `DONTESEK.md` – döntésnapló, D01–D61 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp, STM32, ISO1042, busz-oldal, lábkiosztás, BOM)
+- `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, P78E05, TPS2553, C6, W5500, CAN, USB-C, BOM)
+- `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni
+- `NYAK-ELOKESZITES.md` – rajz/layout előtti teendők, mechanika, 4 réteg
+- `V2-OTLETEK.md` – a v1-ből kihagyott ötletek
+- `NAPLO.md` – a helyi Claude Code munkanaplója
+- `beszelgetesek/` – a claude.ai chatek jegyzetei (csak ha a téma előkerül); legutóbbiak: `2026-10-13-can-izolacio-stm32f303.md`,
+  `2026-10-13-nyak-elokeszites-modulmag.md`, `2026-10-14-alkatreszkeszlet-p78e05.md`, `2026-10-14-vezerlo-spec.md`
+- `../matter-tanulasi-terv.md` – 4 órás Matter labor terv (klasszikus ESP32-re készült, a C6-ra igazítani)
