@@ -19,7 +19,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
   magja, lábkiosztás mindhárom modulra) és `VEZERLO-SPEC.md` (ESP32-C6 vezérlő). Balázs 2026-10-13 óta rajzol KiCad-ben.
 - 📦 `SAMPLE-KERESEK.md` – **most kell elküldeni a kéréseket** (TI az 1. prioritás)
 - 📋 `NYAK-ELOKESZITES.md` – ami a rajz/layout előtt még nyitott
-- ⏰ **NYÁK-rendelés legkésőbb ≈ 2026-10-31** (vezérlő + LED- + relé- + bemeneti modul, D25)
+- ⏰ **NYÁK-rendelés legkésőbb ≈ 2026-10-31** (vezérlő + LED- + relé- + bemeneti modul, D25) – ütemterv: `UTEMTERV.md`
 - 📄 A régi Design Reference és BOM a Windows-os `Documents\szakdolgozat` mappában van (nincs a repóban); a beadható
   2 oldalas docx-specifikáció **elavult** (még I²C/I²S busz, MCU nélküli modulok, audió).
 
@@ -127,6 +127,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, P78E05, TPS2553, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni
 - `NYAK-ELOKESZITES.md` – rajz/layout előtti teendők, mechanika, 4 réteg
+- `UTEMTERV.md` – napra bontott ütemterv a NYÁK-rendelésig (10-14 → 10-31), pipálható
 - `V2-OTLETEK.md` – a v1-ből kihagyott ötletek
 - `NAPLO.md` – a helyi Claude Code munkanaplója
 - `beszelgetesek/` – a claude.ai chatek jegyzetei (csak ha a téma előkerül); legutóbbiak: `2026-10-13-can-izolacio-stm32f303.md`,
