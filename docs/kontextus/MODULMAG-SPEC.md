@@ -206,9 +206,9 @@ alapján ellenőriztünk.)
 | 9 | PC1 | VIN_SENSE (ADC1/2_IN7) | (a főbiztosíték előtt) | | |
 | 10 | PC2 | | V_RAIL_SENSE (a főbiztosíték utáni 24 V, ADC1/2_IN8) | | |
 | 11 | PC3 | | NTC (ADC1/2_IN9) | | |
-| 14–17 | PA0–PA3 | | | | IN0–IN3 (ADC1_IN1–4) |
+| 14–17 | PA0–PA3 | | DS1–DS4 (drain-mérés, ADC1_IN1–4, D65) | | IN0–IN3 (ADC1_IN1–4) |
 | 20 | PA4 | | **DAC1_OUT1 – foglalt** (a komparátor küszöbe; kívül nem bekötve, csak tesztpont) | | IN4 (ADC2_IN1) |
-| 21, 22 | PA5, PA6 | | | | IN5, IN6 (ADC2_IN2–3) |
+| 21, 22 | PA5, PA6 | | DS5, DS6 (drain-mérés, ADC2_IN2–3, D65) | | IN5, IN6 (ADC2_IN2–3) |
 | 23 | PA7 | | **I_SENSE** (INA181 kimenet → ADC2_IN4 + COMP2_INP) | | IN7 (ADC2_IN4) |
 | 24, 25 | PC4, PC5 | UART_TX/RX (USART1) | | | |
 | 30 | PB11 | | | | IN11 (ADC1/2_IN14) |
@@ -231,8 +231,9 @@ Megjegyzések:
   (1 mΩ, a közös GND-visszatérőben – a közös módusú feszültség ~0 V, az INA181 26 V-os határa nem gond):
   20 A → 1,0 V az ADC-n, kb. 66 A-ig mér. A firmware a COMP2-t és a DAC-ot a DRV_EN bekapcsolása **előtt**
   állítja be.
-- **DRV_EN:** a három UCC27524 EN-lába közösen a PB12-re, **4,7 kΩ lehúzással** (az EN belsőleg ~200 kΩ-mal a
-  12 V-ra húz; 4,7 kΩ-mal ~0,3 V, biztosan a 0,8 V-os küszöb alatt) → boot alatt a driverek tiltva. A driverek
+- **DRV_EN:** a három UCC27524 hat EN-lába közösen a PB12-re, **1 kΩ lehúzással** (minden EN belsőleg ~200 kΩ-mal a
+  12 V-ra húz, a hat párhuzamosan ~33 kΩ; 1 kΩ-mal ~0,35 V, biztosan a 0,8 V-os küszöb alatt – a korábbi 4,7 kΩ-mal
+  ~1,5 V lett volna, D65) → boot alatt a driverek tiltva. A driverek
   IN-lábain belső lehúzás van, a lebegő PWM-láb is KI-t jelent.
 - **Relék:** a ULN2803A bemenetein opcionális 100 kΩ lehúzás (boot alatti lebegés ellen).
 - A bemeneti modulon 12 bemenet ADC-képes (IN0–IN7, IN11–IN15), az IN8–IN10 csak digitális.

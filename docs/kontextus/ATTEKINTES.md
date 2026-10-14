@@ -43,7 +43,8 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
   - **LED (D43, D47, D53):** 6 csatorna (2 × RGB / 3 × CCT / 6 × egyszínű), low-side → a közös vezeték a +24 V;
     3 × [+24 V, CHa, CHb]; 10 A/csatorna, össz. 20 A; UCC27524 + 60 V-os FET, 25 kHz. Mérés: 24 V a biztosíték
     előtt/után, össz-áram (1 mΩ + INA181A2) → COMP2 + DAC-küszöb → TIM1/TIM8 break (hardveres lekapcsolás).
-    A modulmag a 20 A-es főbiztosíték előtt ágazik le.
+    A modulmag a 20 A-es főbiztosíték előtt ágazik le. D65: FET NTD5C648NL (DPAK), blokkonként 10 A-es SMD biztosíték,
+    ideális dióda (LM74700-Q1 + NTMFS5C604NL) a 20 A-es ágon, csatornánként gate- és drain-LED, drain → ADC (PA0–3, 5, 6).
   - **Relé (D62):** 4 × Schrack RTD14024 (16 A, 24 V DC) + ULN2803A; kimenet COM + NO (4 × 2 pólus);
     230 V-ra tervezve (≥ 8 mm + marás); fogyasztásmérés v2 (D37).
   - **Általános bemeneti (D44, D48, D51):** 16 bemenet külön 3 tűs JST-PH-n, bővítő tüske nélkül; soros R + ESD +

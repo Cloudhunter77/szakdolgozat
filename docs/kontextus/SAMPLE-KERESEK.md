@@ -28,6 +28,7 @@ megérkezése után (≈ november közepe) lesz.
 | **ULN2803A** | relémeghajtó (kimaradt az AliExpress-rendelésből) | relémodul | 1 | 2 | megvenni (olcsó) |
 | **HDC3020** | hőmérséklet + páratartalom, I²C (WSON 2,5 × 2,5 mm) | bemeneti modul | 1 | 2 | bármilyen I²C-s T/RH szenzor |
 | **TLV75533PDBVR** (TLV755P, 3,3 V, SOT-23-5) | 500 mA-es LDO – a bemeneti modul a V_BUS-ról jár (B változat) | bemeneti modul | 1 | 2 | bármilyen 3,3 V-os LDO SOT-23-5-ben; végszükségben a kézben lévő NCP1117ST33 (SOT-223 – más footprint, ejtés ≤ 1,1 V, a V_BUS-ról még elég) |
+| **LM74700QDBVRQ1** (LM74700-Q1, SOT-23-6) | ideális dióda-vezérlő – fordított polaritás elleni védelem a 20 A-es ágon (D65) | LED-modul | 1 | 2 | áthidalás dróttal (a Q201 S–D padjei között) |
 
 A **TPS2660** (eFuse) nem kell: a V_BUS-on nincs 24 V elleni védelem (D55, 2026-10-14).
 
@@ -36,7 +37,8 @@ A **TPS2660** (eFuse) nem kell: a V_BUS-on nincs 24 V elleni védelem (D55, 2026
 | Alkatrész | Mire | Hova | Min. | Kérni |
 |---|---|---|---|---|
 | **NTD5C648NL** (60 V, 4,1 mΩ, DPAK) | LED-csatorna FET – az IPD053N06N helyett, mert az Infineon nem ad sample-t | LED-modul (6 csatorna) | 6 | 8 |
-| Schottky, ≥ 5 A, ≥ 60 V (SS56-kategória, SMC) | szabadonfutó dióda drain → +24 V | LED-modul | 6 | 8 |
+| Schottky, 3 A, 60 V (**B360B**, SMB) | szabadonfutó dióda drain → a blokk +24 V-ja (D65) | LED-modul | 6 | 8 |
+| **NTMFS5C604NL** (60 V, ~1,2 mΩ, SO-8FL) | az ideális dióda FET-je a 20 A-es ágon (Q201, D65) | LED-modul | 1 | 2 |
 | **MC78L12** (SOIC-8) | 12 V a gate drivereknek | LED-modul | 1 | 2 |
 | TVS, 28 V standoff (**SMBJ28A**) | 24 V-os bemenet (modulmag D2; vezérlő D2, D7) | modulok + vezérlő | 5 | 6 |
 | TVS, 5 V standoff (**SMF5.0A / SMBJ5.0A**) | V_BUS (D28; modulmag D5, vezérlő D4) | modulok + vezérlő | 4 | 5 |
@@ -96,6 +98,8 @@ alá férő magasságút (D50):
 - **JST-PH** (érzékelők, D51 javaslat): **3 tűs aljzatok (16 db)** + dugók
 - 2,54 mm-es jumperek és 2 tűs tüskesorok + **120 Ω-os ellenállás** laponként (CAN-lezárás, D49, D52 – sima 120 Ω)
 - **AH1911** – a 6 fiókos komódhoz legalább 6 kell, 5 van → legalább 5 db pótlás (+ mágnesek)
+- **Littelfuse NANO² 451/453 (2410)** SMD biztosíték, pl. 0451010.MRL (10 A) – a LED-modul 3 kimeneti blokkjára (D65), + néhány
+  kisebb érték (5 A, 7 A) a szalagokhoz
 - Mini lapos (autós) biztosíték NYÁK-foglalattal + 20 A-es biztosíték (LED-modul)
 - **SMD-biztosítékok (1206, ≥ 32 V):** modulmag F1 0,5 A (a LED-modulon a 20 A-es biztosíték ELŐTT leágazva, D54);
   vezérlő F1 1 A
