@@ -29,9 +29,7 @@ megérkezése után (≈ november közepe) lesz.
 | **HDC3020** | hőmérséklet + páratartalom, I²C (WSON 2,5 × 2,5 mm) | bemeneti modul | 1 | 2 | bármilyen I²C-s T/RH szenzor |
 | **TLV75533PDBVR** (TLV755P, 3,3 V, SOT-23-5) | 500 mA-es LDO – a bemeneti modul a V_BUS-ról jár (B változat) | bemeneti modul | 1 | 2 | bármilyen 3,3 V-os LDO SOT-23-5-ben; végszükségben a kézben lévő NCP1117ST33 (SOT-223 – más footprint, ejtés ≤ 1,1 V, a V_BUS-ról még elég) |
 
-Opcionális, ha a limit engedi: **TPS2660** (60 V-os eFuse: túláram + fordított polaritás + túlfeszültség egy
-IC-ben, D30). Szóba jöhet a V_BUS-bemenet túlfeszültség-védelmére is – ez **nyitott döntés (D55)**: TVS + PTC
-(a mostani terv) vagy eFuse/OVP-kapcsoló modulonként.
+A **TPS2660** (eFuse) nem kell: a V_BUS-on nincs 24 V elleni védelem (D55, 2026-10-14).
 
 ## onsemi (MyON fiók, darabszám-korlát lehet)
 
@@ -66,7 +64,7 @@ Push-in NYÁK-sorkapcsok (D30) – a pontos áramterhelhetőséget a katalógusl
 alá férő magasságút (D50):
 - LED-modul (D43): 2 pólusú betáp **2,5 mm²-hez, ≥ 20 A** + **3 db 3 pólusú kimenet** ([+24 V, CHa, CHb],
   10 A/csatorna; az iker érvéghüvelyt fogadja-e – ellenőrizni)
-- Relémodul: 4 relé kimenete (≥ 250 V, ≥ 10 A; 8 vagy 12 pólus – COM + NO, ill. + NC) + betáp
+- Relémodul: 4 relé kimenete (≥ 250 V, ≥ 16 A, **4 × 2 pólus, COM + NO**, D62) + betáp
 - Többi modul és vezérlő: 24 V-os betáp (kis áram)
 
 ## Microchip (második forrás, opcionális; a gmail-t elutasíthatja)
@@ -74,6 +72,7 @@ alá férő magasságút (D50):
 - **TC4427** – gate driver tartalék a UCC27524 helyett – 3 db
 
 ## Kézben – nem kell kérni (2026-10-14, `beszelgetesek/2026-10-14-alkatreszkeszlet-p78e05.md`)
+- **Schrack RTD14024** (~50 db) – 16 A-es, 24 V DC-s relé a relémodulra (D62)
 - **P78E05-1000** (~200 db) – a modulmag 24 V → 5 V-ja (D56) és a vezérlő V_BUS-a (D59)
 - **NCP1117ST33T3G** (tekercs) – 5 V → 3,3 V (D56); LM3940 3,3 V (19 db) tartaléknak
 - **74HCT14D** (36 db) – a vezérlő RGB LED-jének szintillesztője (U9); **WS2812C-2020** – a vezérlő RGB LED-je lehet
@@ -105,7 +104,7 @@ alá férő magasságút (D50):
 - **Vezérlő-táp apróságai (D59, D61):** 10 Ω-os impulzusbíró ellenállás **2512**-ben (R7), 10 µF / 50 V (1210),
   22 µF / 10 V (1206), 3 × 22 µF / 10 V a 3,3 V-ra
 - **Sönt: 1 mΩ, 2512, ≥ 1 W** (LED-modul össz-árama, D47) – 2 db
-- Polyfuse-ok: **modulonként a V_BUS-ra hold ≈ 0,5 A, ≤ 0,5 Ω** (modulmag F2); az érzékelők 3,3 V-jára
+- Polyfuse-ok: az érzékelők 3,3 V-jára (a modulok V_BUS-án nincs PTC, D55)
 - **8 MHz-es kvarc** az STM32-khöz (HSE) – a terhelő kapacitást (CL) a kiválasztott kvarc adatlapjából, ehhez
   igazodik a két kondenzátor
 - Ferritgyöngy a VDDA-ra (kis DCR, ≤ 0,1 Ω) vagy 0 Ω

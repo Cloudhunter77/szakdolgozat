@@ -98,7 +98,10 @@ szerint a VDDA nem lehet kisebb a VDD-nél, és nem jöhet fel később; egy nag
 - Mindkettő a NYÁK előlap felőli szélén, fényvezető alá (D50).
 
 ### 3.5 Hardverazonosító (HW-ID)
-3V3 – R_top – **PC0** (8) – R_bottom – GND, + 100 nF a PC0-n. A firmware 8 sávra osztja (ADC/512):
+3V3 – R_top – **PC0** (8) – R_bottom – GND, + 100 nF a PC0-n. **Az osztó és a 100 nF a modul saját lapján van**
+(a modulmag csak a `HW_ID` hierarchikus jelet adja ki), mert modulonként más az értéke. A firmware 8 sávra osztja,
+**kerekítve**: `sáv = (ADC + 256) / 512` (12 bites ADC, egész osztás) – így a névleges értékek a sávok közepére
+esnek (k × 0,4125 V), nem a határukra:
 
 | Modul | R_top | R_bottom | Feszültség | Sáv |
 |---|---|---|---|---|
@@ -149,20 +152,16 @@ ST-Link V2 klónhoz dupont-vezetékkel bekötve; a lap szélén, hozzáférhető
 | 3 | `CAN_L` |
 | 4 | `CAN_H` |
 
-J2 és J3 azonos tűi közvetlenül összekötve (átmenő busz). A `V_BUS` **nem** megy át a modul polyfuse-án – az csak a
-modul saját fogyasztását védi.
+J2 és J3 azonos tűi közvetlenül összekötve (átmenő busz); a modul a `V_BUS`-t közvetlenül használja (`V_BUS_P`,
+polyfuse nincs – D55).
 
 ### 5.2 V_BUS-védelem
-- **F2:** PTC (polyfuse), **tartóáram ≈ 0,5 A, ellenállás ≤ 0,5 Ω**, ≥ 6 V (jobb: ≥ 16 V): `V_BUS` → `V_BUS_P`.
-  Kis ellenállás kell, mert az ISO1042-nek 4,5 V a minimum, a bemeneti modul pedig ~150 mA-t húz; a PTC
-  tartóárama melegben (tetőtér) csökken. A zárlatvédelmet a vezérlő TPS2553-a adja.
-- **D5:** TVS, 5 V standoff (SMF5.0A vagy SMBJ5.0A): `V_BUS_P` → `GND_BUS`.
-- **Korlát – nyitott döntés (D55):** a TVS ~6,4 V-tól vezet és nagy áramnál ~9 V-ig enged, a PTC pedig
-  milliszekundumok–másodpercek alatt old ki; az ISO1042 VCC2-je (és a B változatban a TLV75533) abszolút
-  maximuma 6 V. Egy félredugott 24 V így tönkreteheti őket. Lehetőségek:
-  1. **v1: TVS + PTC marad** („legjobb erőfeszítés”; a láncon nincs 24 V, a félredugás valószínűtlen).
-  2. **Túlfeszültség-lekapcsoló minden modulon:** TPS2660 (60 V-os eFuse, állítható OVP ~5,7 V-ra) – a TI-sample
-     listán már opcionálisan szerepel; modulonként +1 IC és néhány ellenállás.
+- **Nincs PTC (D55, 2026-10-14):** a zárlatvédelmet a vezérlő TPS2553-a (áramkorlátos kapcsoló, 382 mA felett
+  korlátoz) adja – egy 0,5 A-es PTC ennél később oldana ki, csak feszültséget ejtene.
+- **D5:** TVS, 5 V standoff (SMF5.0A vagy SMBJ5.0A): `V_BUS_P` → `GND_BUS`, a J2/J3 mellett – **ESD és hot-plug
+  tüskék ellen** (feszültség alatt bedugott XH-kábel).
+- **24 V elleni védelem nincs (D55):** a láncon nincs 24 V (D28), az XH és a PH nem dugható össze. Az ISO1042
+  VCC2-je (és a B változatban a TLV75533) abszolút maximuma 6 V – egy félredugott 24 V tönkretenné őket.
 
 ### 5.3 ESD – U3: ESD2CAN24-Q1 (SOT-23)
 1 → `CAN_L` · 2 → `CAN_H` · 3 → `GND_BUS` (az 1 és 2 felcserélhető). A J2/J3 közvetlen közelében, rövid, vastag
@@ -174,11 +173,17 @@ Jumper bedugva = lezárva – **csak a lánc két végén** (a vezérlőn és az
 **Miért nem osztott lezárás:** egyetlen jumperrel nem lehet tisztán kikapcsolni – nyitott állásban a 60 Ω + 4,7 nF
 a CAN_L-en maradna minden lezáratlan modulon (aszimmetrikus terhelés). 0,5 m-es buszon a sima 120 Ω tökéletes.
 
-### 5.5 V_BUS-mérleg (a vezérlő oldalára)
-3 modul × 73 mA (ISO1042, domináns, max.) + a bemeneti modul logikája (~60–80 mA) ≈ **0,3 A** legrosszabb esetben
-→ a vezérlő TPS2553 áramkorlátja **382 / 425 / 476 mA** (61,9 kΩ, `VEZERLO-SPEC.md` 2.4). A vezérlő V_BUS-a
-**5,0 V ± 3 %** (P78E05, D59): a TPS2553, a kábel és a modul PTC-je után legrosszabb esetben **~4,7 V** marad a
-modulon, az ISO1042-nek 4,5 V kell – szűken, de belefér. Ezért kell a PTC-nek ≤ 0,5 Ω-osnak lennie.
+### 5.5 V_BUS-mérleg (a vezérlő oldalára, D64)
+Az ISO1042 busz-oldala (VCC2) recesszív állapotban **≤ 4,1 mA**-t vesz fel; a **≤ 73 mA** csak annál a modulnál
+folyik, amelyik éppen ad (a 60 Ω-os lezárást hajtja – az ACK-bitnél többen is, de ugyanazon a lezáráson
+osztozva, egy bitideig). Ezért:
+
+> I(V_BUS) ≈ **73 mA** (az adó) + **4 mA × (A változatú modulok)** + **~80 mA × (bemeneti modulok)**
+
+A vezérlő TPS2553 áramkorlátja **382 / 425 / 476 mA** (61,9 kΩ, `VEZERLO-SPEC.md` 2.4) → pl. 2 bemeneti modul +
+~35 LED-/relémodul is belefér; előbb a CAN csomópontszáma és a lánc hossza a korlát. Több bemeneti modulhoz
+(> 3) az R12 csökkentésével emelhető. A vezérlő V_BUS-a **5,0 V ± 3 %** (P78E05, D59): a TPS2553 és a kábel
+után legrosszabb esetben **~4,75 V** marad a modulon, az ISO1042-nek 4,5 V kell.
 
 ## 6. B változat: táplálás a V_BUS-ról (csak a bemeneti modul saját lapján)
 - A 2. fejezet alkatrészei **nincsenek beültetve**.
@@ -235,7 +240,7 @@ Megjegyzések:
 ## 8. Layout-irányelvek
 - A modulmag **mindhárom lapon ugyanott**, a felső vállnál (D50). KiCad-ben a layoutot is újrahasználható
   blokként kezelni.
-- **Busz-tartomány** a felső él mentén: J2, J3, JP1, R5, U3, F2, D5, az ISO1042 2. oldala és a VCC2-kondenzátorok.
+- **Busz-tartomány** a felső él mentén: J2, J3, JP1, R5, U3, D5, az ISO1042 2. oldala és a VCC2-kondenzátorok.
   A tartományhatár rézmentes sávja ≥ 2–3 mm (funkcionális szigetelés, mindkét oldal törpefeszültségű); az ISO1042
   alatt a teljes rés, **minden rétegen**.
 - A 24 V-os betáp-sorkapocs is a felső vállon van, de a logikai tartományban → ≥ 3 mm a busz-tartománytól.
@@ -248,11 +253,11 @@ Megjegyzések:
 
 ## 9. Darabjegyzék (A változat, egy modulmag)
 U1 P78E05-1000 · U5 NCP1117ST33T3G · U2 ISO1042BDWVR · U3 ESD2CAN24-Q1 · STM32F303RET6 · Y1 8 MHz · F1 0,5 A ·
-F2 PTC 0,5 A (≤ 0,5 Ω) · D1 SS16 · D2 SMBJ28A · D5 SMF5.0A · D3/D4 piros/zöld LED · J1 1 × 7 tüskesor ·
+D1 SS16 · D2 SMBJ28A · D5 SMF5.0A · D3/D4 piros/zöld LED · J1 1 × 7 tüskesor ·
 J2/J3 B4B-XH-A · JP1 2 tűs + jumper · FB1 ferrit (≤ 0,1 Ω) vagy 0 Ω · kondenzátorok: 10 µF 50 V (1210), 47 µF
 50 V elektrolit (kötelező), 22 µF 10 V (1206), 10 µF tantál (3216) – vagy 22 µF kerámia + 0,1 Ω –, 100 nF
 (≈ 9 db), 1 µF (1), 4,7 µF (2), 10 nF, 2 × C_kvarc · ellenállások: 150 k, 10 k (több), 10 Ω (1206, impulzusbíró,
-opc.), 1 k, 2,2 k, 120 Ω, HW-ID pár.
+opc.), 1 k, 2,2 k, 120 Ω. (A HW-ID osztó a modul saját lapján van, 3.5.)
 
 ## 10. Változások a korábbi döntésekhez
 - **Lezárás:** sima 120 Ω egy jumperrel, nem osztott (D49 pontosítva → D52).
@@ -260,7 +265,9 @@ opc.), 1 k, 2,2 k, 120 Ω, HW-ID pár.
 - **Lábkiosztás:** CAN = PA11/PA12, debug-UART = USART1 a PC4/PC5-ön (így a PA9/PA10 a TIM1-é marad),
   I²C1 = PB8/PB9 → D54.
 - **A LED-modul logikai tápja a főbiztosíték előtt ágazik le** (saját F1-gyel) → a kiégett főbiztosíték jelezhető → D54.
-- **V_BUS túlfeszültség-védelem:** nyitott döntés (TVS + PTC vagy TPS2660) → D55.
+- **V_BUS-védelem (2026-10-14):** nincs 24 V elleni védelem, a PTC (F2) kikerült, a TVS marad (ESD) → D55;
+  a V_BUS-mérleg pontosítva (az ISO1042 csak adáskor húz 73 mA-t) → D64; a HW-ID osztó a modul lapjára, kerekítő
+  sávképzés (3.5).
 - **Tápblokk (2026-10-14): P78E05-1000 + NCP1117ST33** az LMR36006BRNXR helyett (kézben, ~200 db) → D56; a
   bemeneti elkó (C12) kötelező, opcionális R6 = 10 Ω, a 24 V-os táp ≤ 26 V → D57.
 - **V_BUS (2026-10-14):** a vezérlőn P78E05 → 5,0 V ± 3 % (a korábbi 5,2 V helyett), a TPS2553 korlátja 61,9 kΩ-mal
@@ -269,9 +276,8 @@ opc.), 1 k, 2,2 k, 120 Ω, HW-ID pár.
 ## 11. Rajz előtt / közben ellenőrizni
 - [ ] **STM32CubeMX-projekt** a 7. fejezet szerint mindhárom modulra: nincs-e ütközés; a COMP2 → TIM1 BKIN2 +
       TIM8 BKIN2 és a DAC1_OUT1 → COMP2 invertáló bemenet kiválasztható-e.
-- [ ] **D55:** TVS + PTC marad, vagy TPS2660 minden modulon?
 - [ ] A kvarc kiválasztása (CL) → a terhelőkondenzátorok értéke.
-- [ ] PTC (F2: 0,5 A, ≤ 0,5 Ω) és SMD-biztosíték (F1: ≥ 32 V!) konkrét típusa.
+- [ ] SMD-biztosíték (F1: ≥ 32 V!) konkrét típusa.
 - [ ] KiCad-footprintek: ISO1042 **DWV** (7,5 mm széles test, nem sima SOIC-8) – a TI EDA-modelljéből; **P78E05:**
       SIP-3, 2,54 mm-es lábtáv (a test más, mint a TO-220-as 7805-é – a CUI/Bel 3D-modelljéből); NCP1117: SOT-223.
 - [ ] A P78E05 (10,4 mm) és a C12 elkó magassága a választott DIN-ház vállmagasságához (D50).

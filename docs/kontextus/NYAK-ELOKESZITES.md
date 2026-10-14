@@ -12,7 +12,7 @@ innen indul:**
 ## A – Blokkolók
 - [x] **Modulmag specifikálva** (2026-10-13, `MODULMAG-SPEC.md`, javaslat): **P78E05-1000 + NCP1117ST33**
       (24 V → 5 V → 3,3 V; 2026-10-14 óta, D56 – az LMR36006BRNXR helyett), STM32F303RET6 + 8 MHz, ISO1042BDWVR,
-      2 × XH, sima 120 Ω-os lezárás jumperrel, V_BUS-védelem (PTC + TVS), HW-azonosító, 1 × 7-es debug-tüskesor
+      2 × XH, sima 120 Ω-os lezárás jumperrel, V_BUS-on TVS (PTC nincs, D55), HW-azonosító, 1 × 7-es debug-tüskesor
       (SWD + UART). A és B (V_BUS-ról járó) változat.
 - [x] **Vezérlő specifikálva** (2026-10-14, `VEZERLO-SPEC.md`, D58–D61): ESP32-C6-WROOM-1-N16, 3,3 V: LMR36015,
       5 V / V_BUS: P78E05 + TPS2553 (382/425/476 mA), TCAN1044AV (±58 V, jumperes tartalékkal), W5500 + MagJack,
@@ -51,12 +51,10 @@ innen indul:**
       referencia-kapcsolása szerint, opcionálisan beültetve; PoE nélkül (v2).
 - [x] **Vezérlő tápja** (D46 → D59): LMR36015 → 3,3 V; a V_BUS-t (és a CAN transceivert) a kézben lévő P78E05 adja
       (5,0 V ± 3 % → a modulon legrosszabb esetben ~4,7 V, az ISO1042-nek 4,5 V kell – szűken belefér).
-- [ ] **V_BUS túlfeszültség-védelem a modulokon (D55)** – Balázs dönt: TVS + PTC (a mostani terv, olcsó) vagy
-      eFuse/OVP-kapcsoló (pl. TPS2660) modulonként. Ok: az ISO1042 VCC2 abszolút max. 6 V (a vezérlő TPS2553-ának
-      OUT-ja 7 V).
-- [ ] **Schrack relé pontos típuskódja és footprintje** (RT314024 / RT114024 / RP310024?) – Balázs megnézi; enélkül a
-      relémodult nem lehet rajzolni. Nyitott még: a relékimeneteken COM + NO + NC (12 pólus) vagy csak COM + NO
-      (8 pólus)?
+- [x] **V_BUS-védelem a modulokon (D55, 2026-10-14):** nincs 24 V elleni védelem (a láncon nincs 24 V), a PTC
+      kikerült, az 5 V-os TVS marad (ESD); a V_BUS-mérleg pontosítva (D64).
+- [x] **Schrack relé (D62, 2026-10-14):** RTD14024 (16 A, 5 mm-es lábtáv) – KiCad-footprint:
+      `Relay_THT:Relay_SPDT_Schrack-RT1-16A-FormC_RM5mm`; kimenet COM + NO (4 × 2 pólus); 230 V-ra tervezve.
 - [x] **Buszcsatlakozó: JST-XH** (D38). Tűsorrend minden lapon: 1 V_BUS, 2 GND_BUS, 3 CAN_L, 4 CAN_H (a CAN-érpár
       egymás mellett, sodorva). Laponként 2 db, egyenesen átkötve – a vezérlőn is (D58).
 - [x] **Lezárás: jumper** minden modulon és a vezérlőn (D49, D52) – **sima 120 Ω** a CAN_H és a CAN_L között, a
@@ -83,7 +81,7 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 |---|---|---|---|---|
 | Vezérlő | 4 M (~71 mm) | 66 × 85 mm | 24 V be, busz BE/KI (2 × XH), jumper, USB-C | RJ45 |
 | LED-modul | 4 M | 66 × 85 mm | 24 V be (2,5 mm², 20 A), busz BE/KI, jumper | 3 × 3 pólusú kimenet (~45–50 mm) |
-| Relémodul | 4 M | 66 × 85 mm | 24 V be, busz BE/KI, jumper | 4 relé kimenete (8 vagy 12 pólus) |
+| Relémodul | 4 M | 66 × 85 mm | 24 V be, busz BE/KI, jumper | 4 relé kimenete (4 × 2 pólus, COM + NO) |
 | Bemeneti modul | 6 M (~106 mm) | 100 × 85 mm | busz BE/KI, jumper (V_BUS-ról jár) + ~6 bemenet | ~10 bemenet |
 
 - Egy 3 tűs XH kb. 10 mm, egy PH kb. 8 mm széles → 16 XH a busz mellett a 6 M-es ház vállain már nagyon szoros,
@@ -93,8 +91,8 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
   a vállak alatti magasság (a csatlakozók magassága ehhez – **és a P78E05 10,4 mm-e + az elkó**, D56, D59).
 - A LED-modul 3 M-be (~53 mm) is beférne, de 6 FET kb. 6 W-ja zárt dobozban → a 4 M több rézfelületet ad hűtésre.
 - **Vezérlő-antenna:** az ESP32-C6 modul antennája az előlap felőli, felső sarokban, alatta réz nélkül. **Fém
-  elosztószekrényben a rádió nem működik jól** → ESP32-C6-WROOM-1U (U.FL, külső antenna) – a padjai az Espressif
-  KiCad-footprintjei szerint pontosan ugyanott vannak, telepítéskor választható.
+  elosztószekrényben a rádió nem működik jól** → ESP32-C6-WROOM-1U (U.FL, külső antenna) – a padjai (az EPAD is) az Espressif
+  adatlapja és KiCad-footprintjei szerint pontosan ugyanott vannak, telepítéskor választható (D63).
 - 3D-nyomtatás: a relémodul háza lángálló anyagból (pl. PC-FR / ASA-FR) vagy gyári ház (D30); DIN-klipsz
   nyomtatva (PETG) vagy vásárolt.
 

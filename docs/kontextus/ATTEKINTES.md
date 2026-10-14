@@ -2,7 +2,7 @@
 
 > Ezt a fájlt a gyökér `CLAUDE.md` minden munkamenet elején betölti. Legyen **tömör és naprakész** (kb. 150 sor
 > alatt): ha valami változik, itt is frissüljön; a részletek a specifikációkban, a `DONTESEK.md`-ben és a
-> `beszelgetesek/`-ben. Utolsó frissítés: 2026-10-14.
+> `beszelgetesek/`-ben. Utolsó frissítés: 2026-10-14 (este).
 
 ## Cél
 Szakdolgozat: **Moduláris okosotthon platform** (korábbi munkanév: ModuNode, D26). Egy **node** = ESP32-C6
@@ -29,8 +29,8 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
   TI-sample-ből; ha nem jön: nem izolált breakout a padekre, D36). Lezárás: sima 120 Ω jumperrel, csak a lánc két
   végén. CAN-bitráta firmware-ből állítható (D34).
 - **V_BUS:** a vezérlő adja – P78E05 (5,0 V ± 3 %) + TPS2553 (382/425/476 mA); a modulon legrosszabb esetben
-  ~4,7 V (ISO1042: ≥ 4,5 V). Modul-oldali védelem: PTC 0,5 A + 5 V-os TVS; a 24 V-os félredugás elleni teljes
-  védelem **nyitott (D55)**.
+  ~4,75 V (ISO1042: ≥ 4,5 V). Áram: 73 mA (az adó) + 4 mA/modul + ~80 mA/bemeneti modul (D64). A modulon csak
+  5 V-os TVS (ESD), PTC és 24 V elleni védelem nincs (D55 lezárva).
 - **Modul-MCU (D27):** STM32F303RET6, 8 db; CAN PA11/PA12; saját CAN-bootloader kell (a ROM-é nem tud CAN-t);
   MCU-független protokoll + vékony hardverréteg (`can_hw`, `pwm_hw`, `flash_hw`). Kvarc 8 MHz.
 - **Modulmag tápja (D56, D57):** 24 V → F1 → SS16 → (10 Ω) → SMBJ28A + **47 µF elkó (kötelező)** → P78E05 (5 V) →
@@ -44,10 +44,11 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
     3 × [+24 V, CHa, CHb]; 10 A/csatorna, össz. 20 A; UCC27524 + 60 V-os FET, 25 kHz. Mérés: 24 V a biztosíték
     előtt/után, össz-áram (1 mΩ + INA181A2) → COMP2 + DAC-küszöb → TIM1/TIM8 break (hardveres lekapcsolás).
     A modulmag a 20 A-es főbiztosíték előtt ágazik le.
-  - **Relé:** 4 Schrack relé + ULN2803A; típus és COM/NO/NC **nyitott**; fogyasztásmérés v2 (D37).
+  - **Relé (D62):** 4 × Schrack RTD14024 (16 A, 24 V DC) + ULN2803A; kimenet COM + NO (4 × 2 pólus);
+    230 V-ra tervezve (≥ 8 mm + marás); fogyasztásmérés v2 (D37).
   - **Általános bemeneti (D44, D48, D51):** 16 bemenet külön 3 tűs JST-PH-n, bővítő tüske nélkül; soros R + ESD +
     opcionális osztó; HDC3020.
-  - **Vezérlő (D45, D58–D61):** ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U, ugyanarra a footprintre), W5500 +
+  - **Vezérlő (D45, D58–D61):** ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U, ugyanarra a footprintre – D63), W5500 +
     MagJack (opcionálisan beültetve), TCAN1044AV (±58 V), USB-C (táp busz nélkül), 2 XH, RGB LED + táp-LED;
     3,3 V: LMR36015; 5 V: P78E05. A V_BUS hardveresen csak 24 V mellett kapcsol be.
 - **Mechanika (D50, javaslat):** DIN 43880-as ház-forma, a NYÁK a ház alján; felső váll: 24 V + busz + jumper,
@@ -102,9 +103,7 @@ SCT-013-030 (v2) és az ULN2803A.
 ## Nyitott kérdések / teendők
 - [ ] **Sample-kérések most** (`SAMPLE-KERESEK.md`); ha a TI elutasít: LMR36015 és W5500 megvenni, transceiverekhez
       tartalék (D36, D60)
-- [ ] **D55** – V_BUS túlfeszültség-védelem: TVS + PTC marad, vagy TPS2660 minden modulon – Balázs dönt
-- [ ] **Schrack relé** pontos típuskódja + COM/NO/NC – **blokkoló** a relémodulhoz
-- [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/F2/PTC/USB-C/gombok típusa;
+- [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/USB-C/gombok típusa;
       W5500 MDI-hálózat a WIZnet-referencián; MagJack lábkiosztása; RGB LED + 74HCT14 vagy WS2812B-V5)
 - [ ] **DIN-ház kiválasztása** (pl. Camdenboss CNMB) → NYÁK-méret, furatok, vállmagasság (P78E05 + elkó!)
 - [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil

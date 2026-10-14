@@ -107,8 +107,8 @@ lábkiosztása), 8–36 V be, 5,0 V ± 3 %, 1 A, 93 %, rövidzár-védett; 11,6 
 | C13 | 22 µF, 10 V, X7R (1206) | `5V` kimenet; a P78E05 max. kapacitív terhelése 680 µF (a `5V` + a bekapcsolt `V_BUS` összesen ~60 µF) |
 
 **V_BUS-tartalék a modulokon:** 5,0 V − 3 % = 4,85 V; − TPS2553 (85 mΩ × 0,43 A ≈ 0,04 V) − 0,5 m XH-kábel (~0,03 V)
-− a modul PTC-je (≤ 0,5 Ω × ≤ 0,15 A ≈ 0,08 V) → **legrosszabb esetben ~4,7 V** a modulon; az ISO1042-nek 4,5 V kell.
-Szűken, de belefér (a korábbi 5,2 V-os LMR36006 helyett, D46 → D59).
+→ **legrosszabb esetben ~4,75 V** a modulon (a modulokon nincs PTC, D55); az ISO1042-nek 4,5 V kell
+(a korábbi 5,2 V-os LMR36006 helyett, D46 → D59).
 
 ### 2.4 V_BUS-kapcsoló – U3: TPS2553DBVR (SOT-23-6)
 
@@ -126,14 +126,16 @@ Szűken, de belefér (a korábbi 5,2 V-os LMR36006 helyett, D46 → D59).
   nagyimpedanciás, a dióda zár). A firmware a GPIO20 alacsonyra húzásával kapcsolja KI (EN ≈ 0,3 V) – pl. szándékos
   busz-újraindításhoz (ez a V_BUS-ról járó bemeneti modult újraindítja). Biztosan BE ~12 V fölött, biztosan KI
   ~7,3 V alatt; 45 V-os tüskénél az EN ~4,1 V (abs. max. 7 V).
-- **Áramkorlát:** a modulok legrosszabb esete ~0,3 A (MODULMAG-SPEC 5.5) < 382 mA. Túlterhelésnél a TPS2553
+- **Áramkorlát:** I ≈ 73 mA (az éppen adó ISO1042) + 4 mA × LED-/relémodul + ~80 mA × bemeneti modul
+  (MODULMAG-SPEC 5.5, D64) – 2 bemeneti modul mellett ~35 további modul is belefér a 382 mA-be. Túlterhelésnél a TPS2553
   korlátoz, túlmelegedésnél lekapcsol, majd lehűlve magától újraindul; a FAULT 7,5 ms késleltetéssel jelez.
   Ha a `V_BUS` a bemenet fölé kerülne (~135 mV, ~4 ms), lekapcsol és jelez.
 - **D4:** TVS, 5 V standoff (SMF5.0A): `V_BUS` → GND, a csatlakozók közelében.
 - **R13, R14, C14:** 100 kΩ / 22 kΩ, 100 nF: `V_BUS` → **GPIO1** (VBUS_SENSE, ADC1_CH1): 5,0 V → 0,90 V. Rövidzár,
   kikapcsolt állapot és túlfeszültség is látszik; egy félredugott 24 V is csak ~4,3 V-ot adna 100 kΩ-on át.
-- **Korlát (mint a D55):** a TPS2553 OUT-lába abszolút max. 7 V – egy a buszra dugott 24 V-os tápot a TVS nem véd
-  ki biztosan. A D55 döntése a vezérlőre is vonatkozik.
+- **Nincs 24 V elleni védelem (D55):** a TPS2553 OUT-lába abszolút max. 7 V; a láncon nincs 24 V (D28), a TVS az
+  ESD és a hot-plug tüskék ellen van. A TPS2553 azért marad (a P78E05 maga is zárlatbiztos): a C6 távolról
+  újraindíthatja a buszt (bootloader, D20), a FAULT jelzi a zárlatot, és korlátozza a bedugáskori áramot.
 
 ## 3. ESP32-C6-WROOM-1-N16 (U4)
 
@@ -190,9 +192,11 @@ Szűken, de belefér (a korábbi 5,2 V-os LMR36006 helyett, D46 → D59).
 - **WROOM-1:** a modul antennás vége a NYÁK szélén túlnyúlik, vagy alatta és két oldalán kivágás; az antenna
   alatt **egyik rétegen se legyen réz**; a modul GND-padje körül sűrű via; ≥ 15 mm szabad tér fémtől (RJ45,
   sorkapocs, ház fém része).
-- **WROOM-1U (fém szekrénybe):** a padjai pontosan ugyanott vannak az alsó élhez képest (az Espressif
-  KiCad-footprintjei szerint), csak a modul rövidebb (18 × 19,2 mm a 18 × 25,5 helyett) → **ugyanarra a
-  footprintre ültethető**. U.FL → kábel → SMA-aljzat a házon.
+- **WROOM-1U (fém szekrénybe):** a padjai – a GND-padet (EPAD, 29) is beleértve – pontosan ugyanott vannak, csak
+  a modul rövidebb (18 × 19,2 mm a 18 × 25,5 helyett) → **ugyanarra a footprintre ültethető** (D63; az Espressif
+  adatlap v1.4, 11-1. és 11-2. ábra: az EPAD közepe mindkettőn 7,495 mm-re a bal éltől és 12,29 mm-re az alsó
+  éltől; az Espressif KiCad-footprintjei is egyeznek). A NYÁK-on a `modularis:ESP32-C6-WROOM-1` footprint, az
+  antenna-kivágással. U.FL → kábel → SMA-aljzat a házon.
 
 ## 4. Ethernet – W5500 (U5, LQFP48, opcionálisan beültetve)
 
