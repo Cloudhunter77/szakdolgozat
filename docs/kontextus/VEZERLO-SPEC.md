@@ -124,10 +124,10 @@ lábkiosztása), 8–36 V be, 5,0 V ± 3 %, 1 A, 93 %, rövidzár-védett; 11,6 
 - **EN-logika (D61):** 24 V-on az EN 2,18 V (az EN 1,1 V felett biztosan BE, 0,66 V alatt KI) → a V_BUS bekapcsol,
   amint a 24 V megvan – **a C6 újraindulása (OTA, hiba) alatt is** (a GPIO20 resetkor gyenge felhúzással
   nagyimpedanciás, a dióda zár). A firmware a GPIO20 alacsonyra húzásával kapcsolja KI (EN ≈ 0,3 V) – pl. szándékos
-  busz-újraindításhoz (ez a V_BUS-ról járó bemeneti modult újraindítja). Biztosan BE ~12 V fölött, biztosan KI
+  busz-újraindításhoz (ez a buszos tápra kapcsolt modulokat újraindítja, D66). Biztosan BE ~12 V fölött, biztosan KI
   ~7,3 V alatt; 45 V-os tüskénél az EN ~4,1 V (abs. max. 7 V).
-- **Áramkorlát:** I ≈ 73 mA (az éppen adó ISO1042) + 4 mA × LED-/relémodul + ~80 mA × bemeneti modul
-  (MODULMAG-SPEC 5.5, D64) – 2 bemeneti modul mellett ~35 további modul is belefér a 382 mA-be. Túlterhelésnél a TPS2553
+- **Áramkorlát:** I ≈ 73 mA (az éppen adó ISO1042) + 4 mA × modul (MODULMAG-SPEC 5.5, D64, D66) – több tucat
+  modul is belefér a 382 mA-be; a buszos tápra kapcsolt modulok (D66) ~80–150 mA-t húznak. Túlterhelésnél a TPS2553
   korlátoz, túlmelegedésnél lekapcsol, majd lehűlve magától újraindul; a FAULT 7,5 ms késleltetéssel jelez.
   Ha a `V_BUS` a bemenet fölé kerülne (~135 mV, ~4 ms), lekapcsol és jelez.
 - **D4:** TVS, 5 V standoff (SMF5.0A): `V_BUS` → GND, a csatlakozók közelében.

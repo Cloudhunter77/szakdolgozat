@@ -41,7 +41,7 @@ Esti, rövid feladatok ezen a héten:
 
 ## Kockázatok, tartalékterv
 - **A layout a legszűkebb:** 4 lap ~6 nap alatt. Csúszás esetén 10-30-án a vezérlő + LED- + relémodul megy, a
-  bemeneti modul (V_BUS-ról jár, a többi nem függ tőle) egy héttel később, külön rendelésben.
+  bemeneti modul (a többi nem függ tőle) egy héttel később, külön rendelésben.
 - **TI-elutasítás:** 10-22-én azonnal rendelni. ISO1042 → breakout-tartalék (D36); LMR36015 → nincs tartalék.
 - **Schrack relé típuskódja** nélkül a relémodul footprintje nem rajzolható → a hét első feladata.
 

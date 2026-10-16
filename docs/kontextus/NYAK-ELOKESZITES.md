@@ -13,7 +13,7 @@ innen indul:**
 - [x] **Modulmag specifikálva** (2026-10-13, `MODULMAG-SPEC.md`, javaslat): **P78E05-1000 + NCP1117ST33**
       (24 V → 5 V → 3,3 V; 2026-10-14 óta, D56 – az LMR36006BRNXR helyett), STM32F303RET6 + 8 MHz, ISO1042BDWVR,
       2 × XH, sima 120 Ω-os lezárás jumperrel, V_BUS-on TVS (PTC nincs, D55), HW-azonosító, 1 × 7-es debug-tüskesor
-      (SWD + UART). A és B (V_BUS-ról járó) változat.
+      (SWD + UART). Mindhárom modul saját 24 V-ról jár; opcionális buszos táp (D66).
 - [x] **Vezérlő specifikálva** (2026-10-14, `VEZERLO-SPEC.md`, D58–D61): ESP32-C6-WROOM-1-N16, 3,3 V: LMR36015,
       5 V / V_BUS: P78E05 + TPS2553 (382/425/476 mA), TCAN1044AV (±58 V, jumperes tartalékkal), W5500 + MagJack,
       USB-C (táp busz nélkül), 2 átmenő XH, RGB LED + táp-LED, debug-tüske.
@@ -41,7 +41,8 @@ innen indul:**
   - Csatlakozó: **3 tűs JST-PH javasolt** (D51) – keskenyebb, és nem dugható a busz XH-jába.
   - Lábak (D54): IN0–IN3 PA0–PA3, IN4–IN6 PA4–PA6, IN7 PA7, IN8–IN10 PA8–PA10, IN11 PB11, IN12–IN15 PB12–PB15 –
     mind külön EXTI-vonalon; 12 ADC-képes (IN8–IN10 csak digitális). HDC3020: I²C1, PB8/PB9.
-  - A modul a V_BUS-ról jár (modulmag B változat: TLV75533P LDO a modul lapján, GND = GND_BUS).
+  - **D66:** a modul is saját 24 V-ról jár (A változat, izolált); 24 V nélkül a modulmag D6 + JP2-je (buszos táp).
+    Érzékelő-táp: 4 csoport × 4 csatlakozó, csoportonként 3,3 / 5 V-os forrasztható választó + PTC, külön NCP1117.
   - Bemenetenként: soros ellenállás + ESD (4 × TPD4E05U06) + opcionális felhúzó/lehúzó-ellenállás footprint
     (osztóként 12/24 V-os jelhez is). Az ESD a soros ellenállás után, az MCU-oldalon (így magasabb bemenő
     feszültségnél az ellenállás korlátozza az áramot).
@@ -82,7 +83,7 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 | Vezérlő | 4 M (~71 mm) | 66 × 85 mm | 24 V be, busz BE/KI (2 × XH), jumper, USB-C | RJ45 |
 | LED-modul | 4 M | 66 × 85 mm | 24 V be (2,5 mm², 20 A), busz BE/KI, jumper | 3 × 3 pólusú kimenet (~45–50 mm) |
 | Relémodul | 4 M | 66 × 85 mm | 24 V be, busz BE/KI, jumper | 4 relé kimenete (4 × 2 pólus, COM + NO) |
-| Bemeneti modul | 6 M (~106 mm) | 100 × 85 mm | busz BE/KI, jumper (V_BUS-ról jár) + ~6 bemenet | ~10 bemenet |
+| Bemeneti modul | 6 M (~106 mm) | 100 × 85 mm | 24 V be, busz BE/KI, jumper + ~6 bemenet | ~10 bemenet |
 
 - Egy 3 tűs XH kb. 10 mm, egy PH kb. 8 mm széles → 16 XH a busz mellett a 6 M-es ház vállain már nagyon szoros,
   PH-val kényelmes (D51).

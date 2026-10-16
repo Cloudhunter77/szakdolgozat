@@ -29,13 +29,13 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
   TI-sample-ből; ha nem jön: nem izolált breakout a padekre, D36). Lezárás: sima 120 Ω jumperrel, csak a lánc két
   végén. CAN-bitráta firmware-ből állítható (D34).
 - **V_BUS:** a vezérlő adja – P78E05 (5,0 V ± 3 %) + TPS2553 (382/425/476 mA); a modulon legrosszabb esetben
-  ~4,75 V (ISO1042: ≥ 4,5 V). Áram: 73 mA (az adó) + 4 mA/modul + ~80 mA/bemeneti modul (D64). A modulon csak
+  ~4,75 V (ISO1042: ≥ 4,5 V). Áram: 73 mA (az adó) + 4 mA/modul (D64). A modulon csak
   5 V-os TVS (ESD), PTC és 24 V elleni védelem nincs (D55 lezárva).
 - **Modul-MCU (D27):** STM32F303RET6, 8 db; CAN PA11/PA12; saját CAN-bootloader kell (a ROM-é nem tud CAN-t);
   MCU-független protokoll + vékony hardverréteg (`can_hw`, `pwm_hw`, `flash_hw`). Kvarc 8 MHz.
 - **Modulmag tápja (D56, D57):** 24 V → F1 → SS16 → (10 Ω) → SMBJ28A + **47 µF elkó (kötelező)** → P78E05 (5 V) →
-  NCP1117 (3,3 V). A P78E05 max. 36 V → **a 24 V-os tápot ≤ 26 V-ra állítani.** A bemeneti modul a V_BUS-ról jár
-  (TLV75533, B változat).
+  NCP1117 (3,3 V). A P78E05 max. 36 V → **a 24 V-os tápot ≤ 26 V-ra állítani.** Mindhárom modul saját 24 V-ról
+  jár; opcionális buszos táp (D6 + JP2, alapból üres, izoláció nélkül) – D66.
 - **Lábkiosztás (D54, CubeMX-ben ellenőrizni):** modulmag: CAN PA11/12, USART1 PC4/5, SWD, HSE, HW-ID PC0,
   VIN_SENSE PC1, LED PC13. LED-modul: TIM1 PA8–10 + TIM8 PC6–8, I_SENSE PA7, DAC1 PA4, DRV_EN PB12. Relé: PB12–15.
   Bemeneti: 16 bemenet külön EXTI-vonalon, I²C1 PB8/9.
@@ -47,8 +47,9 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
     ideális dióda (LM74700-Q1 + NTMFS5C604NL) a 20 A-es ágon, csatornánként gate- és drain-LED, drain → ADC (PA0–3, 5, 6).
   - **Relé (D62):** 4 × Schrack RTD14024 (16 A, 24 V DC) + ULN2803A; kimenet COM + NO (4 × 2 pólus);
     230 V-ra tervezve (≥ 8 mm + marás); fogyasztásmérés v2 (D37).
-  - **Általános bemeneti (D44, D48, D51):** 16 bemenet külön 3 tűs JST-PH-n, bővítő tüske nélkül; soros R + ESD +
-    opcionális osztó; HDC3020.
+  - **Általános bemeneti (D44, D48, D51, D66):** 16 bemenet külön 3 tűs JST-PH-n; 1 k + 10 k felhúzás + 10 nF
+    (+ osztó-footprint 5/12/24 V-hoz) + ESD; 4 érzékelő-tápcsoport (3,3 / 5 V jumperrel, PTC-vel, külön 3,3 V-os
+    LDO); HDC3020 a NYÁK-on + 4 tűs PH I²C-csatlakozó külső érzékelőhöz.
   - **Vezérlő (D45, D58–D61):** ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U, ugyanarra a footprintre – D63), W5500 +
     MagJack (opcionálisan beültetve), TCAN1044AV (±58 V), USB-C (táp busz nélkül), 2 XH, RGB LED + táp-LED;
     3,3 V: LMR36015; 5 V: P78E05. A V_BUS hardveresen csak 24 V mellett kapcsol be.

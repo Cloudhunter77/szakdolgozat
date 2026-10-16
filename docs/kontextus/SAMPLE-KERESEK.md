@@ -27,7 +27,7 @@ megérkezése után (≈ november közepe) lesz.
 | **TPS2553DBVR** | áramkorlátos kapcsoló a V_BUS-ra (61,9 kΩ → 382/425/476 mA) | vezérlő | 1 | 2 | polyfuse |
 | **ULN2803A** | relémeghajtó (kimaradt az AliExpress-rendelésből) | relémodul | 1 | 2 | megvenni (olcsó) |
 | **HDC3020** | hőmérséklet + páratartalom, I²C (WSON 2,5 × 2,5 mm) | bemeneti modul | 1 | 2 | bármilyen I²C-s T/RH szenzor |
-| **TLV75533PDBVR** (TLV755P, 3,3 V, SOT-23-5) | 500 mA-es LDO – a bemeneti modul a V_BUS-ról jár (B változat) | bemeneti modul | 1 | 2 | bármilyen 3,3 V-os LDO SOT-23-5-ben; végszükségben a kézben lévő NCP1117ST33 (SOT-223 – más footprint, ejtés ≤ 1,1 V, a V_BUS-ról még elég) |
+| ~~**TLV75533PDBVR**~~ (D66: már nem kell, a TI-kérelemben benne maradt) (TLV755P, 3,3 V, SOT-23-5) | 500 mA-es LDO – a bemeneti modul a V_BUS-ról jár (B változat) | bemeneti modul | 1 | 2 | bármilyen 3,3 V-os LDO SOT-23-5-ben; végszükségben a kézben lévő NCP1117ST33 (SOT-223 – más footprint, ejtés ≤ 1,1 V, a V_BUS-ról még elég) |
 | **LM74700QDBVRQ1** (LM74700-Q1, SOT-23-6) | ideális dióda-vezérlő – fordított polaritás elleni védelem a 20 A-es ágon (D65) | LED-modul | 1 | 2 | áthidalás dróttal (a Q201 S–D padjei között) |
 
 A **TPS2660** (eFuse) nem kell: a V_BUS-on nincs 24 V elleni védelem (D55, 2026-10-14).

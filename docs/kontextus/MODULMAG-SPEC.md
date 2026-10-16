@@ -17,10 +17,12 @@ HAL COMP-leírás. Független ellenőrzés után javítva (2026-10-13). **2026-1
 | Busz-oldal | 2 × JST-XH, ESD2CAN24-Q1, 120 Ω + jumper, V_BUS-védelem | 5 |
 | Debug | 1 × 7-es tüskesor (SWD + UART) | 3.6 |
 
-- **A változat – saját 24 V-ról (LED-, relémodul):** minden beültetve, a busz galvanikusan leválasztva.
-- **B változat – V_BUS-ról (bemeneti modul):** a 2. fejezet (táp) nincs beültetve; a 3,3 V-ot a modul saját
-  lapján egy LDO adja a V_BUS-ból (6. fejezet), és ott GND = GND_BUS. Az LDO szándékosan **nincs** a
-  modulmagban – az izolált modulokon a lába átérne a két tartomány között.
+- **Mindhárom modul (LED, relé, bemeneti) saját 24 V-ról jár:** minden beültetve, a busz galvanikusan
+  leválasztva (D66 – a korábbi B változat elvetve).
+- **Opcionális buszos táp (D66):** D6 (SS14 Schottky, `V_BUS_P` → `+5V`) és JP2 (forrasztható áthidalás,
+  `GND_BUS` ↔ `GND`) – alapból **nincs beültetve / nyitva**. Beforrasztva a modul 24 V nélkül a V_BUS-ról jár
+  (az 5 V ~4,5 V lesz, a 3,3 V az NCP1117-ről), de **izoláció nélkül**, és a vezérlő 382 mA-es korlátján osztozva;
+  fejlesztéshez, asztali teszthez, vagy ha egy bemeneti modulhoz nem jut 24 V.
 
 ## 1. Netek és tartományok
 
@@ -178,14 +180,14 @@ Az ISO1042 busz-oldala (VCC2) recesszív állapotban **≤ 4,1 mA**-t vesz fel; 
 folyik, amelyik éppen ad (a 60 Ω-os lezárást hajtja – az ACK-bitnél többen is, de ugyanazon a lezáráson
 osztozva, egy bitideig). Ezért:
 
-> I(V_BUS) ≈ **73 mA** (az adó) + **4 mA × (A változatú modulok)** + **~80 mA × (bemeneti modulok)**
+> I(V_BUS) ≈ **73 mA** (az adó) + **4 mA × modul** (+ a buszos tápra kapcsolt modulok teljes fogyasztása, D66)
 
-A vezérlő TPS2553 áramkorlátja **382 / 425 / 476 mA** (61,9 kΩ, `VEZERLO-SPEC.md` 2.4) → pl. 2 bemeneti modul +
-~35 LED-/relémodul is belefér; előbb a CAN csomópontszáma és a lánc hossza a korlát. Több bemeneti modulhoz
-(> 3) az R12 csökkentésével emelhető. A vezérlő V_BUS-a **5,0 V ± 3 %** (P78E05, D59): a TPS2553 és a kábel
+A vezérlő TPS2553 áramkorlátja **382 / 425 / 476 mA** (61,9 kΩ, `VEZERLO-SPEC.md` 2.4) → több tucat modul is
+belefér; előbb a CAN csomópontszáma és a lánc hossza a korlát. Buszos tápra kapcsolt modulonként ~80–150 mA
+(MCU + érzékelők) jön hozzá – ha ilyenből több kell, az R12 csökkentésével emelhető. A vezérlő V_BUS-a **5,0 V ± 3 %** (P78E05, D59): a TPS2553 és a kábel
 után legrosszabb esetben **~4,75 V** marad a modulon, az ISO1042-nek 4,5 V kell.
 
-## 6. B változat: táplálás a V_BUS-ról (csak a bemeneti modul saját lapján)
+## 6. ~~B változat: táplálás a V_BUS-ról~~ – elvetve (D66): a bemeneti modul is saját 24 V-ról jár; 24 V nélkül a D6 + JP2 buszos táp (1. fejezet)
 - A 2. fejezet alkatrészei **nincsenek beültetve**.
 - **U4:** TLV75533PDBVR (500 mA LDO, SOT-23-5): 1 IN ← `V_BUS_P` · 2 GND · 3 EN → IN-re · 4 NC · 5 OUT → `3V3`.
   IN: 1 µF, OUT: 2,2 µF. Ejtés 500 mA-en max. ~0,24 V – bőven elég. Bemenet abszolút max. 6 V (lásd 5.2).
@@ -236,7 +238,8 @@ Megjegyzések:
   ~1,5 V lett volna, D65) → boot alatt a driverek tiltva. A driverek
   IN-lábain belső lehúzás van, a lebegő PWM-láb is KI-t jelent.
 - **Relék:** a ULN2803A bemenetein opcionális 100 kΩ lehúzás (boot alatti lebegés ellen).
-- A bemeneti modulon 12 bemenet ADC-képes (IN0–IN7, IN11–IN15), az IN8–IN10 csak digitális.
+- A bemeneti modulon 12 bemenet ADC-képes (IN0–IN7, IN11–IN15), az IN8–IN10 csak digitális – de ezek (PA8–PA10)
+  5 V-tűrők (FT); az ADC-s lábak TTa típusúak (≤ 3,6 V) → 5 V-os jelhez osztó (D66). A HDC3020 ALERT-je a PC2-n.
 
 ## 8. Layout-irányelvek
 - A modulmag **mindhárom lapon ugyanott**, a felső vállnál (D50). KiCad-ben a layoutot is újrahasználható
