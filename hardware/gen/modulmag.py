@@ -120,6 +120,13 @@ S.comp('Jumper:Jumper_2_Open', 'JP1', 'LEZÁRÁS', 300, 225, {'1': 'CAN_H', '2':
        fp='Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical')
 R('R5', '120R', 320, 225, 'CAN_TERM', 'CAN_L', fp='Resistor_SMD:R_0805_2012Metric')
 S.text('D55 lezárva: a buszon nincs 24 V → nincs PTC; a TVS az ESD / hot-plug ellen. Zárlatvédelem: a vezérlő TPS2553-a', 225, 255)
+# Opcionális „buszról járó” mód (D66) – alapból NINCS beültetve / bekötve
+S.comp('Device:D_Schottky', 'D6', 'SS14', 235, 270, {'2': 'V_BUS_P', '1': '+5V'}, fp='Diode_SMD:D_SMA', r=90, dnp=True,
+       props={'Megjegyzés': 'DNP – buszos táp: V_BUS → +5V (24 V nélkül); izoláció nélkül!'})
+S.comp('Jumper:SolderJumper_2_Open', 'JP2', 'GND_BUS–GND', 255, 270, {'1': 'GND_BUS', '2': 'GND'},
+       fp='Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm',
+       props={'Megjegyzés': 'nyitva = izolált (alap); bezárva a D6-tal együtt = buszos táp'})
+S.text('BUSZOS TÁP (D66, opció): D6 + JP2 beforrasztva → 24 V nélkül a V_BUS-ról jár (izoláció nélkül)', 225, 279)
 
 # ---------------- PWR_FLAG-ek ----------------
 for i, n in enumerate(['+24V_P', 'GND', 'GND_BUS', 'V_BUS_P', '+3V3A']):
