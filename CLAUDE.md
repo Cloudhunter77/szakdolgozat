@@ -4,11 +4,16 @@ Balázs szakdolgozata: moduláris okosotthon node-ok ESP32-C6-on, végleges irá
 Home Assistant**. Balázs magyarul kommunikál, Linux Mint alatt dolgozik, Linuxban kezdő – a parancsokat röviden
 magyarázd el.
 
-## Alapszabály: kérdezz, mielőtt csinálsz
-Minden **módosító** lépés előtt írd le pontosan, mit fogsz csinálni, és **várd meg a jóváhagyást**:
-fájl létrehozása/módosítása/mozgatása/törlése, git commit / tag / push, csomag- vagy toolchain-telepítés,
-flashelés, flash törlés. Olvasni, keresni, buildet ellenőrizni (`git status`, `git diff`, logok) kérdés nélkül szabad.
+## Alapszabály: mit szabad kérdés nélkül
+**Kérdés nélkül szabad:** olvasni, keresni, buildelni, logot nézni, és a repón belül fájlt létrehozni /
+módosítani (a git a visszavonás gomb).
+**Előbb kérdezz, várd meg a jóváhagyást:** git commit / tag / push, fájl törlése vagy mozgatása, csomag- vagy
+toolchain-telepítés, flashelés, flash törlés.
 `sudo`-t soha ne futtass – írd ki a pontos parancsot, és Balázs futtatja a saját termináljában.
+
+## Párhuzamos munkamenetek
+Gyakran több Claude munkamenet fut egyszerre ezen a repón. Mindegyik a saját mappájában dolgozik
+(`firmware/`, `hardware/`, `docs/`); commit előtt `git status` – más munkamenet módosításaihoz ne nyúlj.
 
 ## Repó szerkezet
 ```
@@ -44,7 +49,8 @@ Visszaállás egy checkpointra: `git switch -c probalkozas cp-01-esphome-demo` (
 További háttér, csak ha a téma előkerül: `docs/kontextus/DONTESEK.md` (döntésnapló), `docs/kontextus/beszelgetesek/` (claude.ai chat-jegyzetek), `docs/kontextus/NAPLO.md` (munkanapló).
 
 ### A kontextus karbantartása
-- Érdemi munkamenet végén javasolj egy `NAPLO.md` bejegyzést (ez is módosítás → kérdezz előtte).
+- Érdemi munkamenet végén Balázs `/wrap`-et futtat: ez frissíti a `NAPLO.md`-t, az `ATTEKINTES.md`-t és a
+  `DONTESEK.md`-t, majd commitot ajánl. Ha elfelejti, emlékeztesd.
 - Új döntés → új sor a `DONTESEK.md`-ben; ha az állapot vagy egy nyitott kérdés változik → `ATTEKINTES.md`.
 - A `beszelgetesek/` jegyzeteit Claude a claude.ai oldalon írja; te ezeket csak commitolod, nem írod át.
 - Az `ATTEKINTES.md` maradjon rövid (kb. 150 sor alatt), mert minden munkamenetben betöltődik.

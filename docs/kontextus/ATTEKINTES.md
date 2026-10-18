@@ -103,14 +103,14 @@ SCT-013-030 (v2) és az ULN2803A.
   hely közös anyaga (D13).
 
 ## Nyitott kérdések / teendők
-- [ ] **Sample-kérések most** (`SAMPLE-KERESEK.md`); ha a TI elutasít: LMR36015 és W5500 megvenni, transceiverekhez
+- [ ] **Sample-kérések most** (`SAMPLE-KERESEK.md`) (határidő 2026-10-22); ha a TI elutasít: LMR36015 és W5500 megvenni, transceiverekhez
       tartalék (D36, D60)
 - [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/USB-C/gombok típusa;
       W5500 MDI-hálózat a WIZnet-referencián; MagJack lábkiosztása; RGB LED + 74HCT14 vagy WS2812B-V5)
 - [ ] **DIN-ház kiválasztása** (pl. Camdenboss CNMB) → NYÁK-méret, furatok, vállmagasság (P78E05 + elkó!)
 - [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil
 - [ ] Beszerzés: AH1911 (+ mágnesek), W5500 + MagJack + 25 MHz, 1 mΩ-os sönt, JST-XH/PH, kvarcok, elkók, USB-C aljzat
-- [ ] NYÁK: kapcsolási rajzok (10-13 – 10-19), layout (10-20 – 10-26), rendelés ≈ 10-31
+- [ ] NYÁK: kapcsolási rajzok (10-13 – 10-19), layout (10-20 – 10-26), rendelés ≈ 10-31 (határidő 2026-10-30)
 - [ ] Firmware később: LED-modul (önteszt, árammintavétel, 20 A-es összegkorlát, DAC-küszöb, kiégett biztosíték
       jelzése), csatorna-csoportosítás a regisztertáblában → Matter-lámpák; modul-protokoll + bootloader; vezérlő:
       V_BUS-kezelés (VIN_SENSE / VBUS_SENSE / FAULT)
