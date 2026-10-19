@@ -2,7 +2,7 @@
 
 > Ezt a fájlt a gyökér `CLAUDE.md` minden munkamenet elején betölti. Legyen **tömör és naprakész** (kb. 150 sor
 > alatt): ha valami változik, itt is frissüljön; a részletek a specifikációkban, a `DONTESEK.md`-ben és a
-> `beszelgetesek/`-ben. Utolsó frissítés: 2026-10-14 (este).
+> `beszelgetesek/`-ben. Utolsó frissítés: 2026-10-19.
 
 ## Cél
 Szakdolgozat: **Moduláris okosotthon platform** (korábbi munkanév: ModuNode, D26). Egy **node** = ESP32-C6
@@ -11,13 +11,16 @@ vezérlő + JST-XH láncon csatlakozó **modulok** (LED, relé, általános beme
 endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24 V-ra tervezünk**; a későbbi ötletek:
 `V2-OTLETEK.md`.
 
-## Aktuális állapot (2026-10-14)
+## Aktuális állapot (2026-10-19)
 - ✅ `firmware/esphome-demo` → `cp-01-esphome-demo` · ✅ `firmware/matter-c6` (Thread, HA-ba párosítva, szín csak
   részben) → `cp-02-matter-thread-ha` · ✅ breadboard 24 V-os LED-meghajtó, 2 csatorna (D15)
 - 📝 CCT szalag firmware (D16): prompt kész, **még nincs lefuttatva**
-- 🔌 **Kapcsolási specifikációk készen (javaslat, függetlenül ellenőrizve):** `MODULMAG-SPEC.md` (a három modul közös
-  magja, lábkiosztás mindhárom modulra) és `VEZERLO-SPEC.md` (ESP32-C6 vezérlő). Balázs 2026-10-13 óta rajzol KiCad-ben.
-- 📦 `SAMPLE-KERESEK.md` – **most kell elküldeni a kéréseket** (TI az 1. prioritás)
+- 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`. **Mind az öt KiCad-lap kész** (`hardware/`: modulmag,
+  vezérlő, LED-, relé-, bemeneti modul) – generátorral rajzolva, elrendezve, ERC 0 (relé: 4 elfogadott lib-jelzés),
+  KiCad MCP vizuális ellenőrzéssel átnézve (5345f48). **Még hátra: lapról lapra átnézés a spec szerint → 10-21 lezárás.**
+- ✏️ **D67:** amint Balázs kézzel szerkeszt egy lapot, onnantól a `.kicad_sch` a forrás (generátort arra nem futtatunk);
+  munkafolyamat: `hardware/README.md`
+- 📦 `SAMPLE-KERESEK.md` – TI kérés + rendelés leadva (10-19); a többi gyártó hátra (határidő 10-22)
 - 📋 `NYAK-ELOKESZITES.md` – ami a rajz/layout előtt még nyitott
 - ⏰ **NYÁK-rendelés legkésőbb ≈ 2026-10-31** (vezérlő + LED- + relé- + bemeneti modul, D25) – ütemterv: `UTEMTERV.md`
 - 📄 A régi Design Reference és BOM a Windows-os `Documents\szakdolgozat` mappában van (nincs a repóban); a beadható
@@ -112,7 +115,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] **DIN-ház kiválasztása** (pl. Camdenboss CNMB) → NYÁK-méret, furatok, vállmagasság (P78E05 + elkó!)
 - [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil
 - [ ] Beszerzés: AH1911 (+ mágnesek), W5500 + MagJack + 25 MHz, 1 mΩ-os sönt, JST-XH/PH, kvarcok, elkók, USB-C aljzat
-- [ ] NYÁK: kapcsolási rajzok (10-13 – 10-19), layout (10-20 – 10-26), rendelés ≈ 10-31 (határidő 2026-10-30)
+- [ ] NYÁK: kapcsolási rajzok ✅ (átnézés + lezárás 10-21), **DIN-ház kell a layout előtt**, layout (10-20 – 10-26), rendelés ≈ 10-31 (határidő 2026-10-30)
 - [ ] Firmware később: LED-modul (önteszt, árammintavétel, 20 A-es összegkorlát, DAC-küszöb, kiégett biztosíték
       jelzése), csatorna-csoportosítás a regisztertáblában → Matter-lámpák; modul-protokoll + bootloader; vezérlő:
       V_BUS-kezelés (VIN_SENSE / VBUS_SENSE / FAULT)

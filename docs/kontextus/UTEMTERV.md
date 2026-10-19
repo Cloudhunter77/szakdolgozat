@@ -8,11 +8,11 @@ Részletek: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`, `NYAK-ELOKESZITES.md`, `SAMPL
 
 | Nap | Balázs | Claude Code |
 |---|---|---|
-| Sze 10-14 | [ ] **Sample-kérések elküldése** (TI először – ~5 munkanap a döntés) · [x] Schrack relé feliratának leolvasása (RTD14024, D62) | [ ] ütemterv fájlba · [ ] KiCad-projekt váz a repóban |
-| Cs 10-15 | [ ] **DIN-ház kiválasztása** (pl. Camdenboss CNMB) → NYÁK-körvonal, vállmagasság · [x] **D55 döntés** (nincs 24 V elleni védelem, PTC ki, TVS marad) · [ ] CubeMX-projekt mindhárom modulra (lábütközés, COMP2/DAC/TIM-break) | [ ] a relé típuskódjából footprint + COM/NO/NC |
-| P 10-16 – Szo 10-17 | [ ] KiCad: **modulmag** hierarchikus lap (táp, STM32, ISO1042, busz-oldal) | [ ] hiányzó szimbólumok/footprintek (ISO1042 DWV, P78E05, TCAN1044AV …) · [ ] a modulmag rajzának átnézése a spec alapján |
-| V 10-18 | [ ] KiCad: **vezérlő** (táp, C6, CAN, USB-C, W5500) | [ ] átnézés a VEZERLO-SPEC alapján |
-| H 10-19 – K 10-20 | [ ] KiCad: **LED-, relé-, bemeneti modul** (modulmag + a saját részük) | [ ] átnézés lapról lapra |
+| Sze 10-14 | [x] **Sample-kérések elküldése** (TI elküldve 10-19, a többi gyártó még nem; TI először – ~5 munkanap a döntés) · [x] Schrack relé feliratának leolvasása (RTD14024, D62) | [x] ütemterv fájlba · [x] KiCad-projekt váz a repóban |
+| Cs 10-15 | [ ] **DIN-ház kiválasztása** (pl. Camdenboss CNMB) → NYÁK-körvonal, vállmagasság · [x] **D55 döntés** (nincs 24 V elleni védelem, PTC ki, TVS marad) · [ ] CubeMX-projekt mindhárom modulra (lábütközés, COMP2/DAC/TIM-break) | [x] a relé típuskódjából footprint + COM/NO/NC |
+| P 10-16 – Szo 10-17 | [x] KiCad: **modulmag** hierarchikus lap (táp, STM32, ISO1042, busz-oldal) | [x] hiányzó szimbólumok/footprintek (ISO1042 DWV, P78E05, TCAN1044AV …) · [ ] a modulmag rajzának átnézése a spec alapján |
+| V 10-18 | [x] KiCad: **vezérlő** (táp, C6, CAN, USB-C, W5500) | [ ] átnézés a VEZERLO-SPEC alapján |
+| H 10-19 – K 10-20 | [x] KiCad: **LED-, relé-, bemeneti modul** (modulmag + a saját részük) | [ ] átnézés lapról lapra |
 | Sze 10-21 | [ ] ERC + javítások → **rajz lezárva** | [ ] teljes átnézés: minden láb, minden érték a spec szerint (netlista-összevetés) |
 
 Esti, rövid feladatok ezen a héten:

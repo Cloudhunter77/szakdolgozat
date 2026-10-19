@@ -14,6 +14,18 @@ Sablon:
 
 ---
 
+## 2026-10-14 → 10-19 – Kapcsolási rajzok KiCad-ben (mind az öt lap), TI-kérés
+- Csináltuk: grill-döntések D62–D67; Python-generátor (`hardware/gen/`) → relé-, LED-, bemeneti modul, vezérlő,
+  modulmag hierarchikus lapként; mind az öt lap vezetékes, blokkos elrendezése; netlista-összevető (`gen/netcmp.py`,
+  alap: `hardware/out/*.before.net`); KiCad MCP Pro telepítve (uvx, helyi scope), vizuális QA alapján olvashatósági
+  javítások; TI sample-kérés + TI-rendelés leadva (10-19, Chrome-ban kitöltve); konzultációs összefoglaló (artifact).
+- Eredmény: ERC 0 mindenhol (relé: 4 lib_symbol_mismatch elfogadva), a bekötés az átrendezés előttivel azonos
+  (commitok: 59316b7, 5345f48).
+- Tanultuk: az MCP `sch_visual_qa` „symbol_overlap” jelzései többnyire formaiak (tápszimbólum a láb végén, szomszéd
+  alkatrész, többegységes U9) – képen (PDF → PNG) érdemes ellenőrizni; a generátor felülírja a kézi elrendezést (→ D67).
+- Nyitott: lapról lapra átnézés a spec szerint (10-21 lezárás); DIN-ház; CubeMX; W5500 + C6 breadboard-teszt;
+  többi sample-kérés (10-22); a KiCad MCP írható módja csak Claude Code újraindítás után él.
+
 ## 2026-10-11 – Bemutató után: architektúra behúzva, STM32 azonosítva
 - Csináltuk: a claude.ai-ból jött bundle (D15–D25, node/modul architektúra, 2 chat-jegyzet) behúzva és pusholva;
   a lejárt GitHub token megújítva (`gh auth login`); a modul MCU azonosítva.
