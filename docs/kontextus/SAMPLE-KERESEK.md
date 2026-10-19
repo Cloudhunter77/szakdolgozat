@@ -15,6 +15,10 @@ megérkezése után (≈ november közepe) lesz.
 
 ## TI – 1. prioritás (hozzáférést kell kérni céges/egyetemi e-maillel)
 
+**Állapot (2026-10-19): a TI-rendelés leadva.** Előzmény: a hozzáférési kérelem elküldve (myTI → Contact support → Orders & payments → Sample program;
+BME, TMIT, balazs.csanyi07@edu.bme.hu; a lenti 11 típus, 10 db/típus). A TI GYIK szerint hallgatóknak általában nem
+adnak mintát – ha elutasítják, 10-22-én megrendelni (TI-boltból vagy TME/Mouser, ~60–70 USD).
+
 | Alkatrész | Mire | Hova | Min. | Kérni | Ha nem jön |
 |---|---|---|---|---|---|
 | **ISO1042BDWVR** | izolált CAN transceiver (D33) | modulmag | 3 | 5 | breakout a padekre, izoláció nélkül (D36) |

@@ -103,7 +103,9 @@ SCT-013-030 (v2) és az ULN2803A.
   hely közös anyaga (D13).
 
 ## Nyitott kérdések / teendők
-- [ ] **Sample-kérések most** (`SAMPLE-KERESEK.md`) (határidő 2026-10-22); ha a TI elutasít: LMR36015 és W5500 megvenni, transceiverekhez
+- [x] **TI-rendelés leadva** (2026-10-19) – a beérkezést figyelni; ami nem jön, azt a többi beszerzéssel együtt megrendelni
+- [ ] **Sample-kérések:** TI-hozzáférési kérelem **elküldve** (myTI → Contact support → Sample program, BME-s e-maillel,
+      11 típus × 10 db), válasz 5 munkanapon belül; a többi gyártó még hátra (`SAMPLE-KERESEK.md`) (határidő 2026-10-22); ha a TI elutasít: LMR36015 és W5500 megvenni, transceiverekhez
       tartalék (D36, D60)
 - [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/USB-C/gombok típusa;
       W5500 MDI-hálózat a WIZnet-referencián; MagJack lábkiosztása; RGB LED + 74HCT14 vagy WS2812B-V5)
