@@ -138,7 +138,10 @@ class Sheet:
             return e
         if power:
             el.append(prop('Reference', ref, 0, -2.54, hide=True))
-            el.append(prop('Value', value, 0, 2.54 if r == 0 and lib_id.endswith(('GND', 'GND_BUS')) else -2.54))
+            dy = 2.54 if r == 0 and lib_id.endswith(('GND', 'GND_BUS')) else -2.54
+            if lib_id == 'power:PWR_FLAG' and r == 180:
+                dy = 5.08
+            el.append(prop('Value', value, 0, dy))
         else:
             pp0 = self.pinpoints(pins_of(d, unit), 0, 0, r)
             two_pin = len(pp0) == 2
@@ -280,8 +283,9 @@ class Sheet:
         """PWR_FLAG on a net (with its own net marker below it)"""
         x, y = G(x), G(y)
         self.power_n += 1
-        self._symbol('power:PWR_FLAG', x, y, f'#FLG{self.power_n:03d}', 'PWR_FLAG', power=True)
-        self.attach(net, x, y, 270)
+        up = net in POWER_UP    # felfelé mutató tápszimbólum → a flag lefelé lóg, hogy ne fedjék egymást
+        self._symbol('power:PWR_FLAG', x, y, f'#FLG{self.power_n:03d}', 'PWR_FLAG', r=180 if up else 0, power=True)
+        self.attach(net, x, y, 90 if up else 270)
 
     def subsheet(self, name, file, x, y, w, h, left=(), right=(), page='2'):
         """hierarchical sheet block; left/right: list of (pin_name, net or None) top→bottom; None net = no_connect"""

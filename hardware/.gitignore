@@ -10,3 +10,5 @@ _autosave-*
 out/
 .history/
 gen/kilib/
+# a KiCad MCP munkamappái
+*/output/

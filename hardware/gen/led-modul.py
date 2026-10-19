@@ -14,14 +14,19 @@ OUT = sys.argv[1]
 S = kigen.Sheet('LED-modul – 6 × 10 A low-side PWM (össz. 20 A), modulmag', 'led-modul')
 S.label_pos.update({
     'Driver_FET:UCC27524D': ((-7.62, -12.7), (-7.62, 13.97)),
-    'Amplifier_Current:INA181': ((-2.54, 11.43), (-2.54, 13.97)),
+    'Amplifier_Current:INA181': ((7.62, 6.35), (7.62, 8.89)),
     'Power_Management:LM74700': ((-10.16, 13.97), (-10.16, 16.51)),
     'Regulator_Linear:MC78L12_SO8': ((-7.62, -6.35), (-7.62, -3.81)),
-    'Transistor_FET:QM6006D': ((5.08, -1.27), (5.08, 1.27)),
+    'Transistor_FET:QM6006D': ((5.08, 3.81), (5.08, 6.35)),
     'Transistor_FET:NTMFS016N06CT1G': ((-5.08, -6.35), (-5.08, -3.81)),
     'Device:R_Shunt': ((5.08, -1.27), (5.08, 1.27)),
 })
-S.label_dx.update({'Connector_Generic:Conn_01x03': 5.08, 'Connector_Generic:Conn_01x02': 5.08})
+S.label_dx.update({'Connector_Generic:Conn_01x03': 5.08, 'Connector_Generic:Conn_01x02': 5.08, 'Device:LED': 6.35})
+S.ref_pos.update({'TP202': ((-10.16, -5.08), (-10.16, -2.54))})
+# a snubber-ellenállás és a drain-osztó alsó tagja: felirat balra (jobbra a szomszéd alkatrész áll)
+S.ref_pos.update({f'R{230 + n}': ((-7.62, -1.27), (-7.62, 1.27)) for n in range(1, 7)})
+S.ref_pos.update({f'R{270 + n}': ((-6.35, -1.27), (-6.35, 1.27)) for n in range(1, 7)})
+S.ref_pos.update({f'C{230 + n}': ((-2.54, 10.16), (-2.54, 12.7)) for n in range(1, 7)})   # a GND alá: jobbra a következő csatorna
 
 R0603 = 'Resistor_SMD:R_0603_1608Metric'
 R0805 = 'Resistor_SMD:R_0805_2012Metric'
@@ -199,9 +204,9 @@ for k, x in enumerate(fuses, 1):
         S.label(f'CH{ch}_D', (a[0] - 7.62, a[1]), 180)
 
 # =================== 2. Gate-meghajtók ===================
-yg = 108
-S.text('2. GATE-MEGHAJTÓK – 3 × UCC27524 (12 V): EN közösen a DRV_EN-en (PB12), 1 k lehúzás → bekapcsoláskor minden csatorna KI', 80, yg - 20, 1.5)
-S.text('6 EN-láb belső 200 k felhúzása a 12 V-ra párhuzamosan ~33 k → 1 k-val ~0,35 V (< 0,8 V); az IN-lábakon 120 k belső lehúzás is van', 80, yg - 15.5)
+yg = 124.46
+S.text('2. GATE-MEGHAJTÓK – 3 × UCC27524 (12 V): EN közösen a DRV_EN-en (PB12), 1 k lehúzás → bekapcsoláskor minden csatorna KI', 80, yg - 41.9, 1.5)
+S.text('6 EN-láb belső 200 k felhúzása a 12 V-ra párhuzamosan ~33 k → 1 k-val ~0,35 V (< 0,8 V); az IN-lábakon 120 k belső lehúzás is van', 80, yg - 37.8)
 xe = 85
 S.label('DRV_EN', (xe, yg), 180)
 S.wire((xe, yg), (xe + 5.08, yg))
@@ -232,7 +237,7 @@ for d in range(3):
     S.wire(pd['3'][:2], (pd['3'][0], pd['3'][1] + 2.54))
     down('GND', (pd['3'][0], pd['3'][1] + 2.54))
     v = pd['6'][:2]
-    yv = v[1] - 2.54
+    yv = v[1] - 17.78
     S.wire(v, (v[0], yv), (v[0] + 22, yv))
     up('+12V', (v[0], yv))
     for xc, ref, val, fp in ((v[0] + 12, f'C{210 + 2 * d}', '1µ/25V', C0805), (v[0] + 22, f'C{211 + 2 * d}', '100n', C0603)):
@@ -241,7 +246,7 @@ for d in range(3):
     S.junction((v[0] + 12, yv))
 
 # =================== 3. Csatornák ===================
-yB, yN = 150, 172          # +24V_Bk sor, drain-csomópont
+yB, yN = 158.75, 180.34          # +24V_Bk sor, drain-csomópont
 S.text('3. CSATORNÁK (× 6): FET NTD5C648NL (DPAK; tartalék IRFR1205) · szabadonfutó B360B a blokk +24 V-jára · RC snubber (DNP) ·'
        ' gate-LED + drain-LED · drain → ADC osztó', 15, yB - 12, 1.5)
 for n in range(1, 7):
@@ -295,8 +300,8 @@ for n in range(1, 7):
             props=P(f'CH{n} gate – előlap, fényvezető'))
     S.wire((xg, gd[1] + 10.16), (xg, gd[1] + 12.7))
     # drain-csomópont jobbra: CHn_D címke, snubber, drain-mérés
-    xsn, xr1 = xs + 5.08, xs + 10.16
-    S.rail(yN, [xl, xs, xsn, xr1, xr1 + 2.54])
+    xsn = xr1 = xs + 17.78     # a FET feliratai a FET és a snubber-oszlop között
+    S.rail(yN, [xl, xs, xsn, xr1 + 2.54])
     S.wire((xr1, yN), (xr1, yN - 5.08))
     S.label(f'CH{n}_D', (xr1, yN - 5.08), 90)
     shunt('Device:R', f'R{230 + n}', '10R', (xsn, yN + 2.54), None, R1206, dnp=True, props=P('RC snubber – csak mérés után (D24)'))
@@ -314,10 +319,10 @@ for n in range(1, 7):
     S.junction((dn[0] + 5.08, yN))
     S.label(f'DS{n}', (dn[0] + 7.62, yN), 90)
 S.text('Drain → ADC: 24 V → 2,55 V. KI: ≈ V_RAIL = szalag rajta; ≈ V_RAIL − ~2 V = nincs szalag (a drain-LED-en át); ~0 V = kiolvadt blokk-biztosíték.'
-       ' BE: ≈ V_RAIL × (1 − kitöltés); mindig ~0 V = átütött FET', 15, 215)
+       ' BE: ≈ V_RAIL × (1 − kitöltés); mindig ~0 V = átütött FET', 15, 223)
 
 # =================== 4. Össz-áram, NTC, mérőpontok ===================
-ys = 240
+ys = 248.92
 S.text('4. ÖSSZ-ÁRAM (D47, D53): 1 mΩ sönt a FET-ek közös source-ága (PGND_SH) és a GND között, Kelvin → INA181A2 (×50) → PA7', 15, ys - 13, 1.5)
 S.text('(ADC + COMP2 → TIM1/TIM8 break); a küszöb a DAC1-ről (PA4); 20 A → 1,0 V', 15, ys - 8.5)
 xsh = 40
@@ -335,11 +340,12 @@ pi = S.place('Amplifier_Current:INA181', 'U206', 'INA181A2IDBVR', {'1': None, '2
 S.wire(psh['2'][:2], pi['3'][:2])
 S.wire(psh['3'][:2], pi['4'][:2])
 v6 = pi['6'][:2]
-S.wire(v6, (v6[0], v6[1] - 2.54), (v6[0] + 7.62, v6[1] - 2.54))
-up('+3V3', (v6[0], v6[1] - 2.54))
-shunt('Device:C', 'C240', '100n', (v6[0] + 7.62, v6[1] - 2.54), 'GND', C0603)
+S.wire(v6, (v6[0], v6[1] - 10.16), (v6[0] + 12.7, v6[1] - 10.16))
+up('+3V3', (v6[0], v6[1] - 10.16))
+shunt('Device:C', 'C240', '100n', (v6[0] + 12.7, v6[1] - 10.16), 'GND', C0603)
 o = pi['1'][:2]
-pr3 = series('Device:R', 'R207', '100R', o, R0603)
+S.wire(o, (o[0] + 5.08, o[1]))
+pr3 = series('Device:R', 'R207', '100R', (o[0] + 5.08, o[1]), R0603)
 isn = (pr3[0] + 5.08, o[1])
 S.wire(pr3, (isn[0] + 10.16, o[1]))
 shunt('Device:C', 'C241', '1n', (isn[0], o[1] + 2.54), 'GND', C0603)

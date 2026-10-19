@@ -330,7 +330,8 @@ S.label('V_BUS_P', (253, yp - 5.08), 90)
 pp = S.comp('Power_Protection:NUP2105L', 'U3', 'ESD2CAN24-Q1', 270, yp + 2.54, {'1': 'CAN_L', '2': 'CAN_H', '3': 'GND_BUS'})
 pp = S.place('Jumper:Jumper_2_Open', 'JP1', 'LEZÁRÁS', {'1': 'CAN_H', '2': None}, '1', (292, yp),
              fp='Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical')
-p = series('Device:R', 'R5', '120R', pp['2'][:2], 'Resistor_SMD:R_0805_2012Metric')
+S.wire(pp['2'][:2], (pp['2'][0] + 2.54, pp['2'][1]))
+p = series('Device:R', 'R5', '120R', (pp['2'][0] + 2.54, pp['2'][1]), 'Resistor_SMD:R_0805_2012Metric')
 S.label('CAN_L', p, 0)
 
 # Opcionális buszos táp (D66) – alapból NINCS beültetve / bekötve
