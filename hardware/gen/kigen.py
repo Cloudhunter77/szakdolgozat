@@ -80,6 +80,11 @@ def g(v):
     """snap to 0.01 mm"""
     return round(v * 100) / 100
 
+def G(v):
+    """1,27 mm-es rácsra kerekítés (minden vezetékpont és alkatrész-láb ezen van)"""
+    return g(round(v / 1.27) * 1.27)
+
+
 def snap(v, grid=2.54):
     return g(round(v / grid) * grid)
 
@@ -97,7 +102,9 @@ class Sheet:
         self.power_n = 0
         self.hier = set()
         self.power_lib = {}  # net -> (lib, name)
-        self.label_dx = {}   # lib_id -> x offset of Reference/Value
+        self.label_dx = {'Device:LED': 3.81}   # lib_id -> x offset of Reference/Value
+        self.label_pos = {}  # lib_id -> ((dx, dy) Reference, (dx, dy) Value) – balra igazítva, IC-k fölé/alá
+        self.ref_pos = {}    # ref -> ((dx, dy), (dx, dy)) – egyedi felülírás
 
     def use(self, lib_id, lib=None, name=None, libpath=None):
         if lib_id not in self.libsyms:
@@ -124,7 +131,8 @@ class Sheet:
             eff = [Sym('effects'), [Sym('font'), [Sym('size'), 1.27, 1.27]]]
             if left:
                 eff.append([Sym('justify'), Sym('left')])
-            e = [Sym('property'), k, v, [Sym('at'), g(x + dx), g(y + dy), 0], eff]
+            # a mezők szöge a szimbólumhoz képest értendő → a forgatással ellentétesen, hogy vízszintesen olvasható legyen
+            e = [Sym('property'), k, v, [Sym('at'), g(x + dx), g(y + dy), (r if not power else 0) % 180], eff]
             if hide:
                 e[-1].append([Sym('hide'), Sym('yes')])
             return e
@@ -132,9 +140,22 @@ class Sheet:
             el.append(prop('Reference', ref, 0, -2.54, hide=True))
             el.append(prop('Value', value, 0, 2.54 if r == 0 and lib_id.endswith(('GND', 'GND_BUS')) else -2.54))
         else:
-            ox = self.label_dx.get(lib_id, 2.54)
-            el.append(prop('Reference', ref, ox, -1.27, left=True))
-            el.append(prop('Value', value, ox, 1.27, left=True))
+            pp0 = self.pinpoints(pins_of(d, unit), 0, 0, r)
+            two_pin = len(pp0) == 2
+            horizontal = two_pin and len({round(v[1], 2) for v in pp0.values()}) == 1
+            pos = self.ref_pos.get(ref) or self.label_pos.get(lib_id)
+            if pos:
+                (rx, ry), (vx, vy) = pos
+                el.append(prop('Reference', ref, rx, ry, left=True))
+                el.append(prop('Value', value, vx, vy, left=True))
+            elif horizontal:
+                # vízszintes kétlábú: felirat a vezeték fölé / alá, középre
+                el.append(prop('Reference', ref, 0, -2.54))
+                el.append(prop('Value', value, 0, 2.54))
+            else:
+                ox = self.label_dx.get(lib_id, 2.54)
+                el.append(prop('Reference', ref, ox, -1.27, left=True))
+                el.append(prop('Value', value, ox, 1.27, left=True))
         el.append(prop('Footprint', fp, 0, 0, hide=True))
         el.append(prop('Datasheet', '', 0, 0, hide=True))
         for k, v in (props or {}).items():
@@ -149,19 +170,69 @@ class Sheet:
         self.items.append(el)
         return pins
 
-    def pinpoints(self, pins, x, y, r):
+    def pinpoints(self, pins, x, y, r, mirror=None):
+        """mirror: 'y' = vízszintes tükrözés (a forgatás után), 'x' = függőleges"""
         out = {}
         for num, lst in pins.items():
             px, py, pa = lst[0]
             rx, ry = rot(px, py, r)
-            out[num] = (g(x + rx), g(y - ry), (pa + r) % 360)
+            a = (pa + r) % 360
+            if mirror == 'y':
+                rx, a = -rx, (180 - a) % 360
+            elif mirror == 'x':
+                ry, a = -ry, (-a) % 360
+            out[num] = (g(x + rx), g(y - ry), a)
         return out
 
-    def comp(self, lib_id, ref, value, x, y, nets, fp='', r=0, nc=(), props=None, dnp=False, unit=1):
-        """nets: {pin_number: net_name}. Every pin must appear in nets or nc."""
-        x, y = snap(x), snap(y)
-        pins = self._symbol(lib_id, x, y, ref, value, fp, r, props=props, dnp=dnp, unit=unit)
-        pp = self.pinpoints(pins, x, y, r)
+    def offsets(self, lib_id, r=0, unit=1, mirror=None):
+        """pin end offsets from the symbol origin (schematic coords) for rotation r"""
+        pins = pins_of(self.use(lib_id), unit)
+        return self.pinpoints(pins, 0, 0, r, mirror)
+
+    def place(self, lib_id, ref, value, nets, pin, at, r=0, **kw):
+        """place a symbol so that `pin` ends exactly at `at`; returns pin points"""
+        ox, oy, _ = self.offsets(lib_id, r, kw.get('unit', 1), kw.get('mirror'))[pin]
+        at = (G(at[0]), G(at[1]))
+        return self.comp(lib_id, ref, value, at[0] - ox, at[1] - oy, nets, r=r, **kw)
+
+    def wire(self, *pts):
+        """orthogonal wire through the points (an L corner is inserted where needed)"""
+        pts = [(G(p[0]), G(p[1])) for p in pts]
+        path = [pts[0]]
+        for q in pts[1:]:
+            a = path[-1]
+            if a[0] != q[0] and a[1] != q[1]:
+                path.append((q[0], a[1]))
+            path.append(q)
+        for a, b in zip(path, path[1:]):
+            if a != b:
+                self.items.append([Sym('wire'), [Sym('pts'), [Sym('xy'), a[0], a[1]], [Sym('xy'), b[0], b[1]]],
+                                   [Sym('stroke'), [Sym('width'), 0], [Sym('type'), Sym('default')]], [Sym('uuid'), U()]])
+
+    def junction(self, p):
+        self.items.append([Sym('junction'), [Sym('at'), G(p[0]), G(p[1])], [Sym('diameter'), 0],
+                           [Sym('color'), 0, 0, 0, 0], [Sym('uuid'), U()]])
+
+    def rail(self, y, xs, junctions=True):
+        """horizontal wire at y through the given x taps (segment by segment), junctions on inner taps"""
+        y = G(y)
+        xs = sorted(set(G(x) for x in xs))
+        for a, b in zip(xs, xs[1:]):
+            self.wire((a, y), (b, y))
+        if junctions:
+            for x in xs[1:-1]:
+                self.junction((x, y))
+
+    def label(self, net, p, d):
+        """net marker (label / hier label / power symbol) at point p, pointing outward in direction d"""
+        self.attach(net, G(p[0]), G(p[1]), d)
+
+    def comp(self, lib_id, ref, value, x, y, nets, fp='', r=0, nc=(), props=None, dnp=False, unit=1, mirror=None):
+        """nets: {pin_number: net_name or None (wired by hand)}. Every pin must appear in nets or nc.
+        Returns {pin: (x, y, outward_angle)}."""
+        x, y = snap(x, 1.27), snap(y, 1.27)
+        pins = self._symbol(lib_id, x, y, ref, value, fp, r, props=props, dnp=dnp, unit=unit, mirror=mirror)
+        pp = self.pinpoints(pins, x, y, r, mirror)
         missing = set(pp) - set(nets) - set(nc)
         extra = set(nets) - set(pp)
         if missing or extra:
@@ -169,6 +240,8 @@ class Sheet:
         done = set()
         for num, net in nets.items():
             px, py, pa = pp[num]
+            if net is None:
+                continue
             if (px, py) in done:
                 continue  # stacked pins
             done.add((px, py))
@@ -176,6 +249,7 @@ class Sheet:
         for num in nc:
             px, py, pa = pp[num]
             self.items.append([Sym('no_connect'), [Sym('at'), px, py], [Sym('uuid'), U()]])
+        return {n: (px, py, (pa + 180) % 360) for n, (px, py, pa) in pp.items()}
 
     def attach(self, net, x, y, d):
         """put a net marker at (x,y), pointing outward in direction d (deg, ccw, 0 = right)"""
@@ -204,7 +278,7 @@ class Sheet:
 
     def flag(self, net, x, y):
         """PWR_FLAG on a net (with its own net marker below it)"""
-        x, y = snap(x), snap(y)
+        x, y = G(x), G(y)
         self.power_n += 1
         self._symbol('power:PWR_FLAG', x, y, f'#FLG{self.power_n:03d}', 'PWR_FLAG', power=True)
         self.attach(net, x, y, 270)

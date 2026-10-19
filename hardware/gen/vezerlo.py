@@ -1,4 +1,10 @@
-"""Vezérlő – first draft from docs/kontextus/VEZERLO-SPEC.md."""
+"""Vezérlő – a VEZERLO-SPEC.md szerint, elrendezett (vezetékes) változat, A2.
+
+Felső sáv: táp (24 V-os bemenet → P78E05 5 V; VIN_BUCK → LMR36015 3,3 V) és a V_BUS-kapcsoló (TPS2553).
+Középső sáv: ESP32-C6 (EN, strapping- és felhúzó-ellenállások) és a W5500 + MagJack (MDI-lezárás, LED-ek, hidegítés).
+Alsó sáv: USB-C, CAN + busz, kezelőszervek / LED-ek / RGB / debug.
+Blokkon belül vezeték, blokkok között és az IC-lábakon címke.
+"""
 import sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 import kigen
@@ -7,238 +13,629 @@ kigen.POWER_DOWN = {'GND'}
 
 OUT = sys.argv[1]
 S = kigen.Sheet('Vezérlő – ESP32-C6-WROOM-1 + W5500 + CAN + V_BUS', 'vezerlo', paper='A2')
-ML = '/home/balazs/dev/szakdolgozat/hardware/lib/modularis.kicad_sym'
+ML = os.path.join(os.path.dirname(__file__), '..', 'lib', 'modularis.kicad_sym')
 for n in ('LMR36015BRNXR', 'TPS2553DBV', 'ESP32-C6-WROOM-1'):
     S.use(f'modularis:{n}', lib='modularis', name=n, libpath=ML)
-S.label_dx.update({'modularis:ESP32-C6-WROOM-1': 22.86, 'Interface_Ethernet:W5500': 22.86,
-                   'modularis:LMR36015BRNXR': 12.7, 'modularis:TPS2553DBV': 12.7,
-                   'Converter_DCDC:R-78E5.0-1.0': 10.16, 'Interface_CAN_LIN:MCP2562-E-SN': 12.7,
-                   'Connector:RJ45_Hanrun_HR911105A_Horizontal': 25.4,
-                   'Connector:USB_C_Receptacle_USB2.0_16P': 12.7, 'Power_Protection:USBLC6-2SC6': 10.16,
-                   'Connector_Generic:Conn_01x04': 5.08, 'Connector_Generic:Conn_01x06': 5.08,
-                   'Connector_Generic:Conn_01x02': 5.08, 'Device:Crystal_GND24': 5.08,
-                   'Power_Protection:NUP2105L': 5.08, 'LED:WS2812B': 7.62, '74xx:74HC14': 7.62})
+S.label_pos.update({
+    'modularis:ESP32-C6-WROOM-1': ((-25.4, -38.1), (-25.4, -35.56)),
+    'Interface_Ethernet:W5500': ((-12.7, -35.56), (5.08, -35.56)),
+    'modularis:LMR36015BRNXR': ((-7.62, -16.51), (-7.62, -13.97)),
+    'modularis:TPS2553DBV': ((-7.62, -10.16), (-7.62, -7.62)),
+    'Converter_DCDC:R-78E5.0-1.0': ((-7.62, -8.89), (-7.62, -6.35)),
+    'Interface_CAN_LIN:MCP2562-E-SN': ((5.08, -13.97), (5.08, -11.43)),
+    'Connector:RJ45_Hanrun_HR911105A_Horizontal': ((-10.16, -15.24), (-10.16, -12.7)),
+    'Connector:USB_C_Receptacle_USB2.0_16P': ((-10.16, -25.4), (-10.16, -22.86)),
+    'Power_Protection:USBLC6-2SC6': ((5.08, -8.89), (5.08, -6.35)),
+    'LED:WS2812B': ((7.62, -8.89), (7.62, -6.35)),
+    'Jumper:SolderJumper_3_Bridged12': ((3.81, -3.81), (3.81, -1.27)),
+})
+S.label_dx.update({'Connector_Generic:Conn_01x04': 5.08, 'Connector_Generic:Conn_01x06': 5.08,
+                   'Connector_Generic:Conn_01x02': 5.08, 'Device:Crystal_GND24': 5.08, 'Power_Protection:NUP2105L': 5.08,
+                   '74xx:74HC14': 5.08})
 R0603, C0603 = 'Resistor_SMD:R_0603_1608Metric', 'Capacitor_SMD:C_0603_1608Metric'
+C0805, C1206, C1210 = 'Capacitor_SMD:C_0805_2012Metric', 'Capacitor_SMD:C_1206_3216Metric', 'Capacitor_SMD:C_1210_3225Metric'
+U9FP = 'Package_SO:SOIC-14_3.9x8.7mm_P1.27mm'
+SJ3 = 'Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm'
+TPFP = 'TestPoint:TestPoint_Pad_D1.5mm'
 
-def N(note, k):
-    if note:
-        k.setdefault('props', {})['Megjegyzés'] = note
-    return k
 
-def R(ref, val, x, y, a, b, fp=R0603, note=None, **k):
-    S.comp('Device:R', ref, val, x, y, {'1': a, '2': b}, fp=fp, **N(note, k))
+def P(n):
+    return {'Megjegyzés': n} if n else None
 
-def C(ref, val, x, y, a, b, fp=C0603, note=None, **k):
-    S.comp('Device:C', ref, val, x, y, {'1': a, '2': b}, fp=fp, **N(note, k))
 
-def D(ref, val, x, y, a, k_, fp, sym='Device:D_Schottky', r=0, note=None):
-    S.comp(sym, ref, val, x, y, {'2': a, '1': k_}, fp=fp, r=r, **N(note, {}))
+def up(net, p):
+    S.label(net, p, 90)
 
-def TP(ref, net, x, y):
-    S.comp('Connector:TestPoint', ref, net, x, y, {'1': net}, fp='TestPoint:TestPoint_Pad_D1.5mm')
 
-# ======================= 2.1 bemenet, USB-ág =======================
-S.text('2.1 BEMENET: +24V_IN → F1 → D1 → +24V_P;  USB csak a 3,3 V-os buckot táplálja (D3) – a V_BUS USB-ről hardveresen KI (D61)', 20, 25, 2)
-y = 45
-S.comp('Connector_Generic:Conn_01x02', 'J1', '24V IN', 20, y, {'1': '+24V_IN', '2': 'GND'},
-       fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-3.5-H_1x02_P3.50mm_Horizontal',
-       props={'Megjegyzés': 'push-in sorkapocs – a típus a DIN-ház vállához (D50)'})
-S.comp('Device:Fuse', 'F1', '1A', 40, y, {'1': '+24V_IN', '2': '+24V_F1'}, fp='Fuse:Fuse_1206_3216Metric',
-       props={'Megjegyzés': '≥ 32 V, gyors'})
-D('D1', 'SS16', 55, y, '+24V_F1', '+24V_P', 'Diode_SMD:D_SMA')
-D('D2', 'SMBJ28A', 70, y, 'GND', '+24V_P', 'Diode_SMD:D_SMB', sym='Device:D_Zener', r=90)
-R('R1', '150k', 85, y, '+24V_P', 'VIN_SENSE')
-R('R2', '10k', 97, y, 'VIN_SENSE', 'GND')
-C('C3', '100n', 109, y, 'VIN_SENSE', 'GND')
-D('D8', 'SS16', 125, y, '+24V_P', 'VIN_BUCK', 'Diode_SMD:D_SMA', note='az USB ne táplálja vissza a 24 V-os oldalt')
-D('D3', 'B360', 145, y, 'VUSB', 'VIN_BUCK', 'Diode_SMD:D_SMC', note='60 V-os kell (túlfeszültségnél VIN_BUCK ~45 V, VUSB ~0 V)')
-R('R7', '10R', 165, y, '+24V_P', '+24V_F', fp='Resistor_SMD:R_2512_6332Metric', note='impulzusbíró, 2512; 0 Ω-mal áthidalható (D57)')
-D('D7', 'SMBJ28A', 180, y, 'GND', '+24V_F', 'Diode_SMD:D_SMB', sym='Device:D_Zener', r=90)
-S.comp('Device:C_Polarized', 'C1', '47µ/50V', 195, y, {'1': '+24V_F', '2': 'GND'}, fp='Capacitor_SMD:CP_Elec_6.3x7.7',
-       props={'Megjegyzés': 'elektrolit, low-ESR, 105 °C – KÖTELEZŐ (D57)'})
-C('C2', '10µ/50V', 210, y, '+24V_F', 'GND', fp='Capacitor_SMD:C_1210_3225Metric')
-# 2.3 P78E05
-S.comp('Converter_DCDC:R-78E5.0-1.0', 'U2', 'P78E05-1000', 235, y, {'1': '+24V_F', '2': 'GND', '3': '+5V'},
-       fp='Converter_DCDC:Converter_DCDC_RECOM_R-78E-0.5_THT')
-C('C13', '22µ/10V', 262, y, '+5V', 'GND', fp='Capacitor_SMD:C_1206_3216Metric')
+def down(net, p):
+    S.label(net, p, 270)
 
-# ======================= 2.2 LMR36015 → 3V3 =======================
-S.text('2.2 3,3 V – LMR36015BRNXR (1 MHz): FOOTPRINT a TI Ultra Librarian-ből!', 20, 75, 2)
-y = 100
-S.comp('modularis:LMR36015BRNXR', 'U1', 'LMR36015BRNXR', 70, y,
-       {'2': 'VIN_BUCK', '10': 'VIN_BUCK', '9': 'VIN_BUCK', '5': 'BUCK_VCC', '1': 'GND', '11': 'GND', '6': 'GND',
-        '4': 'BUCK_BOOT', '12': 'BUCK_SW', '3': 'BUCK_SW', '7': 'BUCK_FB', '8': 'GND'})
-C('C4', '4µ7/50V', 25, y, 'VIN_BUCK', 'GND', fp='Capacitor_SMD:C_1210_3225Metric')
-C('C5', '220n/50V', 35, y, 'VIN_BUCK', 'GND', note='a 2-es VIN-lábnál')
-C('C6', '220n/50V', 45, y, 'VIN_BUCK', 'GND', note='a 10-es VIN-lábnál')
-C('C7', '100n', 105, y - 10, 'BUCK_BOOT', 'BUCK_SW')
-C('C8', '1µ/16V', 105, y + 10, 'BUCK_VCC', 'GND', note='VCC–AGND, más terhelés nem mehet rá')
-S.comp('Device:L', 'L1', '6,8µH', 120, y, {'1': 'BUCK_SW', '2': '+3V3'}, fp='Inductor_SMD:L_Coilcraft_XAL5030-XXX',
-       props={'Megjegyzés': 'árnyékolt, Isat ≥ 2,1 A (ideálisan ≥ 2,8 A), ~5 × 5 mm'})
-R('R3', '100k 1%', 135, y, '+3V3', 'BUCK_FB')
-C('C9', '20p', 145, y, '+3V3', 'BUCK_FB', note='CFF, R3-mal párhuzamosan')
-R('R4', '43,2k 1%', 155, y, 'BUCK_FB', 'GND', note='→ 3,31 V (VFB = 1,0 V)')
-for i, x in enumerate((170, 182, 194)):
-    C(f'C{10 + i}', '22µ/10V', x, y, '+3V3', 'GND', fp='Capacitor_SMD:C_1206_3216Metric')
 
-# ======================= 2.4 TPS2553 → V_BUS =======================
-S.text('2.4 V_BUS – TPS2553: EN osztó a +24V_P-ről (csak 24 V mellett BE), GPIO20 BAT54-en át letiltja', 230, 75, 2)
-y = 100
-S.comp('modularis:TPS2553DBV', 'U3', 'TPS2553DBVR', 270, y,
-       {'1': '+5V', '3': 'VBUS_EN_IN', '5': 'VBUS_ILIM', '2': 'GND', '6': 'V_BUS', '4': 'VBUS_FAULT'})
-C('C22', '1µ', 235, y, '+5V', 'GND')
-C('C23', '100n', 245, y, '+5V', 'GND')
-R('R10', '470k', 235, y + 25, '+24V_P', 'VBUS_EN_IN')
-R('R11', '47k', 247, y + 25, 'VBUS_EN_IN', 'GND')
-D('D9', 'BAT54WS', 260, y + 25, 'VBUS_EN_IN', 'VBUS_EN', 'Diode_SMD:D_SOD-323', note='anód az EN-en, katód a GPIO20-on')
-R('R12', '61,9k 1%', 285, y + 25, 'VBUS_ILIM', 'GND', note='→ 382/425/476 mA')
-R('R34', '10k', 300, y + 25, '+3V3', 'VBUS_FAULT', note='FAULT felhúzás (nyitott drain)')
-C('C24', '100n', 300, y, 'V_BUS', 'GND')
-C('C25', '10µ/16V', 312, y, 'V_BUS', 'GND', fp='Capacitor_SMD:C_0805_2012Metric')
-D('D4', 'SMF5.0A', 325, y, 'GND', 'V_BUS', 'Diode_SMD:D_SOD-123F', sym='Device:D_Zener', r=90)
-R('R13', '100k', 340, y, 'V_BUS', 'VBUS_SENSE')
-R('R14', '22k', 352, y, 'VBUS_SENSE', 'GND')
-C('C14', '100n', 364, y, 'VBUS_SENSE', 'GND')
+def shunt(lib, ref, val, top, bottom_net, fp, r=0, top_pin='1', bot_pin='2', **k):
+    """függőleges kétlábú: `top_pin` a `top` pontban, `bot_pin` lent a `bottom_net`-re (None = kézzel kötve)"""
+    return S.place(lib, ref, val, {top_pin: None, bot_pin: bottom_net}, top_pin, top, r=r, fp=fp, **k)
 
-# ======================= 3. ESP32-C6-WROOM-1 =======================
-S.text('3. ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U – az EPAD helyét ellenőrizni!)', 20, 145, 2)
-x0, y0 = 110, 200
-S.comp('modularis:ESP32-C6-WROOM-1', 'U4', 'ESP32-C6-WROOM-1-N16', x0, y0,
-       {'1': 'GND', '28': 'GND', '29': 'GND', '2': '+3V3', '3': 'CHIP_EN', '4': 'GPIO4', '5': 'GPIO5',
-        '6': 'SPI_SCLK_C6', '7': 'SPI_MOSI', '8': 'VIN_SENSE', '9': 'VBUS_SENSE', '10': 'RGB_DIN_3V3',
-        '11': 'W5500_CS', '12': 'W5500_RST', '13': 'USB_DM', '14': 'USB_DP', '15': 'BOOT', '16': 'CAN_TX',
-        '17': 'CAN_RX', '18': 'VBUS_EN', '19': 'VBUS_FAULT', '20': 'GPIO22', '21': 'GPIO23', '23': 'GPIO15',
-        '24': 'U0RXD', '25': 'U0TXD_C6', '26': 'W5500_INT', '27': 'SPI_MISO'}, nc=['22'])
-C('C26', '22µ', 30, 170, '+3V3', 'GND', fp='Capacitor_SMD:C_0805_2012Metric', note='a 3V3-lábnál')
-C('C27', '100n', 40, 170, '+3V3', 'GND', note='a 3V3-lábnál')
-R('R15', '10k', 30, 195, '+3V3', 'CHIP_EN')
-C('C15', '1µ', 40, 195, 'CHIP_EN', 'GND', note='RC-késleltetés az EN-en')
-R('R16', '10k', 50, 195, '+3V3', 'BOOT')
-R('R17', '10k', 60, 195, '+3V3', 'RGB_DIN_3V3', note='strapping: letöltéshez GPIO8 = 1')
-R('R18', '10k', 70, 195, '+3V3', 'GPIO15')
-R('R35', '10k', 30, 220, '+3V3', 'CAN_TX', note='reset alatt recesszív busz')
-R('R36', '10k', 40, 220, '+3V3', 'W5500_CS')
-R('R37', '10k', 50, 220, '+3V3', 'W5500_RST')
-R('R38', '10k', 60, 220, '+3V3', 'W5500_INT')
-R('R19', '0R', 160, 160, 'SPI_SCLK_C6', 'SPI_SCLK', note='33 Ω-hoz footprint')
-C('C28', 'DNP', 172, 160, 'SPI_SCLK', 'GND', dnp=True, note='kondenzátor-footprint, nem beültetve')
-R('R39', '499R', 160, 245, 'U0TXD_C6', 'U0TXD', note='Espressif-ajánlás')
-for i, n in enumerate(('GPIO4', 'GPIO5', 'GPIO22', 'GPIO23')):
-    TP(f'TP{i + 1}', n, 30 + i * 10, 245)
 
-# ======================= 4. W5500 =======================
-S.text('4. ETHERNET – W5500 + HR911105A MagJack (opcionálisan beültetve; MDI a WIZnet use_mag referencia szerint)', 230, 145, 2)
-x0, y0 = 300, 210
-w = {'1': 'ETH_TXN', '2': 'ETH_TXP', '5': 'ETH_RXN', '6': 'ETH_RXP', '10': 'W_EXRES', '20': 'W_TOCAP',
-     '22': 'W_1V2O', '23': 'GND', '25': 'ETH_LED_LINK', '27': 'ETH_LED_ACT', '28': '+3V3', '29': 'GND',
-     '30': 'XTAL25_I', '31': 'XTAL25_O', '32': 'W5500_CS', '33': 'SPI_SCLK', '34': 'SPI_MISO', '35': 'SPI_MOSI',
-     '36': 'W5500_INT', '37': 'W5500_RST'}
-for p in ('3', '9', '14', '16', '19', '48'):
-    w[p] = 'GND'
-for p in ('4', '8', '11', '15', '17', '21'):
-    w[p] = '+3V3A'
-S.comp('Interface_Ethernet:W5500', 'U5', 'W5500', x0, y0, w,
-       nc=['7', '12', '13', '46', '47', '18', '24', '26', '38', '39', '40', '41', '42', '43', '44', '45'])
-S.text('VBG (18) NYITVA · RSVD 38–42 NYITVA · RSVD 23 GND · PMODE nyitva (auto-negotiation)', 260, 255)
-R('R40', '12,4k 1%', 250, 270, 'W_EXRES', 'GND')
-C('C29', '4µ7', 262, 270, 'W_TOCAP', 'GND', fp='Capacitor_SMD:C_0805_2012Metric')
-C('C30', '10n', 274, 270, 'W_1V2O', 'GND')
-S.comp('Device:FerriteBead_Small', 'FB1', '120R@100MHz', 290, 270, {'1': '+3V3', '2': '+3V3A'},
-       fp='Inductor_SMD:L_0603_1608Metric', props={'Megjegyzés': 'HH-1M1608-121JT, ≥ 300 mA'})
-for i in range(6):
-    C(f'C{31 + i}', '100n', 305 + i * 10, 270, '+3V3A', 'GND', note='AVDD-lábanként')
-C('C37', '100n', 365, 270, '+3V3', 'GND', note='VDD (28)')
-C('C38', '10µ', 375, 270, '+3V3', 'GND', fp='Capacitor_SMD:C_0805_2012Metric')
-C('C39', '10µ', 385, 270, '+3V3A', 'GND', fp='Capacitor_SMD:C_0805_2012Metric')
-S.comp('Device:Crystal_GND24', 'Y1', '25MHz ±30ppm', 250, 175, {'1': 'XTAL25_I', '3': 'XTAL25_O', '2': 'GND', '4': 'GND'},
-       fp='Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm')
-C('C40', '18p', 240, 190, 'XTAL25_I', 'GND', note='C = 2 × (CL − 3…5 pF) a megvett kvarcból')
-C('C41', '18p', 262, 190, 'XTAL25_O', 'GND')
-# MDI
-R('R20', '49,9R 1%', 360, 160, 'ETH_TXP', '+3V3A')
-R('R21', '49,9R 1%', 372, 160, 'ETH_TXN', '+3V3A')
-C('C16', '10n', 384, 160, '+3V3A', 'GND', note='a TXB csomópontnál')
-R('R22', '49,9R 1%', 360, 185, 'ETH_RXP', 'ETH_RXB')
-R('R23', '49,9R 1%', 372, 185, 'ETH_RXN', 'ETH_RXB')
-C('C17', '6,8n', 384, 185, 'ETH_RXB', 'GND', note='a RXB csak kondenzátoron át a GND-re, NEM a 3,3 V-ra')
-R('R24', '10R 1%', 400, 160, '+3V3A', 'ETH_TCT')
-C('C18', '22n', 412, 160, 'ETH_TCT', 'GND')
-C('C19', '6,8n', 412, 185, 'ETH_RCT', 'GND')
-S.comp('Connector:RJ45_Hanrun_HR911105A_Horizontal', 'J6', 'HR911105A', 450, 210,
-       {'1': 'ETH_TXP', '2': 'ETH_TXN', '3': 'ETH_RXP', '6': 'ETH_RXN', '4': 'ETH_TCT', '5': 'ETH_RCT',
-        '8': 'GND', '9': 'ETH_LED_G_A', '10': 'ETH_LED_LINK', '12': 'ETH_LED_Y_A', '11': 'ETH_LED_ACT',
-        'SH': 'ETH_SHIELD'}, nc=['7'],
-       props={'Megjegyzés': 'a lábkiosztást a megvett darab adatlapjából ellenőrizni (TCT és RCT külön lábon)'})
-R('R41', '330R', 430, 245, '+3V3', 'ETH_LED_G_A', note='zöld = link')
-R('R42', '330R', 442, 245, '+3V3', 'ETH_LED_Y_A', note='sárga = aktivitás')
-C('C20', '1n/2kV', 470, 245, 'ETH_SHIELD', 'GND', fp='Capacitor_SMD:C_1206_3216Metric')
+def hang(x, y, ref, val, bottom_net='GND', fp=C0603, lib='Device:C', **k):
+    """sínről (x, y) lelógó kétlábú alkatrész, 2,54 mm-es vezetékkel"""
+    S.wire((x, y), (x, y + 2.54))
+    return shunt(lib, ref, val, (x, y + 2.54), bottom_net, fp, **k)
 
-# ======================= 5. CAN, 6. busz =======================
-S.text('5–6. CAN – TCAN1044AVDRQ1 (MCP2562 szimbólum, lábról lábra azonos) · JP2 alap 5V: 1044/2562 · 3V3: 330/230', 230, 300, 2)
-y = 340
-S.comp('Interface_CAN_LIN:MCP2562-E-SN', 'U6', 'TCAN1044AVDRQ1', 280, y,
-       {'1': 'CAN_TX', '2': 'GND', '3': 'CAN_VCC', '4': 'CAN_RX', '5': 'CAN_VIO', '6': 'CAN_L', '7': 'CAN_H', '8': 'CAN_STB'},
-       fp='Package_SO:SOIC-8_3.9x4.9mm_P1.27mm')
-S.comp('Jumper:SolderJumper_3_Bridged12', 'JP2', 'VCC: 1-2=5V / 2-3=3V3', 240, 325, {'1': '+5V', '2': 'CAN_VCC', '3': '+3V3'},
-       fp='Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm',
-       props={'Megjegyzés': 'SOHA ne legyen mindkét oldal összeforrasztva!'})
-S.comp('Jumper:SolderJumper_3_Bridged12', 'JP3', 'VIO: 1-2=3V3 / 2-3=GND', 240, 355, {'1': '+3V3', '2': 'CAN_VIO', '3': 'GND'},
-       fp='Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm', props={'Megjegyzés': 'SN65HVD230-nál nyitva'})
-C('C42', '100n', 255, 375, 'CAN_VCC', 'GND')
-C('C43', '1µ', 265, 375, 'CAN_VCC', 'GND')
-C('C44', '100n', 275, 375, 'CAN_VIO', 'GND')
-R('R43', '0R', 300, 375, 'CAN_STB', 'GND', note='STB → normál mód (nyitva készenlét!)')
-S.comp('Power_Protection:NUP2105L', 'U7', 'ESD2CAN24-Q1', 330, 375, {'1': 'CAN_L', '2': 'CAN_H', '3': 'GND'})
-S.comp('Jumper:Jumper_2_Open', 'JP1', 'LEZÁRÁS', 350, 375, {'1': 'CAN_H', '2': 'CAN_TERM'},
-       fp='Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical')
-R('R25', '120R', 365, 375, 'CAN_TERM', 'CAN_L', fp='Resistor_SMD:R_0805_2012Metric')
-bus = {'1': 'V_BUS', '2': 'GND', '3': 'CAN_L', '4': 'CAN_H'}
-S.comp('Connector_Generic:Conn_01x04', 'J2', 'BUS (XH)', 400, 335, bus, fp='Connector_JST:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical')
-S.comp('Connector_Generic:Conn_01x04', 'J3', 'BUS (XH)', 400, 365, bus, fp='Connector_JST:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical')
 
-# ======================= 7. USB-C =======================
-S.text('7. USB-C – csak eszköz, csak táp-fogyasztó (CC1/CC2 külön 5,1 kΩ)', 20, 300, 2)
-S.comp('Connector:USB_C_Receptacle_USB2.0_16P', 'J4', 'USB-C 16P', 45, 350,
-       {'A1': 'GND', 'A12': 'GND', 'B1': 'GND', 'B12': 'GND', 'A4': 'VUSB', 'A9': 'VUSB', 'B4': 'VUSB', 'B9': 'VUSB',
-        'A5': 'USB_CC1', 'B5': 'USB_CC2', 'A6': 'USB_DP_CONN', 'B6': 'USB_DP_CONN', 'A7': 'USB_DM_CONN',
-        'B7': 'USB_DM_CONN', 'SH': 'GND'}, nc=['A8', 'B8'], fp='Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12')
-R('R28', '5,1k', 85, 330, 'USB_CC1', 'GND')
-R('R29', '5,1k', 95, 330, 'USB_CC2', 'GND')
-R('R30', '2,2k', 105, 330, 'VUSB', 'GND', note='levezető: a D3 szivárgása ne húzza fel a kihúzott aljzat VBUS-át')
-C('C21', '1µ', 115, 330, 'VUSB', 'GND')
-S.comp('Power_Protection:USBLC6-2SC6', 'U8', 'USBLC6-2SC6', 100, 370,
-       {'1': 'USB_DP_CONN', '6': 'USB_DP_CONN', '3': 'USB_DM_CONN', '4': 'USB_DM_CONN', '5': 'VUSB', '2': 'GND'})
-R('R26', '22R', 135, 360, 'USB_DP_CONN', 'USB_DP', note='a C6 közelében')
-R('R27', '22R', 145, 360, 'USB_DM_CONN', 'USB_DM', note='a C6 közelében')
+def series(lib, ref, val, left, fp, r=90, lpin='1', rpin='2', **k):
+    """vízszintes kétlábú, `lpin` a `left` pontban; visszaadja a jobb láb pontját"""
+    pp = S.place(lib, ref, val, {lpin: None, rpin: None}, lpin, left, r=r, fp=fp, **k)
+    return pp[rpin][:2]
 
-# ======================= 8. kezelőszervek, LED-ek, debug =======================
-S.text('8. GOMBOK, LED-EK, DEBUG – U9 és R32 egyszerre NE legyen beültetve', 430, 300, 2)
-S.comp('Switch:SW_Push', 'SW1', 'RESET', 440, 320, {'1': 'CHIP_EN', '2': 'GND'}, fp='Button_Switch_SMD:SW_SPST_TL3342')
-S.comp('Switch:SW_Push', 'SW2', 'BOOT', 460, 320, {'1': 'BOOT', '2': 'GND'}, fp='Button_Switch_SMD:SW_SPST_TL3342')
-R('R44', '2,2k', 480, 320, '+3V3', 'LED_PWR')
-S.comp('Device:LED', 'D5', 'zöld', 492, 320, {'2': 'LED_PWR', '1': 'GND'}, fp='LED_SMD:LED_0603_1608Metric', r=90)
-S.comp('74xx:74HC14', 'U9', '74HCT14D', 445, 350, {'1': 'RGB_DIN_3V3', '2': 'RGB_HCT_MID'}, unit=1,
-       fp='Package_SO:SOIC-14_3.9x8.7mm_P1.27mm')
-S.comp('74xx:74HC14', 'U9', '74HCT14D', 470, 350, {'3': 'RGB_HCT_MID', '4': 'RGB_DIN_5V'}, unit=2,
-       fp='Package_SO:SOIC-14_3.9x8.7mm_P1.27mm')
+
+def stub(p, net, d, length=5.08):
+    dx, dy = {0: (length, 0), 180: (-length, 0), 90: (0, -length), 270: (0, length)}[d]
+    q = (p[0] + dx, p[1] + dy)
+    S.wire(p, q)
+    S.label(net, q, d)
+    return q
+
+
+def divider(x, y, rt, rtv, rb, rbv, cref, net):
+    """(x, y)-ból lefelé: rt – csomópont – rb → GND, mellette C → GND, a csomópontról címke jobbra"""
+    S.wire((x, y), (x, y + 2.54))
+    shunt('Device:R', rt, rtv, (x, y + 2.54), None, R0603)
+    n = (x, y + 12.7)
+    S.wire((x, y + 10.16), n)
+    shunt('Device:R', rb, rbv, (x, n[1] + 2.54), 'GND', R0603)
+    S.wire(n, (x, n[1] + 2.54))
+    S.rail(n[1], [x, x + 6.35, x + 11.43])
+    shunt('Device:C', cref, '100n', (x + 6.35, n[1] + 2.54), 'GND', C0603)
+    S.wire((x + 6.35, n[1]), (x + 6.35, n[1] + 2.54))
+    S.label(net, (x + 11.43, n[1]), 0)
+
+
+# =====================================================================================================
+# 1. TÁP
+# =====================================================================================================
+S.text('1. TÁP: +24V_IN → F1 → D1 → +24V_P → D8 → VIN_BUCK (U1 LMR36015 → 3,3 V); +24V_P → R7 → +24V_F → U2 P78E05 → +5V', 20, 22, 2)
+S.text('USB csak a 3,3 V-os buckot táplálja (D3) – a V_BUS USB-ről hardveresen KI (D61); D57: a C1 elkó kötelező, a 24 V-os tápot ≤ 26 V-ra', 20, 27, 1.4)
+Y = 45.72
+pj = S.comp('Connector_Generic:Conn_01x02', 'J1', '24V IN', 27.94, 55.88, {'1': None, '2': None},
+            fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-3.5-H_1x02_P3.50mm_Horizontal',
+            props=P('push-in sorkapocs – a típus a DIN-ház vállához (D50)'))
+a1, a2 = pj['1'][:2], pj['2'][:2]
+x0 = a1[0] - 5.08
+S.wire(a1, (x0, a1[1]), (x0, Y))
+S.wire(a2, (a2[0] - 2.54, a2[1]), (a2[0] - 2.54, a2[1] + 2.54))
+down('GND', (a2[0] - 2.54, a2[1] + 2.54))
+S.rail(Y, [x0, x0 + 5.08, x0 + 10.16])
+S.wire((x0 + 5.08, Y), (x0 + 5.08, Y - 5.08))
+S.label('+24V_IN', (x0 + 5.08, Y - 5.08), 90)
+p = series('Device:Fuse', 'F1', '1A', (x0 + 10.16, Y), 'Fuse:Fuse_1206_3216Metric', props=P('≥ 32 V, gyors'))
+S.wire(p, (p[0] + 5.08, Y))
+p = series('Device:D_Schottky', 'D1', 'SS16', (p[0] + 5.08, Y), 'Diode_SMD:D_SMA', r=180, lpin='2', rpin='1')
+# +24V_P sín
+t = [p[0] + 5.08, p[0] + 15.24, p[0] + 27.94, p[0] + 45.72, p[0] + 55.88]
+S.rail(Y, [p[0]] + t)
+S.wire((t[0], Y), (t[0], Y - 5.08))
+S.label('+24V_P', (t[0], Y - 5.08), 90)
+hang(t[1], Y, 'D2', 'SMBJ28A', lib='Device:D_Zener', fp='Diode_SMD:D_SMB', r=270)
+divider(t[2], Y, 'R1', '150k', 'R2', '10k', 'C3', 'VIN_SENSE')
+S.wire((t[3], Y), (t[3], Y + 2.54))
+S.place('Device:D_Schottky', 'D8', 'SS16', {'1': None, '2': None}, '2', (t[3], Y + 2.54), r=90, fp='Diode_SMD:D_SMA',
+        props=P('az USB ne táplálja vissza a 24 V-os oldalt'))
+stub((t[3], Y + 10.16), 'VIN_BUCK', 270, 5.08)
+p = series('Device:R', 'R7', '10R', (t[4], Y), 'Resistor_SMD:R_2512_6332Metric', props=P('impulzusbíró, 2512; 0 Ω-mal áthidalható (D57)'))
+f = [p[0] + 5.08, p[0] + 15.24, p[0] + 25.4, p[0] + 35.56, p[0] + 45.72]
+S.rail(Y, [p[0]] + f)
+S.wire((f[0], Y), (f[0], Y - 5.08))
+S.label('+24V_F', (f[0], Y - 5.08), 90)
+hang(f[1], Y, 'D7', 'SMBJ28A', lib='Device:D_Zener', fp='Diode_SMD:D_SMB', r=270)
+hang(f[2], Y, 'C1', '47µ/50V', lib='Device:C_Polarized', fp='Capacitor_SMD:CP_Elec_6.3x7.7',
+     props=P('elektrolit, low-ESR, 105 °C – KÖTELEZŐ (D57)'))
+hang(f[3], Y, 'C2', '10µ/50V', fp=C1210)
+pu2 = S.place('Converter_DCDC:R-78E5.0-1.0', 'U2', 'P78E05-1000', {'1': None, '2': 'GND', '3': None}, '1', (f[4], Y),
+              fp='Converter_DCDC:Converter_DCDC_RECOM_R-78E-0.5_THT')
+o = pu2['3'][:2]
+S.rail(Y, [o[0], o[0] + 7.62, o[0] + 15.24])
+hang(o[0] + 7.62, Y, 'C13', '22µ/10V', fp=C1206)
+S.wire((o[0] + 15.24, Y), (o[0] + 15.24, Y - 5.08))
+up('+5V', (o[0] + 15.24, Y - 5.08))
+
+# --- LMR36015: VIN_BUCK → 3,3 V ---
+S.text('3,3 V – U1 LMR36015BRNXR (1 MHz, L1 6,8 µH): a FOOTPRINT a TI Ultra Librarian-ből!', 20, 86, 1.6)
+UX, UY = 101.6, 119.38
+pl = S.comp('modularis:LMR36015BRNXR', 'U1', 'LMR36015BRNXR', UX, UY, {str(i): None for i in range(1, 13)})
+vin = [pl[n][:2] for n in ('2', '10', '9')]
+xv = vin[0][0] - 5.08
+for q in vin:
+    S.wire(q, (xv, q[1]))
+yb = vin[0][1] - 7.62
+S.wire((xv, vin[2][1]), (xv, yb))
+S.junction((xv, vin[0][1]))
+S.junction((xv, vin[1][1]))
+S.rail(yb, [xv - 35.56, xv - 27.94, xv - 17.78, xv - 7.62, xv])
+S.label('VIN_BUCK', (xv - 35.56, yb), 180)
+hang(xv - 27.94, yb, 'C4', '4µ7/50V', fp=C1210)
+hang(xv - 17.78, yb, 'C5', '220n/50V', props=P('a 2-es VIN-lábnál'))
+hang(xv - 7.62, yb, 'C6', '220n/50V', props=P('a 10-es VIN-lábnál'))
+vcc = pl['5'][:2]
+S.wire(vcc, (vcc[0] - 12.7, vcc[1]), (vcc[0] - 12.7, vcc[1] + 2.54))
+shunt('Device:C', 'C8', '1µ/16V', (vcc[0] - 12.7, vcc[1] + 2.54), 'GND', C0603, props=P('VCC–AGND, más terhelés nem mehet rá'))
+gx = pl['1'][0] - 5.08
+for n in ('1', '11', '6'):
+    S.wire(pl[n][:2], (gx, pl[n][1]))
+S.wire((gx, pl['1'][1]), (gx, pl['6'][1] + 2.54))
+S.junction((gx, pl['11'][1]))
+S.junction((gx, pl['6'][1]))
+down('GND', (gx, pl['6'][1] + 2.54))
+# BOOT (4) – C7 – SW (12, 3)
+bt, sw1, sw2 = pl['4'][:2], pl['12'][:2], pl['3'][:2]
+xs = bt[0] + 5.08
+S.wire(sw1, (xs, sw1[1]))
+S.wire(sw2, (xs, sw2[1]))
+S.wire((xs, sw1[1]), (xs, sw2[1]))
+S.junction((xs, sw1[1]))
+yc7 = bt[1] - 7.62
+S.wire(bt, (bt[0] + 2.54, bt[1]), (bt[0] + 2.54, yc7), (xs + 5.08, yc7))
+p = series('Device:C', 'C7', '100n', (xs + 5.08, yc7), C0603)
+S.wire(p, (p[0] + 2.54, yc7), (p[0] + 2.54, sw1[1]), (xs, sw1[1]))
+# SW → L1 → +3V3 kimeneti sín
+S.wire((xs, sw2[1]), (xs + 7.62, sw2[1]))
+S.junction((xs, sw2[1]))
+pL = S.place('Device:L', 'L1', '6,8µH', {'1': None, '2': None}, '1', (xs + 7.62, sw2[1]), r=90,
+             fp='Inductor_SMD:L_Coilcraft_XAL5030-XXX', props=P('árnyékolt, Isat ≥ 2,1 A (ideálisan ≥ 2,8 A), ~5 × 5 mm'))
+ysw = sw2[1]
+xo = pL['2'][0]
+fb = [xo + 7.62, xo + 15.24, xo + 25.4, xo + 33.02, xo + 40.64, xo + 48.26]
+S.rail(ysw, [xo] + fb)
+S.wire((fb[5], ysw), (fb[5], ysw - 5.08))
+up('+3V3', (fb[5], ysw - 5.08))
+hang(fb[0], ysw, 'R3', '100k 1%', bottom_net=None, lib='Device:R', fp=R0603)
+hang(fb[1], ysw, 'C9', '20p', bottom_net=None, props=P('CFF, R3-mal párhuzamosan'))
+nfb = (fb[0], ysw + 12.7)
+S.wire((fb[0], ysw + 10.16), nfb, (fb[1], nfb[1]), (fb[1], ysw + 10.16))
+S.junction(nfb)
+shunt('Device:R', 'R4', '43,2k 1%', (fb[0], nfb[1] + 2.54), 'GND', R0603, props=P('→ 3,31 V (VFB = 1,0 V)'))
+S.wire(nfb, (fb[0], nfb[1] + 2.54))
+fbp = pl['7'][:2]
+S.wire(fbp, (xs - 2.54, fbp[1]), (xs - 2.54, nfb[1]), nfb)
+for i, x in enumerate(fb[2:5]):
+    hang(x, ysw, f'C{10 + i}', '22µ/10V', fp=C1206)
+pg = pl['8'][:2]
+S.wire(pg, (pg[0] + 1.27, pg[1]), (pg[0] + 1.27, pg[1] + 2.54))
+down('GND', (pg[0] + 1.27, pg[1] + 2.54))
+
+# =====================================================================================================
+# 2. V_BUS – TPS2553
+# =====================================================================================================
+S.text('2. V_BUS – U3 TPS2553: EN-osztó a +24V_P-ről (csak 24 V mellett BE); a GPIO20 a D9-en (BAT54) át letiltja (D61); korlát 382/425/476 mA',
+       300, 86, 1.6)
+TX, TY = 370.84, 119.38
+pt = S.comp('modularis:TPS2553DBV', 'U3', 'TPS2553DBVR', TX, TY, {str(i): None for i in range(1, 7)})
+i1 = pt['1'][:2]
+S.rail(i1[1], [i1[0] - 30.48, i1[0] - 20.32, i1[0] - 12.7, i1[0]])
+S.wire((i1[0] - 30.48, i1[1]), (i1[0] - 30.48, i1[1] - 5.08))
+up('+5V', (i1[0] - 30.48, i1[1] - 5.08))
+hang(i1[0] - 20.32, i1[1], 'C22', '1µ')
+hang(i1[0] - 12.7, i1[1], 'C23', '100n')
+# EN (3): R10 a +24V_P-ről, R11 a GND-re, D9 (anód az EN-en) → VBUS_EN
+en = pt['3'][:2]
+ne = (en[0] - 5.08, en[1] + 15.24)
+S.wire(en, (ne[0], en[1]), ne)
+S.label('+24V_P', (ne[0] - 33.02, ne[1]), 180)
+S.wire((ne[0] - 33.02, ne[1]), (ne[0] - 30.48, ne[1]))
+p = series('Device:R', 'R10', '470k', (ne[0] - 30.48, ne[1]), R0603)
+S.rail(ne[1], [p[0], ne[0] - 10.16, ne[0]])
+hang(ne[0] - 10.16, ne[1], 'R11', '47k', lib='Device:R', fp=R0603)
+S.wire(ne, (ne[0], ne[1] + 2.54))
+S.junction(ne)
+S.place('Device:D_Schottky', 'D9', 'BAT54WS', {'1': None, '2': None}, '2', (ne[0], ne[1] + 2.54), r=90, fp='Diode_SMD:D_SOD-323',
+        props=P('anód az EN-en, katód a GPIO20-on'))
+stub((ne[0], ne[1] + 10.16), 'VBUS_EN', 270, 2.54)
+# ILIM (5) → R12 → GND (balra kivezetve, lefelé); GND (2)
+il = pt['5'][:2]
+S.wire(il, (il[0] - 12.7, il[1]))
+shunt('Device:R', 'R12', '61,9k 1%', (il[0] - 12.7, il[1]), 'GND', R0603, props=P('→ 382/425/476 mA'))
+gnd2 = pt['2'][:2]
+S.wire(gnd2, (gnd2[0] - 2.54, gnd2[1]))
+down('GND', (gnd2[0] - 2.54, gnd2[1]))
+# FAULT (4) → R34 felhúzás + címke
+fl = pt['4'][:2]
+S.rail(fl[1], [fl[0], fl[0] + 5.08, fl[0] + 12.7])
+S.place('Device:R', 'R34', '10k', {'1': '+3V3', '2': None}, '2', (fl[0] + 5.08, fl[1]), fp=R0603, props=P('FAULT felhúzás (nyitott drain)'))
+S.label('VBUS_FAULT', (fl[0] + 12.7, fl[1]), 0)
+# OUT (6) → V_BUS sín
+ou = pt['6'][:2]
+yv = ou[1] - 10.16
+S.wire(ou, (ou[0] + 2.54, ou[1]), (ou[0] + 2.54, yv))
+vb = [ou[0] + 2.54, ou[0] + 22.86, ou[0] + 30.48, ou[0] + 38.1, ou[0] + 48.26, ou[0] + 63.5]
+S.rail(yv, vb)
+hang(vb[1], yv, 'C24', '100n')
+hang(vb[2], yv, 'C25', '10µ/16V', fp=C0805)
+hang(vb[3], yv, 'D4', 'SMF5.0A', lib='Device:D_Zener', fp='Diode_SMD:D_SOD-123F', r=270)
+divider(vb[4], yv, 'R13', '100k', 'R14', '22k', 'C14', 'VBUS_SENSE')
+S.wire((vb[5], yv), (vb[5], yv - 5.08))
+S.label('V_BUS', (vb[5], yv - 5.08), 90)
+S.text('VBUS_SENSE: 5 V → 0,9 V (GPIO1)', vb[4] - 5, yv + 36)
+
+# =====================================================================================================
+# 3. ESP32-C6-WROOM-1
+# =====================================================================================================
+S.text('3. ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U ugyanerre a footprintre, D63) – strapping: GPIO8 = 1, GPIO9 = 1 (BOOT gomb → 0), GPIO15', 20, 166, 2)
+EX, EY = 132.08, 233.68
+nets = {str(i): None for i in range(1, 30) if i != 22}
+pe = S.comp('modularis:ESP32-C6-WROOM-1', 'U4', 'ESP32-C6-WROOM-1-N16', EX, EY, nets, nc=['22'], fp='modularis:ESP32-C6-WROOM-1')
+v = pe['2'][:2]
+yt = v[1] - 5.08
+S.wire(v, (v[0], yt))
+S.rail(yt, [v[0] - 17.78, v[0] - 10.16, v[0], v[0] + 5.08])
+S.wire((v[0] + 5.08, yt), (v[0] + 5.08, yt - 2.54))
+up('+3V3', (v[0] + 5.08, yt - 2.54))
+hang(v[0] - 17.78, yt, 'C26', '22µ', fp=C0805, props=P('a 3V3-lábnál'))
+hang(v[0] - 10.16, yt, 'C27', '100n', props=P('a 3V3-lábnál'))
+stub(pe['1'][:2], 'GND', 270, 2.54)
+# EN (3): R15 + C15 → CHIP_EN
+en = pe['3'][:2]
+xn = en[0] - 7.62
+S.rail(en[1], [en[0], xn, xn - 7.62, xn - 15.24])
+S.place('Device:R', 'R15', '10k', {'1': '+3V3', '2': None}, '2', (xn, en[1]), fp=R0603)
+hang(xn - 7.62, en[1], 'C15', '1µ', props=P('RC-késleltetés az EN-en'))
+S.label('CHIP_EN', (xn - 15.24, en[1]), 180)
+# bal oldali jelek
+for n, net in (('8', 'VIN_SENSE'), ('9', 'VBUS_SENSE'), ('27', 'SPI_MISO'), ('26', 'W5500_INT'), ('7', 'SPI_MOSI')):
+    stub(pe[n][:2], net, 180, 7.62)
+for i, n in enumerate(('4', '5')):
+    q = pe[n][:2]
+    S.wire(q, (q[0] - 5.08, q[1]))
+    S.place('Connector:TestPoint', f'TP{i + 1}', f'GPIO{n}', {'1': None}, '1', (q[0] - 5.08, q[1]), r=90, fp=TPFP)
+# SPI_SCLK: GPIO6 (6) → R19 0R → SPI_SCLK, C28 (DNP)
+q = pe['6'][:2]
+S.wire(q, (q[0] - 2.54, q[1]))
+pr = S.place('Device:R', 'R19', '0R', {'1': None, '2': None}, '1', (q[0] - 2.54, q[1]), r=270, fp=R0603, props=P('33 Ω-hoz footprint'))
+xk = pr['2'][0]
+S.rail(q[1], [xk, xk - 5.08, xk - 10.16])
+hang(xk - 5.08, q[1], 'C28', 'DNP', dnp=True, props=P('kondenzátor-footprint, nem beültetve'))
+S.label('SPI_SCLK', (xk - 10.16, q[1]), 180)
+# jobb oldali jelek
+for n, net in (('24', 'U0RXD'), ('14', 'USB_DP'), ('13', 'USB_DM'), ('17', 'CAN_RX'), ('18', 'VBUS_EN'), ('19', 'VBUS_FAULT')):
+    stub(pe[n][:2], net, 0, 7.62)
+for i, n in enumerate(('20', '21')):
+    q = pe[n][:2]
+    S.wire(q, (q[0] + 5.08, q[1]))
+    S.place('Connector:TestPoint', f'TP{i + 3}', f'GPIO{int(n) + 2}', {'1': None}, '1', (q[0] + 5.08, q[1]), r=270, fp=TPFP)
+q = pe['25'][:2]
+S.wire(q, (q[0] + 2.54, q[1]))
+p = series('Device:R', 'R39', '499R', (q[0] + 2.54, q[1]), R0603, props=P('Espressif-ajánlás'))
+stub(p, 'U0TXD', 0, 5.08)
+# felhúzott jelek (GPIO8, BOOT, CS, RST, GPIO15, CAN_TX – egymás alatti lábak): vízszintes 10 k → közös +3V3 sín
+pu_list = (('10', 'RGB_DIN_3V3', 'R17', 'strapping: letöltéshez GPIO8 = 1'), ('15', 'BOOT', 'R16', None),
+           ('11', 'W5500_CS', 'R36', None), ('12', 'W5500_RST', 'R37', None), ('23', 'GPIO15', 'R18', None),
+           ('16', 'CAN_TX', 'R35', 'reset alatt recesszív busz'))
+xr = pe['10'][0] + 27.94
+xbus = xr + 10.16
+for n, net, ref, nt in pu_list:
+    q = pe[n][:2]
+    S.wire(q, (xr, q[1]))
+    S.label(net, (q[0] + 7.62, q[1]), 0)
+    p = series('Device:R', ref, '10k', (xr, q[1]), R0603, r=270, lpin='2', rpin='1', props=P(nt))
+    S.wire(p, (xbus, q[1]))
+ys = [pe[n][1] for n, *_ in pu_list]
+S.wire((xbus, max(ys)), (xbus, min(ys) - 5.08))
+for y in ys:
+    if y not in (max(ys),):
+        S.junction((xbus, y))
+up('+3V3', (xbus, min(ys) - 5.08))
+S.text('felhúzások (10 k): GPIO8 · BOOT · CS · RST · GPIO15 · CAN_TX', xr - 10, min(ys) - 10)
+# R38: W5500_INT felhúzás (a bal oldali jelen)
+up('+3V3', (EX - 55.88, 175.26))
+shunt('Device:R', 'R38', '10k', (EX - 55.88, 175.26), None, R0603)
+stub((EX - 55.88, 182.88), 'W5500_INT', 270, 2.54)
+
+# =====================================================================================================
+# 4. ETHERNET – W5500 + HR911105A
+# =====================================================================================================
+S.text('4. ETHERNET – U5 W5500 + J6 HR911105A MagJack (opcionálisan beültetve; MDI a WIZnet use_mag referencia szerint)', 300, 166, 2)
+S.text('VBG (18) NYITVA · RSVD 38–42 NYITVA · RSVD 23 GND · PMODE nyitva (auto-negotiation)', 300, 171)
+WX, WY = 365.76, 233.68
+w = {n: None for n in ('1', '2', '5', '6', '10', '20', '22', '23', '25', '27', '28', '29', '30', '31', '32', '33', '34',
+                         '35', '36', '37', '3', '9', '14', '16', '19', '48', '4', '8', '11', '15', '17', '21')}
+pw = S.comp('Interface_Ethernet:W5500', 'U5', 'W5500', WX, WY, w,
+            nc=['7', '12', '13', '46', '47', '18', '24', '26', '38', '39', '40', '41', '42', '43', '44', '45'])
+for n, net in (('32', 'W5500_CS'), ('33', 'SPI_SCLK'), ('34', 'SPI_MISO'), ('35', 'SPI_MOSI'), ('36', 'W5500_INT'),
+               ('37', 'W5500_RST')):
+    stub(pw[n][:2], net, 180, 7.62)
+stub(pw['23'][:2], 'GND', 180, 2.54)
+q = pw['28'][:2]
+S.wire(q, (q[0], q[1] - 2.54))
+up('+3V3', (q[0], q[1] - 2.54))
+stub(pw['4'][:2], '+3V3A', 90, 5.08)
+stub(pw['29'][:2], 'GND', 270, 2.54)
+stub(pw['3'][:2], 'GND', 270, 2.54)
+# 25 MHz kvarc a 30/31-en: Y1 függőlegesen balra, terhelőkondenzátorok a GND-re
+xi, xq = pw['30'][:2], pw['31'][:2]
+xc = xi[0] - 20.32
+pyx = S.place('Device:Crystal_GND24', 'Y1', '25MHz ±30ppm', {'1': None, '3': None, '2': 'GND', '4': 'GND'}, '1',
+              (xc, xi[1] - 2.54), r=270, fp='Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm')
+y1t, y1b = pyx['1'][:2], pyx['3'][:2]
+# XTAL25_I = Y1.1, XTAL25_O = Y1.3 → a felső lábról a 30-as, az alsóról a 31-es lábra
+pin_i = pyx['1'][:2]
+pin_o = pyx['3'][:2]
+S.wire(pin_i, (pin_i[0] + 7.62, pin_i[1]), (pin_i[0] + 7.62, xi[1]), xi)
+S.wire(pin_o, (pin_o[0] + 10.16, pin_o[1]), (pin_o[0] + 10.16, xq[1]), xq)
+S.wire(pin_i, (pin_i[0] - 5.08, pin_i[1]))
+shunt('Device:C', 'C40', '18p', (pin_i[0] - 5.08, pin_i[1]), 'GND', C0603, props=P('C = 2 × (CL − 3…5 pF) a megvett kvarcból'))
+S.wire(pin_o, (pin_o[0] - 10.16, pin_o[1]))
+shunt('Device:C', 'C41', '18p', (pin_o[0] - 10.16, pin_o[1]), 'GND', C0603)
+# jobb oldal: EXRES, TOCAP, 1V2O → GND (az alkatrészek a lábtól jobbra lépcsőzve)
+for n, ref, val, lib, fp, dx in (('10', 'R40', '12,4k 1%', 'Device:R', R0603, 5.08), ('20', 'C29', '4µ7', 'Device:C', C0805, 10.16),
+                                ('22', 'C30', '10n', 'Device:C', C0603, 15.24)):
+    q = pw[n][:2]
+    S.wire(q, (q[0] + dx, q[1]))
+    shunt(lib, ref, val, (q[0] + dx, q[1]), 'GND', fp)
+for n, net in (('25', 'ETH_LED_LINK'), ('27', 'ETH_LED_ACT')):
+    stub(pw[n][:2], net, 0, 22.86)
+for n, net in (('1', 'ETH_TXN'), ('2', 'ETH_TXP'), ('5', 'ETH_RXN'), ('6', 'ETH_RXP')):
+    stub(pw[n][:2], net, 0, 7.62)
+# MDI-lezárás (WIZnet use_mag): TX → 49,9 Ω → +3V3A (TXB, C16); RX → 49,9 Ω → RXB (C17 → GND)
+mx, my = 419.1, 190.5
+S.text('MDI-lezárás: TX 49,9 Ω a +3V3A-ra (TXB), RX 49,9 Ω a RXB-re; a RXB csak C17-en át a GND-re', mx - 8, my - 10)
+S.rail(my, [mx, mx + 7.62, mx + 15.24, mx + 22.86])
+S.label('+3V3A', (mx, my), 180)
+for x, ref, net in ((mx + 7.62, 'R20', 'ETH_TXP'), (mx + 15.24, 'R21', 'ETH_TXN')):
+    S.place('Device:R', ref, '49,9R 1%', {'1': None, '2': None}, '2', (x, my), fp=R0603)
+    S.label(net, (x, my - 7.62), 90)
+S.wire((mx + 22.86, my), (mx + 22.86, my + 2.54))
+S.place('Device:C', 'C16', '10n', {'1': None, '2': 'GND'}, '1', (mx + 22.86, my + 2.54), fp=C0603, props=P('a TXB csomópontnál'))
+ry = my + 27.94
+S.rail(ry, [mx + 7.62, mx + 15.24, mx + 22.86])
+for x, ref, net in ((mx + 7.62, 'R22', 'ETH_RXP'), (mx + 15.24, 'R23', 'ETH_RXN')):
+    S.place('Device:R', ref, '49,9R 1%', {'1': None, '2': None}, '2', (x, ry), fp=R0603)
+    S.label(net, (x, ry - 7.62), 90)
+S.wire((mx + 22.86, ry), (mx + 22.86, ry + 2.54))
+S.place('Device:C', 'C17', '6,8n', {'1': None, '2': 'GND'}, '1', (mx + 22.86, ry + 2.54), fp=C0603,
+        props=P('a RXB csak kondenzátoron át a GND-re, NEM a 3,3 V-ra'))
+# J6 MagJack
+JX, JY = 515.62, 226.06
+pjx = S.comp('Connector:RJ45_Hanrun_HR911105A_Horizontal', 'J6', 'HR911105A', JX, JY,
+             {k: None for k in ('1', '2', '3', '4', '5', '6', '8', '9', '10', '11', '12', 'SH')}, nc=['7'],
+             props=P('a lábkiosztást a megvett darab adatlapjából ellenőrizni (TCT és RCT külön lábon)'))
+for n, net in (('1', 'ETH_TXP'), ('2', 'ETH_TXN'), ('3', 'ETH_RXP'), ('6', 'ETH_RXN')):
+    stub(pjx[n][:2], net, 180, 12.7)
+# TCT (4): R24 a +3V3A-ról + C18; RCT (5): C19 – balra, az MDI-címkék alatt
+tct, rct = pjx['4'][:2], pjx['5'][:2]
+S.wire(tct, (tct[0] - 7.62, tct[1]))
+S.wire(rct, (rct[0] - 5.08, rct[1]))
+xt = 469.9
+yct = JY + 22.86
+S.wire((tct[0] - 7.62, tct[1]), (tct[0] - 7.62, yct), (xt, yct))
+S.wire((rct[0] - 5.08, rct[1]), (rct[0] - 5.08, yct + 12.7), (xt + 15.24, yct + 12.7))
+S.place('Device:R', 'R24', '10R 1%', {'1': None, '2': None}, '2', (xt, yct), r=90, fp=R0603)
+S.label('+3V3A', (xt - 7.62, yct), 180)
+S.wire((xt + 5.08, yct), (xt + 5.08, yct + 2.54))
+S.junction((xt + 5.08, yct))
+S.place('Device:C', 'C18', '22n', {'1': None, '2': 'GND'}, '1', (xt + 5.08, yct + 2.54), fp=C0603)
+S.wire((xt + 15.24, yct + 12.7), (xt + 15.24, yct + 15.24))
+S.place('Device:C', 'C19', '6,8n', {'1': None, '2': 'GND'}, '1', (xt + 15.24, yct + 15.24), fp=C0603)
+# LED-ek: anód 330 Ω-on át a +3V3-ra, katód a W5500 LED-kimenetén
+for n_a, n_k, ref, nt, net in (('9', '10', 'R41', 'zöld = link', 'ETH_LED_LINK'), ('12', '11', 'R42', 'sárga = aktivitás', 'ETH_LED_ACT')):
+    qa = pjx[n_a][:2]
+    S.wire(qa, (qa[0] + 2.54, qa[1]))
+    pr = S.place('Device:R', ref, '330R', {'1': '+3V3', '2': None}, '2', (qa[0] + 2.54, qa[1]), r=270, fp=R0603, props=P(nt))
+    stub(pjx[n_k][:2], net, 0, 15.24)
+stub(pjx['8'][:2], 'GND', 270, 2.54)
+sh = pjx['SH'][:2]
+S.wire(sh, (sh[0], sh[1] + 2.54))
+S.place('Device:C', 'C20', '1n/2kV', {'1': None, '2': 'GND'}, '1', (sh[0], sh[1] + 2.54), fp=C1206)
+# W5500 hidegítés: +3V3 → FB1 → +3V3A
+hy = 297.18
+S.text('W5500 hidegítés: AVDD-lábanként 100 nF; FB1 = HH-1M1608-121JT, ≥ 300 mA', 300, hy - 10)
+up('+3V3', (304.8, hy))
+S.rail(hy, [304.8, 312.42, 320.04, 327.66])
+hang(312.42, hy, 'C37', '100n', props=P('VDD (28)'))
+hang(320.04, hy, 'C38', '10µ', fp=C0805)
+p = series('Device:FerriteBead_Small', 'FB1', '120R@100MHz', (327.66, hy), 'Inductor_SMD:L_0603_1608Metric',
+           props=P('HH-1M1608-121JT, ≥ 300 mA'))
+xs_ = [p[0] + 7.62 * (i + 1) for i in range(8)]
+S.rail(hy, [p[0]] + xs_)
+for i, x in enumerate(xs_[:6]):
+    hang(x, hy, f'C{31 + i}', '100n', props=P('AVDD-lábanként'))
+hang(xs_[6], hy, 'C39', '10µ', fp=C0805)
+S.label('+3V3A', (xs_[7], hy), 0)
+
+# =====================================================================================================
+# 5. USB-C
+# =====================================================================================================
+S.text('5. USB-C – csak eszköz, csak táp-fogyasztó', 20, 322, 2)
+S.text('CC1/CC2 külön 5,1 kΩ; USBLC6 az aljzatnál, 22 Ω a C6-nál', 20, 327, 1.4)
+UXc, UYc = 40.64, 365.76
+pu = S.comp('Connector:USB_C_Receptacle_USB2.0_16P', 'J4', 'USB-C 16P', UXc, UYc,
+            {k: None for k in ('A1', 'A12', 'B1', 'B12', 'A4', 'A9', 'B4', 'B9', 'A5', 'B5', 'A6', 'B6', 'A7', 'B7', 'SH')},
+            nc=['A8', 'B8'], fp='Connector_USB:USB_C_Receptacle_HRO_TYPE-C-31-M-12')
+stub(pu['A1'][:2], 'GND', 270, 2.54)
+stub(pu['SH'][:2], 'GND', 270, 2.54)
+# VUSB sín felül: R30, C21, VUSB-címke, D3 → VIN_BUCK
+vu = pu['A4'][:2]
+yu = vu[1] - 7.62
+S.wire(vu, (vu[0] + 5.08, vu[1]), (vu[0] + 5.08, yu))
+vx = [vu[0] + 5.08, vu[0] + 25.4, vu[0] + 33.02, vu[0] + 43.18, vu[0] + 50.8]
+S.rail(yu, vx)
+hang(vx[1], yu, 'R30', '2,2k', lib='Device:R', fp=R0603, props=P('levezető: a D3 szivárgása ne húzza fel a kihúzott aljzat VBUS-át'))
+hang(vx[2], yu, 'C21', '1µ')
+S.wire((vx[3], yu), (vx[3], yu - 5.08))
+S.label('VUSB', (vx[3], yu - 5.08), 90)
+p = series('Device:D_Schottky', 'D3', 'B360', (vx[4], yu), 'Diode_SMD:D_SMC', r=180, lpin='2', rpin='1',
+           props=P('60 V-os kell (túlfeszültségnél VIN_BUCK ~45 V, VUSB ~0 V)'))
+stub(p, 'VIN_BUCK', 0, 5.08)
+# CC1 / CC2 → 5,1 kΩ a GND-re
+for pin, ref, dx in (('A5', 'R28', 15.24), ('B5', 'R29', 7.62)):
+    q = pu[pin][:2]
+    S.wire(q, (q[0] + dx, q[1]))
+q1, q2 = pu['A5'][:2], pu['B5'][:2]
+# CC1: jobbra 15,24, fel 0 → R28 a csomóponttól felfelé? – a CC-vonalak a DP/DM fölött vannak, ezért az ellenállások FELFELÉ, a VUSB-sín alá nem érnek
+S.place('Device:R', 'R28', '5,1k', {'1': None, '2': None}, '1', (q1[0] + 15.24, q1[1]), r=90, fp=R0603)
+S.wire(((q1[0] + 15.24) + 7.62, q1[1]), ((q1[0] + 15.24) + 10.16, q1[1]))
+S.label('GND', ((q1[0] + 15.24) + 10.16, q1[1]), 0)
+S.place('Device:R', 'R29', '5,1k', {'1': None, '2': None}, '1', (q2[0] + 7.62, q2[1]), r=90, fp=R0603)
+S.wire(((q2[0] + 7.62) + 7.62, q2[1]), ((q2[0] + 7.62) + 17.78, q2[1]))
+S.label('GND', ((q2[0] + 7.62) + 17.78, q2[1]), 0)
+# DP (A6 + B6) és DM (A7 + B7) párosítva → U8 (USBLC6) → R26 / R27 (22 Ω) → USB_DP / USB_DM
+pul = S.comp('Power_Protection:USBLC6-2SC6', 'U8', 'USBLC6-2SC6', 93.98, 383.54, {k: None for k in ('1', '2', '3', '4', '5', '6')})
+stub(pul['5'][:2], 'VUSB', 90, 2.54)
+stub(pul['2'][:2], 'GND', 270, 2.54)
+for a, b, lp in (('A6', 'B6', '1'), ('A7', 'B7', '3')):
+    qa, qb = pu[a][:2], pu[b][:2]
+    xm = qa[0] + (2.54 if a == 'A7' else 5.08)
+    S.wire(qa, (xm, qa[1]))
+    S.wire(qb, (xm, qb[1]))
+    S.wire((xm, qa[1]), (xm, qb[1]), (xm, pul[lp][1]), pul[lp][:2])
+    S.junction((xm, qb[1]) if qb[1] > qa[1] else (xm, qa[1]))
+    S.label({'1': 'USB_DP_CONN', '3': 'USB_DM_CONN'}[lp], (xm + 5.08, pul[lp][1]), 90)
+for q, ref, net in ((pul['6'][:2], 'R26', 'USB_DP'), (pul['4'][:2], 'R27', 'USB_DM')):
+    S.wire(q, (q[0] + 2.54, q[1]))
+    S.label(net + '_CONN', (q[0] + 2.54, q[1]), 90)
+    p = series('Device:R', ref, '22R', (q[0] + 2.54, q[1]), R0603, props=P('a C6 közelében'))
+    stub(p, net, 0, 5.08)
+
+# =====================================================================================================
+# 6. CAN + busz
+# =====================================================================================================
+S.text('6. CAN – U6 TCAN1044AVDRQ1 (MCP2562 szimbólum, lábról lábra azonos) · JP2 alap 5 V: 1044/2562 · 3V3: 330/230 (D60)', 160, 322, 2)
+CX, CY = 223.52, 373.38
+pc = S.comp('Interface_CAN_LIN:MCP2562-E-SN', 'U6', 'TCAN1044AVDRQ1', CX, CY, {k: None for k in '12345678'},
+            fp='Package_SO:SOIC-8_3.9x4.9mm_P1.27mm')
+stub(pc['1'][:2], 'CAN_TX', 180, 7.62)
+stub(pc['4'][:2], 'CAN_RX', 180, 7.62)
+stub(pc['2'][:2], 'GND', 270, 2.54)
+# VDD (3) ← JP2 + C42/C43
+vd = pc['3'][:2]
+yv = vd[1] - 7.62
+S.wire(vd, (vd[0], yv))
+S.rail(yv, [vd[0] - 20.32, vd[0] - 12.7, vd[0] - 5.08, vd[0], vd[0] + 5.08])
+hang(vd[0] - 12.7, yv, 'C43', '1µ')
+hang(vd[0] - 5.08, yv, 'C42', '100n')
+S.label('CAN_VCC', (vd[0] - 20.32, yv), 180)
+pj2 = S.place('Jumper:SolderJumper_3_Bridged12', 'JP2', 'VCC: 1-2=5V / 2-3=3V3', {'1': None, '2': None, '3': None}, '2',
+              (vd[0] + 5.08, yv), r=270, fp=SJ3, props=P('SOHA ne legyen mindkét oldal összeforrasztva!'))
+for pin, net in (('1', '+5V'), ('3', '+3V3')):
+    q = pj2[pin][:2]
+    S.wire(q, (q[0] + 5.08, q[1]))
+    S.label(net, (q[0] + 5.08, q[1]), 90)
+# VIO (5) ← JP3 + C44
+vi = pc['5'][:2]
+xj3 = vi[0] - 38.1
+S.rail(vi[1], [vi[0], vi[0] - 7.62, vi[0] - 15.24, xj3])
+hang(vi[0] - 7.62, vi[1], 'C44', '100n')
+pj3 = S.place('Jumper:SolderJumper_3_Bridged12', 'JP3', 'VIO: 1-2=3V3 / 2-3=GND', {'1': None, '2': None, '3': None}, '2',
+              (xj3, vi[1]), r=90, fp=SJ3, props=P('SN65HVD230-nál nyitva'))
+for pin, net in (('1', '+3V3'), ('3', 'GND')):
+    q = pj3[pin][:2]
+    S.wire(q, (q[0] - 5.08, q[1]))
+    S.label(net, (q[0] - 5.08, q[1]), 180)
+S.label('CAN_VIO', (vi[0] - 15.24, vi[1]), 270)
+# STB (8) → R43 0R → GND
+sb = pc['8'][:2]
+S.wire(sb, (sb[0] - 5.08, sb[1]), (sb[0] - 5.08, sb[1] + 2.54))
+shunt('Device:R', 'R43', '0R', (sb[0] - 5.08, sb[1] + 2.54), 'GND', R0603, props=P('STB → normál mód (nyitva készenlét!)'))
+# CANH / CANL → J2 / J3 sávok; ESD (U7) és lezárás (JP1 + R25) a sávok előtt
+ch, cl = pc['7'][:2], pc['6'][:2]
+BX = 330.2
+pj2c = S.comp('Connector_Generic:Conn_01x04', 'J2', 'BUS (XH)', BX, 355.6, {k: None for k in '1234'},
+              fp='Connector_JST:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical')
+pj3c = S.comp('Connector_Generic:Conn_01x04', 'J3', 'BUS (XH)', BX, 381.0, {k: None for k in '1234'},
+              fp='Connector_JST:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical')
+lanes = {'1': BX - 12.7, '2': BX - 15.24, '3': BX - 17.78, '4': BX - 20.32}
+for n, lx in lanes.items():
+    S.wire(pj2c[n][:2], (lx, pj2c[n][1]), (lx, pj3c[n][1]), pj3c[n][:2])
+# V_BUS a sáv tetején, GND a sáv alján
+S.wire((lanes['1'], pj2c['1'][1]), (lanes['1'], pj2c['1'][1] - 5.08))
+S.label('V_BUS', (lanes['1'], pj2c['1'][1] - 5.08), 90)
+S.junction((lanes['1'], pj2c['1'][1]))
+S.wire((lanes['2'], pj3c['2'][1]), (lanes['2'], pj3c['4'][1] + 7.62))
+S.junction((lanes['2'], pj3c['2'][1]))
+down('GND', (lanes['2'], pj3c['4'][1] + 7.62))
+# CANH → a 4-es sáv, CANL → a 3-as sáv (vízszintes vezetékek a J2 alatt)
+ych, ycl = pj2c['4'][1] + 5.08, pj2c['4'][1] + 7.62
+S.wire(ch, (ch[0] + 7.62, ch[1]), (ch[0] + 7.62, ych), (lanes['4'], ych))
+S.wire(cl, (ch[0] + 5.08, cl[1]), (ch[0] + 5.08, ycl), (lanes['3'], ycl))
+S.junction((lanes['4'], ych))
+S.junction((lanes['3'], ycl))
+# a CAN-vonalakról: U7 ESD és JP1 + R25 lezárás – címkével (a vonalakon CAN_H / CAN_L)
+xl = ch[0] + 20.32
+S.wire((xl, ych), (xl, ych - 7.62))
+S.label('CAN_H', (xl, ych - 7.62), 90)
+S.junction((xl, ych))
+S.wire((xl + 7.62, ycl), (xl + 7.62, ycl + 5.08))
+S.label('CAN_L', (xl + 7.62, ycl + 5.08), 270)
+S.junction((xl + 7.62, ycl))
+S.text('ESD (U7) · lezárás: JP1 + R25 (csak a lánc végén)', 255, 398)
+S.comp('Power_Protection:NUP2105L', 'U7', 'ESD2CAN24-Q1', 266.7, 406.4, {'1': 'CAN_L', '2': 'CAN_H', '3': 'GND'})
+pjp = S.place('Jumper:Jumper_2_Open', 'JP1', 'LEZÁRÁS', {'1': 'CAN_H', '2': None}, '1', (284.48, 406.4),
+              fp='Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical')
+p = series('Device:R', 'R25', '120R', pjp['2'][:2], 'Resistor_SMD:R_0805_2012Metric')
+S.label('CAN_L', p, 0)
+
+# =====================================================================================================
+# 7. Gombok, LED-ek, RGB, debug
+# =====================================================================================================
+S.text('7. GOMBOK, LED-EK, RGB, DEBUG – U9 és R32 egyszerre NE legyen beültetve', 370, 322, 2)
+for i, (ref, val, net) in enumerate((('SW1', 'RESET', 'CHIP_EN'), ('SW2', 'BOOT', 'BOOT'))):
+    x = 381 + i * 30.48
+    ps = S.comp('Switch:SW_Push', ref, val, x, 340.36, {'1': None, '2': None}, fp='Button_Switch_SMD:SW_SPST_TL3342')
+    stub(ps['1'][:2], net, 180, 5.08)
+    q = ps['2'][:2]
+    S.wire(q, (q[0] + 2.54, q[1]), (q[0] + 2.54, q[1] + 2.54))
+    down('GND', (q[0] + 2.54, q[1] + 2.54))
+up('+3V3', (449.58, 332.74))
+shunt('Device:R', 'R44', '2,2k', (449.58, 332.74), None, R0603)
+S.place('Device:LED', 'D5', 'zöld', {'2': None, '1': 'GND'}, '2', (449.58, 342.9), r=90, fp='LED_SMD:LED_0603_1608Metric',
+        props=P('táp-LED'))
+S.wire((449.58, 340.36), (449.58, 342.9))
+# RGB: RGB_DIN_3V3 → U9A → U9B → R31 → RGB_DIN → D6; R32 (DNP) áthidalja az U9-et
+ry0 = 368.3
+xa = 381.0
+S.label('RGB_DIN_3V3', (xa, ry0), 180)
+pa = S.place('74xx:74HC14', 'U9', '74HCT14D', {'1': None, '2': None}, '1', (xa + 7.62, ry0), unit=1, fp=U9FP)
+S.rail(ry0, [xa, xa + 3.81, xa + 7.62])
+pb = S.place('74xx:74HC14', 'U9', '74HCT14D', {'3': None, '4': None}, '3', (pa['2'][0] + 5.08, ry0), unit=2, fp=U9FP)
+S.wire(pa['2'][:2], pb['3'][:2])
+S.wire(pb['4'][:2], (pb['4'][0] + 2.54, ry0))
+p = series('Device:R', 'R31', '33R', (pb['4'][0] + 2.54, ry0), R0603)
+xd6 = p[0] + 5.08
+S.rail(ry0, [p[0], xd6, xd6 + 5.08])
+pd6 = S.place('LED:WS2812B', 'D6', 'WS2812B-V5', {'1': None, '3': 'GND', '4': None}, '4', (xd6 + 5.08, ry0), nc=['2'])
+v6 = pd6['1'][:2]
+S.wire(v6, (v6[0], v6[1] - 2.54), (v6[0] + 7.62, v6[1] - 2.54))
+up('+5V', (v6[0], v6[1] - 2.54))
+shunt('Device:C', 'C46', '100n', (v6[0] + 7.62, v6[1] - 2.54), 'GND', C0603, props=P('D6 VDD'))
+yr32 = ry0 + 10.16
+S.wire((xa + 3.81, ry0), (xa + 3.81, yr32), (xa + 7.62, yr32))
+p = series('Device:R', 'R32', '0R', (xa + 7.62, yr32), R0603, dnp=True,
+           props=P('DNP – csak ha az U9 nincs beültetve (WS2812B-V5 3,3 V-os bemenettel)'))
+S.wire(p, (xd6, yr32), (xd6, ry0))
+S.text('RGB_DIN', xd6 - 2, ry0 - 3)
+# U9 táp (7. egység) + C45, a nem használt kapuk bemenete a GND-re
+pu9 = S.comp('74xx:74HC14', 'U9', '74HCT14D', 383.54, 397.51, {'14': None, '7': None}, unit=7, fp=U9FP)
+q = pu9['14'][:2]
+S.wire(q, (q[0], q[1] - 2.54), (q[0] + 7.62, q[1] - 2.54))
+up('+5V', (q[0], q[1] - 2.54))
+shunt('Device:C', 'C45', '100n', (q[0] + 7.62, q[1] - 2.54), 'GND', C0603, props=P('U9 VCC'))
+stub(pu9['7'][:2], 'GND', 270, 2.54)
 for u, (a, yy) in enumerate((('5', '6'), ('9', '8'), ('11', '10'), ('13', '12')), start=3):
-    S.comp('74xx:74HC14', 'U9', '74HCT14D', 495 + (u - 3) * 18, 350, {a: 'GND'}, nc=[yy], unit=u,
-           fp='Package_SO:SOIC-14_3.9x8.7mm_P1.27mm')
-S.comp('74xx:74HC14', 'U9', '74HCT14D', 170, 330, {'14': '+5V', '7': 'GND'}, unit=7,
-       fp='Package_SO:SOIC-14_3.9x8.7mm_P1.27mm')
-C('C45', '100n', 185, 330, '+5V', 'GND', note='U9 VCC')
-R('R31', '33R', 198, 330, 'RGB_DIN_5V', 'RGB_DIN')
-R('R32', '0R', 211, 330, 'RGB_DIN_3V3', 'RGB_DIN', dnp=True, note='DNP – csak ha az U9 nincs beültetve (WS2812B-V5 3,3 V-os bemenettel)')
-S.comp('LED:WS2812B', 'D6', 'WS2812B-V5', 180, 365, {'1': '+5V', '3': 'GND', '4': 'RGB_DIN'}, nc=['2'])
-C('C46', '100n', 205, 365, '+5V', 'GND', note='D6 VDD')
-S.comp('Connector_Generic:Conn_01x06', 'J5', 'DEBUG', 540, 320,
-       {'1': 'J5_VREF', '2': 'GND', '3': 'U0TXD', '4': 'U0RXD', '5': 'CHIP_EN', '6': 'BOOT'},
-       fp='Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical')
-R('R33', '0R', 520, 320, '+3V3', 'J5_VREF', dnp=True, note='DNP – csak referencia, különben az USB-UART visszatáplál')
+    pg_ = S.comp('74xx:74HC14', 'U9', '74HCT14D', 401.32 + (u - 3) * 20.32, 388.62, {a: None}, nc=[yy], unit=u, fp=U9FP)
+    stub(pg_[a][:2], 'GND', 180, 2.54)
+# debug (J5) + R33 (DNP)
+pj5 = S.comp('Connector_Generic:Conn_01x06', 'J5', 'DEBUG', 568.96, 350.52, {str(i): None for i in range(1, 7)},
+             fp='Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical')
+for n, net in (('2', 'GND'), ('3', 'U0TXD'), ('4', 'U0RXD'), ('5', 'CHIP_EN'), ('6', 'BOOT')):
+    stub(pj5[n][:2], net, 180, 10.16)
+q = pj5['1'][:2]
+S.wire(q, (q[0] - 2.54, q[1]))
+pr = S.place('Device:R', 'R33', '0R', {'1': None, '2': None}, '2', (q[0] - 2.54, q[1]), r=90, fp=R0603, dnp=True,
+             props=P('DNP – csak referencia, különben az USB-UART visszatáplál'))
+S.wire(pr['1'][:2], (pr['1'][0] - 2.54, q[1]))
+up('+3V3', (pr['1'][0] - 2.54, q[1]))
+S.text('J5: 1 VREF · 2 GND · 3 TX · 4 RX · 5 EN · 6 BOOT', 530, 340)
 
-# ======================= PWR_FLAG-ek =======================
+# PWR_FLAG-ek
 for i, n in enumerate(['GND', '+3V3', '+24V_P', '+24V_F', 'VIN_BUCK', '+3V3A', 'CAN_VCC', 'CAN_VIO', 'VUSB']):
-    S.flag(n, 240 + i * 14, 398)
-S.text('VÁZLAT – generálva a VEZERLO-SPEC.md alapján (2026-10-14). Elrendezést rendezd; a bekötés címkékkel kész.', 20, 405, 1.5)
-S.write(OUT)
+    S.flag(n, 20 + i * 14, 405)
+S.text('Generálva (hardware/gen/vezerlo.py) – a VEZERLO-SPEC.md alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 414, 1.4)
+S.write(OUT, date='2026-10-19')
 print('ok', OUT)

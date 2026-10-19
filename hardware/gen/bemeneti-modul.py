@@ -1,4 +1,9 @@
-"""Általános bemeneti modul – modulmag (A változat, saját 24 V) + 16 bemenet JST-PH-n + HDC3020 (D44, D48, D51, D66)."""
+"""Általános bemeneti modul – modulmag (A változat, saját 24 V) + 16 bemenet JST-PH-n + HDC3020 (D44, D48, D51, D66).
+
+Elrendezés: balra a modulmag-blokk, a 24 V-os betáp és a HW-ID; felül az érzékelő-táp (külön 3,3 V-os LDO, 4 csoport
+3,3 / 5 V-os választóval és PTC-vel); középen 4 × 4 bemeneti cella (csatlakozó → soros R → csomópont: felhúzás,
+lehúzás-hely, C → címke az MCU felé); lent az ESD-tömbök, jobbra lent a HDC3020 és a külső I²C-csatlakozó.
+"""
 import sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 import kigen
@@ -9,9 +14,12 @@ OUT = sys.argv[1]
 S = kigen.Sheet('Bemeneti modul – 16 bemenet (JST-PH), 4 érzékelő-tápcsoport, HDC3020, modulmag', 'bemeneti-modul')
 S.use('modularis:HDC3020', lib='modularis', name='HDC3020',
       libpath=os.path.join(os.path.dirname(__file__), '..', 'lib', 'modularis.kicad_sym'))
-S.label_dx.update({'Power_Protection:TPD4E05U06DQA': 7.62, 'modularis:HDC3020': 12.7,
-                   'Regulator_Linear:NCP1117-3.3_SOT223': 10.16, 'Connector_Generic:Conn_01x03': 5.08,
-                   'Connector_Generic:Conn_01x04': 5.08, 'Jumper:SolderJumper_3_Bridged12': 5.08})
+S.label_pos.update({'Power_Protection:TPD4E05U06DQA': ((-10.16, -10.16), (-10.16, 15.24)),
+                    'modularis:HDC3020': ((-7.62, -8.89), (-7.62, 8.89)),
+                    'Regulator_Linear:NCP1117-3.3_SOT223': ((-7.62, -8.89), (-7.62, -6.35)),
+                    'Jumper:SolderJumper_3_Bridged12': ((-6.35, -3.81), (2.54, 6.35))})
+S.label_dx.update({'Connector_Generic:Conn_01x04': 5.08})
+S.label_pos['Connector_Generic:Conn_01x03'] = ((-7.62, -5.08), (-7.62, 6.35))
 
 R0603 = 'Resistor_SMD:R_0603_1608Metric'
 C0603 = 'Capacitor_SMD:C_0603_1608Metric'
@@ -24,97 +32,217 @@ PINS = ['PA0', 'PA1', 'PA2', 'PA3', 'PA4', 'PA5', 'PA6', 'PA7', 'PA8', 'PA9', 'P
 FT = {8, 9, 10}  # IN8–IN10: 5 V-tűrő (FT) lábak; a többi TTa (≤ 3,6 V)
 
 
-def note(n):
+def P(n):
     return {'Megjegyzés': n}
 
 
-def R(ref, val, x, y, a, b, fp=R0603, r=0, **k):
-    S.comp('Device:R', ref, val, x, y, {'1': a, '2': b}, fp=fp, r=r, **k)
+def up(net, p):
+    S.label(net, p, 90)
 
 
-def C(ref, val, x, y, a, b, fp=C0603, r=0, **k):
-    S.comp('Device:C', ref, val, x, y, {'1': a, '2': b}, fp=fp, r=r, **k)
+def down(net, p):
+    S.label(net, p, 270)
 
 
-# =================== Modulmag ===================
-S.text('MODULMAG – A változat, saját 24 V', 20, 24, 1.5)
-S.text('P78E05 → NCP1117, izolált CAN (D66)', 20, 28)
+def shunt(lib, ref, val, top, bottom_net, fp, r=0, top_pin='1', bot_pin='2', **k):
+    return S.place(lib, ref, val, {top_pin: None, bot_pin: bottom_net}, top_pin, top, r=r, fp=fp, **k)
+
+
+def series(lib, ref, val, left, fp, r=90, lpin='1', rpin='2', **k):
+    pp = S.place(lib, ref, val, {lpin: None, rpin: None}, lpin, left, r=r, fp=fp, **k)
+    return pp[rpin][:2]
+
+
+def stub(p, net, d, length=5.08):
+    """rövid vezeték a lábtól d irányba, a végén címke / tápszimbólum"""
+    dx, dy = {0: (length, 0), 180: (-length, 0), 90: (0, -length), 270: (0, length)}[d]
+    q = (p[0] + dx, p[1] + dy)
+    S.wire(p, q)
+    S.label(net, q, d)
+
+
+# =================== Modulmag, betáp, HW-ID ===================
+S.text('MODULMAG – A változat, saját 24 V', 15, 24, 1.5)
+S.text('P78E05 → NCP1117, izolált CAN (D66)', 15, 28.5)
 left = [('+24V_IN', '+24V_IN'), ('+24V_P', None), ('V_BUS_P', None), ('HW_ID', 'HW_ID')]
 right = [(p, f'IN{i}') for i, p in enumerate(PINS)]
 right += [('PB8', 'I2C_SCL'), ('PB9', 'I2C_SDA'), ('PC2', 'HDC_ALERT'), ('PC3', None), ('PC6', None), ('PC7', None), ('PC8', None)]
-S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 30, 35, 40, 2.54 * (len(right) + 1), left=left, right=right)
+S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 25, 35, 35, 2.54 * (len(right) + 1), left=left, right=right)
 
-S.comp('Connector_Generic:Conn_01x02', 'J300', '24V IN', 25, 45, {'1': '+24V_IN', '2': 'GND'},
-       fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-5.0-H_1x02_P5.00mm_Horizontal',
-       props=note('push-in, a típus a DIN-ház vállától függ (D50)'))
-S.flag('+24V_IN', 25, 60)
+S.text('24 V betáp (J300)', 12, 150)
+pj = S.comp('Connector_Generic:Conn_01x02', 'J300', '24V IN', 30, 158, {'1': None, '2': None},
+            fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-5.0-H_1x02_P5.00mm_Horizontal',
+            props=P('push-in, a típus a DIN-ház vállától függ (D50)'))
+a1, a2 = pj['1'][:2], pj['2'][:2]
+S.wire(a1, (a1[0] - 5.08, a1[1]), (a1[0] - 7.62, a1[1]))
+S.label('+24V_IN', (a1[0] - 7.62, a1[1]), 180)
+S.wire(a2, (a2[0] - 2.54, a2[1]), (a2[0] - 2.54, a2[1] + 2.54))
+down('GND', (a2[0] - 2.54, a2[1] + 2.54))
+S.flag('+24V_IN', a1[0] - 5.08, a1[1] - 7.62)
+S.wire((a1[0] - 5.08, a1[1] - 7.62), (a1[0] - 5.08, a1[1]))
+S.junction((a1[0] - 5.08, a1[1]))
 
-# HW-ID (MODULMAG-SPEC 3.5): bemeneti = 3,3k / 10k → 2,48 V → 6. sáv
-S.text('HW-ID: bemeneti modul = 6. sáv (2,48 V)', 20, 118)
-R('R301', '3k3 1%', 25, 126, '+3V3', 'HW_ID')
-R('R302', '10k 1%', 25, 141, 'HW_ID', 'GND')
-C('C301', '100n', 38, 141, 'HW_ID', 'GND')
+S.text('HW-ID: bemeneti modul = 6. sáv (2,48 V)', 12, 112)
+up('+3V3', (20, 118))
+shunt('Device:R', 'R301', '3k3 1%', (20, 118), None, R0603)
+nh = (20, 128.27)
+S.wire((20, 125.62), nh)
+shunt('Device:R', 'R302', '10k 1%', (20, 130.81), 'GND', R0603)
+S.wire(nh, (20, 130.81))
+shunt('Device:C', 'C301', '100n', (30, 130.81), 'GND', C0603)
+S.wire(nh, (30, nh[1]), (30, 130.81))
+S.wire((30, nh[1]), (36, nh[1]))
+S.label('HW_ID', (36, nh[1]), 0)
+S.junction(nh)
+S.junction((30, nh[1]))
 
 # =================== 1. Érzékelő-táp ===================
-S.text('1. ÉRZÉKELŐ-TÁP: külön 3,3 V-os sín (U301, NCP1117) az 5 V-ról – egy zárlatos érzékelő nem indítja újra az MCU-t', 110, 22, 1.5)
-S.text('4 csoport × 4 csatlakozó: csoportonként 3 padas forrasztható választó (alap: 3,3 V; átforrasztva: 5 V) + saját PTC', 110, 27)
-S.comp('Regulator_Linear:NCP1117-3.3_SOT223', 'U301', 'NCP1117ST33T3G', 135, 45, {'3': '+5V', '1': 'GND', '2': '+3V3S'},
-       props=note('csak az érzékelőknek; az MCU 3,3 V-ja a modulmag U5-je'))
-C('C302', '10µ/10V', 118, 50, '+5V', 'GND', fp='Capacitor_SMD:C_0805_2012Metric')
-S.comp('Device:C_Polarized', 'C303', '10µ tantál', 158, 50, {'1': '+3V3S', '2': 'GND'},
-       fp='Capacitor_Tantalum_SMD:CP_EIA-3216-18_Kemet-A', props=note('ESR 0,1–2 Ω (NCP1117 stabilitás)'))
-for k in range(1, 5):
-    x = 185 + (k - 1) * 55
-    S.comp('Jumper:SolderJumper_3_Bridged12', f'JP{300 + k}', f'CSOPORT {k}', x, 45,
-           {'1': '+3V3S', '2': f'SUP{k}_SEL', '3': '+5V'}, fp='Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm',
-           props=note(f'{k}. csoport tápja: 1–2 = 3,3 V (alap), 2–3 = 5 V'))
-    S.comp('Device:Polyfuse', f'F{300 + k}', 'PTC 0,2A', x + 18, 45, {'1': f'SUP{k}_SEL', '2': f'SUP{k}'},
-           fp='Fuse:Fuse_1206_3216Metric', props=note('tartóáram ≈ 0,2 A, ≥ 6 V (pl. Bourns MF-NSMF020)'))
-    C(f'C{303 + k}', '1µ', x + 32, 50, f'SUP{k}', 'GND')
-S.text('5 V-os csoportban az érzékelő jele is 5 V lehet: az IN8–IN10 (PA8–PA10) 5 V-tűrő, a többi bemeneten az osztó-footprint kell (R_s 2k2, R_le 3k9, R_fel ki)', 110, 68)
+S.text('1. ÉRZÉKELŐ-TÁP: külön 3,3 V-os sín (U301, NCP1117) az 5 V-ról – egy zárlatos érzékelő nem indítja újra az MCU-t;', 80, 22, 1.5)
+S.text('4 csoport × 4 csatlakozó: csoportonként 3 padas forrasztható választó (alap 1–2 = 3,3 V; átforrasztva 2–3 = 5 V) + saját PTC (0,2 A)', 80, 26.5)
+Y5, Y3 = 34.29, 41.91          # +5V sín, +3V3S sín
+xu = 95.25
+up('+5V', (85.09, Y5))
+pu = S.place('Regulator_Linear:NCP1117-3.3_SOT223', 'U301', 'NCP1117ST33T3G', {'3': None, '1': 'GND', '2': None}, '3', (xu, Y3),
+             props=P('csak az érzékelőknek; az MCU 3,3 V-ja a modulmag U5-je'))
+S.wire((85.09, Y5), (85.09, Y3))
+S.rail(Y3, [85.09, 88.9, xu])
+shunt('Device:C', 'C302', '10µ/10V', (88.9, Y3 + 2.54), 'GND', 'Capacitor_SMD:C_0805_2012Metric')
+S.wire((88.9, Y3), (88.9, Y3 + 2.54))
+x3 = pu['2'][0]
+groups = [152.4 + i * 63.5 for i in range(4)]
+S.rail(Y3, [x3, x3 + 7.62, x3 + 15.24] + [g - 5.08 for g in groups])
+S.rail(Y5, [85.09] + [g + 5.08 for g in groups])
+shunt('Device:C_Polarized', 'C303', '10µ tantál', (x3 + 7.62, Y3 + 2.54), 'GND', 'Capacitor_Tantalum_SMD:CP_EIA-3216-18_Kemet-A',
+      props=P('ESR 0,1–2 Ω (NCP1117 stabilitás)'))
+S.wire((x3 + 7.62, Y3), (x3 + 7.62, Y3 + 2.54))
+S.wire((x3 + 15.24, Y3), (x3 + 15.24, Y3 - 3.81))
+S.label('+3V3S', (x3 + 15.24, Y3 - 3.81), 90)
+for k, gx in enumerate(groups, 1):
+    yj = Y3 + 10.16
+    pjp = S.place('Jumper:SolderJumper_3_Bridged12', f'JP{300 + k}', f'CSOPORT {k}', {'1': None, '2': None, '3': None}, '1',
+                  (gx - 5.08, yj), fp='Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm',
+                  props=P(f'{k}. csoport tápja: 1–2 = 3,3 V (alap), 2–3 = 5 V'))
+    S.wire((gx - 5.08, Y3), (gx - 5.08, yj))
+    S.wire((gx + 5.08, Y5), pjp['3'][:2])
+    c = pjp['2'][:2]
+    S.wire(c, (c[0], c[1] + 1.27))
+    S.place('Device:Polyfuse', f'F{300 + k}', 'PTC 0,2A', {'1': None, '2': None}, '1', (c[0], c[1] + 1.27),
+            fp='Fuse:Fuse_1206_3216Metric', props=P('tartóáram ≈ 0,2 A, ≥ 6 V (pl. Bourns MF-NSMF020)'))
+    ns = (c[0], c[1] + 11.43)
+    S.wire((c[0], c[1] + 8.89), ns)
+    S.rail(ns[1], [ns[0], ns[0] + 7.62, ns[0] + 12.7])
+    shunt('Device:C', f'C{303 + k}', '1µ', (ns[0] + 7.62, ns[1] + 2.54), 'GND', C0603)
+    S.wire((ns[0] + 7.62, ns[1]), (ns[0] + 7.62, ns[1] + 2.54))
+    S.label(f'SUP{k}', (ns[0] + 12.7, ns[1]), 0)
+    S.text(f'IN{4 * k - 4}–IN{4 * k - 1}', gx - 5, ns[1] + 10)
+S.text('5 V-os csoportban az érzékelő jele is 5 V lehet: az IN8–IN10 (PA8–PA10) 5 V-tűrő, a többi bemeneten az osztó-hely kell (R_s 2k2, R_le 3k9, R_fel ki)', 80, 84)
 
 # =================== 2. Bemenetek ===================
-S.text('2. BEMENETEK (× 16): PH-csatlakozó 1 = táp (SUPk), 2 = GND, 3 = JEL → R_s → MCU-láb; R_fel 3,3 V-ra, R_le (DNP) és C a GND-re, ESD az MCU-oldalon', 20, 160, 1.5)
-S.text('Alap: R_s 1k + R_fel 10k + C 10n → érintkező, reed, gomb, open-drain (pl. AH1911), 3,3 V-os kimenet. 12/24 V-os jel: R_s 68k, R_le 10k, R_fel ki.', 20, 165)
+S.text('2. BEMENETEK (× 16): PH 1 = táp (SUPk), 2 = GND, 3 = JEL → R_s → csomópont (R_fel a 3,3 V-ra, R_le (DNP) és C a GND-re) → MCU; ESD az MCU-oldalon (lent)', 80, 93, 1.5)
+S.text('Alap: R_s 1k + R_fel 10k + C 10n → érintkező, reed, gomb, open-drain (pl. AH1911), 3,3 V-os kimenet. 12/24 V-os jel: R_s 68k, R_le 10k, R_fel ki.', 80, 97.5)
 for n in range(16):
     k = n // 4 + 1
     col, row = n % 4, n // 4
-    x = 20 + col * 72
-    yy = 180 + row * 26
-    S.comp('Connector_Generic:Conn_01x03', f'J{301 + n}', f'IN{n}', x, yy, {'1': f'SUP{k}', '2': 'GND', '3': f'IN{n}_EXT'}, fp=PH3,
-           props=note(f'{k}. tápcsoport' + (' – 5 V-tűrő láb' if n in FT else '')))
-    R(f'R{310 + n}', '1k', x + 15, yy + 2, f'IN{n}_EXT', f'IN{n}', r=90)
-    R(f'R{330 + n}', '10k', x + 27, yy - 6, '+3V3', f'IN{n}')
-    R(f'R{350 + n}', 'DNP', x + 37, yy + 8, f'IN{n}', 'GND', dnp=True, props=note('osztó 5/12/24 V-os jelhez'))
-    C(f'C{310 + n}', '10n', x + 47, yy + 8, f'IN{n}', 'GND')
+    x0 = 80 + col * 63.5
+    yJ = 114.3 + row * 29.21          # a JEL sora
+    pj = S.place('Connector_Generic:Conn_01x03', f'J{301 + n}', f'IN{n}', {'1': None, '2': None, '3': None}, '3', (x0 + 7.62, yJ),
+                 r=180, fp=PH3, props=P(f'{k}. tápcsoport' + (' – 5 V-tűrő láb' if n in FT else '')))
+    stub(pj['2'][:2], 'GND', 0)
+    s1 = pj['1'][:2]
+    S.wire(s1, (s1[0] + 2.54, s1[1]), (s1[0] + 2.54, s1[1] + 2.54))
+    S.label(f'SUP{k}', (s1[0] + 2.54, s1[1] + 2.54), 270)
+    # JEL → R_s → csomópont → IN címke
+    S.wire((x0 + 7.62, yJ), (x0 + 12.7, yJ))
+    p = series('Device:R', f'R{310 + n}', '1k', (x0 + 12.7, yJ), R0603)
+    xp, xd, xc, xo = p[0] + 5.08, p[0] + 12.7, p[0] + 20.32, p[0] + 30.48
+    S.rail(yJ, [p[0], xp, xd, xc, xo])
+    S.place('Device:R', f'R{330 + n}', '10k', {'1': '+3V3', '2': None}, '2', (xp, yJ), fp=R0603)
+    shunt('Device:R', f'R{350 + n}', 'DNP', (xd, yJ + 2.54), 'GND', R0603, dnp=True, props=P('osztó 5/12/24 V-os jelhez'))
+    S.wire((xd, yJ), (xd, yJ + 2.54))
+    shunt('Device:C', f'C{310 + n}', '10n', (xc, yJ + 2.54), 'GND', C0603)
+    S.wire((xc, yJ), (xc, yJ + 2.54))
+    S.label(f'IN{n}', (xo, yJ), 0)
+    S.junction((xp, yJ))
 
 # ESD: 4 × TPD4E05U06 (4 csatorna / IC), az MCU-oldalon
-S.text('ESD: 4 × TPD4E05U06 – a csatlakozók mellé,', 315, 172)
-S.text('a soros R MCU-oldalára', 315, 176)
-for g in range(4):
-    a = 4 * g
-    S.comp('Power_Protection:TPD4E05U06DQA', f'U{303 + g}', 'TPD4E05U06DQAR', 320 + (g % 2) * 45, 185 + (g // 2) * 40,
-           {'1': f'IN{a}', '2': f'IN{a + 1}', '4': f'IN{a + 2}', '5': f'IN{a + 3}', '3': 'GND', '8': 'GND'},
-           nc=['6', '7', '9', '10'])
+ye = 248.92
+S.text('ESD: 4 × TPD4E05U06 – a csatlakozók mellé, a soros R MCU-oldalára (a soros R korlátozza a magasabb feszültség áramát)', 80, ye - 18, 1.3)
+for gi in range(4):
+    a = 4 * gi
+    x = 101.6 + gi * 48.26
+    pe = S.comp('Power_Protection:TPD4E05U06DQA', f'U{303 + gi}', 'TPD4E05U06DQAR', x, ye,
+                {'1': None, '2': None, '4': None, '5': None, '3': None, '8': None}, nc=['6', '7', '9', '10'])
+    stub(pe['1'][:2], f'IN{a}', 180)
+    stub(pe['2'][:2], f'IN{a + 1}', 180)
+    stub(pe['4'][:2], f'IN{a + 2}', 0)
+    stub(pe['5'][:2], f'IN{a + 3}', 0)
+    stub(pe['3'][:2], 'GND', 270, 2.54)
 
 # =================== 3. HDC3020 + külső I²C ===================
-S.text('3. HŐMÉRSÉKLET / PÁRATARTALOM: HDC3020 a NYÁK szélén (alatta és körülötte marás), + 4 tűs PH külső érzékelőhöz (D66)', 110, 85, 1.5)
-S.comp('modularis:HDC3020', 'U302', 'HDC3020DEFR', 150, 115,
-       {'5': '+3V3', '6': '+3V3', '2': 'GND', '7': 'GND', '1': 'I2C_SDA', '4': 'I2C_SCL', '3': 'HDC_ALERT', '8': 'GND'}, nc=['9'],
-       props=note('I²C-cím 0x44 (ADDR = ADDR1 = GND); a külső érzékelő más címre állítva (0x45–0x47). Az EP lebegve.'))
-C('C320', '100n', 128, 105, '+3V3', 'GND')
-R('R371', '4k7', 185, 100, '+3V3', 'I2C_SCL')
-R('R372', '4k7', 197, 100, '+3V3', 'I2C_SDA')
-R('R373', '10k', 209, 100, '+3V3', 'HDC_ALERT')
-R('R374', '100R', 230, 112, 'I2C_SCL', 'SCL_EXT', r=90)
-R('R375', '100R', 230, 124, 'I2C_SDA', 'SDA_EXT', r=90)
-S.comp('Power_Protection:TPD4E05U06DQA', 'U307', 'TPD4E05U06DQAR', 262, 118,
-       {'1': 'SCL_EXT', '2': 'SDA_EXT', '3': 'GND', '8': 'GND'}, nc=['4', '5', '6', '7', '9', '10'])
-S.comp('Device:Polyfuse', 'F305', 'PTC 0,2A', 282, 102, {'1': '+3V3S', '2': 'SUP_I2C'}, fp='Fuse:Fuse_1206_3216Metric')
-S.comp('Connector_Generic:Conn_01x04', 'J320', 'I2C KÜLSŐ', 300, 118,
-       {'1': 'SUP_I2C', '2': 'GND', '3': 'SDA_EXT', '4': 'SCL_EXT'}, fp=PH4,
-       props=note('külső HDC3020 / I²C-érzékelő, kábel ≤ 2 m, 100 kHz'))
+S.text('3. HŐMÉRSÉKLET / PÁRATARTALOM:', 335, 102, 1.3)
+S.text('HDC3020 a NYÁK szélén (marással) + 4 tűs PH', 335, 106)
+S.text('külső érzékelőhöz (D66). Cím 0x44 (ADDR = ADDR1', 335, 109.5)
+S.text('= GND); a külső más címen. Az EP lebegve.', 335, 113)
+hx, hy = 355.6, 137.16
+ph = S.comp('modularis:HDC3020', 'U302', 'HDC3020DEFR', hx, hy, {'5': None, '6': None, '2': None, '7': None, '1': None, '4': None,
+            '3': None, '8': None}, nc=['9'])
+# táp: VDD (5) + RESET (6) → +3V3, ADDR (2) + ADDR1 (7) → GND
+v5, r6 = ph['5'][:2], ph['6'][:2]
+xv = v5[0] - 5.08
+S.wire(v5, (xv, v5[1]))
+S.wire(r6, (xv, r6[1]))
+S.wire((xv, r6[1]), (xv, v5[1]), (xv, v5[1] - 5.08))
+up('+3V3', (xv, v5[1] - 5.08))
+S.junction((xv, v5[1]))
+S.rail(v5[1] - 2.54, [xv, xv - 7.62])
+S.junction((xv, v5[1] - 2.54))
+shunt('Device:C', 'C320', '100n', (xv - 7.62, v5[1] - 2.54), 'GND', C0603)
+a2_, a7 = ph['2'][:2], ph['7'][:2]
+xg = xv + 2.54
+S.wire(a2_, (xg, a2_[1]))
+S.wire(a7, (xg, a7[1]))
+S.wire((xg, a2_[1]), (xg, a7[1]), (xg, a7[1] + 2.54))
+S.junction((xg, a7[1]))
+down('GND', (xg, a7[1] + 2.54))
+g8 = ph['8'][:2]
+S.wire(g8, (g8[0] + 2.54, g8[1]), (g8[0] + 2.54, g8[1] + 2.54))
+down('GND', (g8[0] + 2.54, g8[1] + 2.54))
+# SDA (1), SCL (4), ALERT (3) → felhúzások (felül, közös magasságban) és címkék
+ytop = ph['1'][1] - 12.7
+for i, (pin, net, rref, rval) in enumerate((('1', 'I2C_SDA', 'R372', '4k7'), ('4', 'I2C_SCL', 'R371', '4k7'),
+                                             ('3', 'HDC_ALERT', 'R373', '10k'))):
+    q = ph[pin][:2]
+    x = q[0] + 5.08 + i * 7.62
+    xe = q[0] + 25.4
+    S.rail(q[1], [q[0], x, xe])
+    S.place('Device:R', rref, rval, {'1': '+3V3', '2': None}, '1', (x, ytop), fp=R0603)
+    S.wire((x, ytop + 7.62), (x, q[1]))
+    S.label(net, (xe, q[1]), 0)
+# külső I²C: 100R soros + ESD (U307) + PTC (F305) + J320 – címkékkel
+xi = 345.44
+S.text('KÜLSŐ I²C (J320)', xi, 161)
+for i, (a, b, ref) in enumerate((('I2C_SCL', 'SCL_EXT', 'R374'), ('I2C_SDA', 'SDA_EXT', 'R375'))):
+    y = 167.64 + i * 5.08
+    S.label(a, (xi, y), 180)
+    S.wire((xi, y), (xi + 2.54, y))
+    p = series('Device:R', ref, '100R', (xi + 2.54, y), R0603)
+    stub(p, b, 0, 7.62)
+pjx = S.comp('Connector_Generic:Conn_01x04', 'J320', 'I2C KÜLSŐ', 398.78, 185.42, {'1': None, '2': None, '3': None, '4': None},
+             fp=PH4, props=P('külső HDC3020 / I²C-érzékelő, kábel ≤ 2 m, 100 kHz'))
+stub(pjx['1'][:2], 'SUP_I2C', 180, 7.62)
+stub(pjx['2'][:2], 'GND', 180, 7.62)
+stub(pjx['3'][:2], 'SDA_EXT', 180, 7.62)
+stub(pjx['4'][:2], 'SCL_EXT', 180, 7.62)
+pe = S.comp('Power_Protection:TPD4E05U06DQA', 'U307', 'TPD4E05U06DQAR', 378.46, 213.36, {'1': None, '2': None, '3': None, '8': None},
+            nc=['4', '5', '6', '7', '9', '10'])
+stub(pe['1'][:2], 'SCL_EXT', 180)
+stub(pe['2'][:2], 'SDA_EXT', 180)
+stub(pe['3'][:2], 'GND', 270, 2.54)
+S.label('+3V3S', (345.44, 236.22), 180)
+S.wire((345.44, 236.22), (347.98, 236.22))
+p = series('Device:Polyfuse', 'F305', 'PTC 0,2A', (347.98, 236.22), 'Fuse:Fuse_1206_3216Metric')
+stub(p, 'SUP_I2C', 0, 5.08)
 
-S.text('VÁZLAT – generálva a D44/D48/D51/D66 alapján (2026-10-16). Elrendezést rendezd; a bekötés címkékkel kész.', 20, 287, 1.5)
+S.text('Generálva (hardware/gen/bemeneti-modul.py) – D44/D48/D51/D66 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 287, 1.3)
 S.write(OUT, date='2026-10-16')
 print('ok', OUT)
