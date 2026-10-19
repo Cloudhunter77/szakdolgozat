@@ -17,7 +17,8 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
 - 📝 CCT szalag firmware (D16): prompt kész, **még nincs lefuttatva**
 - 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`. **Mind az öt KiCad-lap kész** (`hardware/`: modulmag,
   vezérlő, LED-, relé-, bemeneti modul) – generátorral rajzolva, elrendezve, ERC 0 (relé: 4 elfogadott lib-jelzés),
-  KiCad MCP vizuális ellenőrzéssel átnézve (5345f48). **Még hátra: lapról lapra átnézés a spec szerint → 10-21 lezárás.**
+  lapról lapra átnézve a spec és az adatlapok szerint (10-19; C320-duplikátum javítva). Új: LoRa-előkészítés DNP (D68),
+  bővítők + mérőpontok + HW_REV + SCT-013 (D69), R6/R7 = 0 Ω (D70). **Hátra a lezárásig: a 2 saját footprint, CubeMX.**
 - ✏️ **D67:** amint Balázs kézzel szerkeszt egy lapot, onnantól a `.kicad_sch` a forrás (generátort arra nem futtatunk);
   munkafolyamat: `hardware/README.md`
 - 📦 `SAMPLE-KERESEK.md` – TI kérés + rendelés leadva (10-19); a többi gyártó hátra (határidő 10-22)
@@ -69,6 +70,8 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
 ## Hardver – amit tudni kell
 **ESP32-C6:** egymagos 160 MHz RISC-V, **nincs PSRAM**, **nincs Classic BT** (BLE 5.3), Wi-Fi 6 **csak 2,4 GHz**,
 802.15.4 (Thread/Zigbee – egyszerre csak az egyik), 2 TWAI, **nincs Ethernet-MAC** (→ W5500 SPI-n), egy ADC (GPIO0–6).
+**Ethernet (W5500) + Thread egyszerre működik** (külön hardver); a Wi-Fi + Thread csak időosztással (közös 2,4 GHz-es rádió).
+Nincs olyan ESP32, amiben Ethernet-MAC és 802.15.4 is van; a szűk keresztmetszet a RAM (nincs PSRAM).
 A demó-konfigok DevKitC-1-es lábakat feltételeznek:
 
 | Láb (DevKit) | Használat | Megjegyzés |

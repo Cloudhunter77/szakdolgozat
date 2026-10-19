@@ -170,6 +170,12 @@ class Sheet:
         for proj, path in self.extra_inst:
             inst.append([Sym('project'), proj, [Sym('path'), path, [Sym('reference'), ref], [Sym('unit'), unit]]])
         el.append(inst)
+        if not power:
+            # ugyanaz a jelölés kétszer (többegységes tokon egységenként egyszer) = két alkatrész egy néven a NYÁK-on
+            seen = self.__dict__.setdefault('_refs', set())
+            if (ref, unit) in seen:
+                raise ValueError(f'kétszer szereplő jelölés: {ref} (egység {unit})')
+            seen.add((ref, unit))
         self.items.append(el)
         return pins
 

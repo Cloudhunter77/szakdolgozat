@@ -52,7 +52,7 @@ D2 áramát, így a TVS kis áramon, ~31–35 V-on fog (teljes impulzusáramnál
 |---|---|---|---|
 | F1 | SMD-biztosíték | 0,5 A, ≥ 32 V, gyors (1206) | a logikai ág saját védelme |
 | D1 | Schottky | SS16 / B160 (60 V, 1 A, SMA) | fordított polaritás ellen; ~0,4 V esés |
-| R6 | ellenállás (opc., javaslat) | 10 Ω, 1206, impulzusbíró (pl. Panasonic ERJ-P08) | 0 Ω-mal áthidalható; esés üzemben ~0,25 V (~25 mA a 24 V-os oldalon); bedugáskor a C12 töltőárama ≤ 2,4 A (az F1-nek nem gond) |
+| R6 | ellenállás | **0 Ω (D70)**; a footprint marad, szükség esetén 10 Ω, 1206, impulzusbíró (pl. Panasonic ERJ-P08) | 10 Ω-mal: esés üzemben ~0,25 V (~25 mA a 24 V-os oldalon); bedugáskor a C12 töltőárama ≤ 2,4 A (az F1-nek nem gond) |
 | D2 | TVS | SMBJ28A | `+24V_P` → GND; Vbr 31,1–34,4 V |
 | C12 | elektrolit – **kötelező** | 47 µF, 50 V, low-ESR, 105 °C | csillapítás bedugáskor / hosszú betápkábelnél; egyben a P78E05 adatlapja szerinti bemeneti kondenzátor (30 V felett 22 µF / 50 V kötelező) |
 | C1 | kerámia | 10 µF, 50 V, X7R (1210) | közvetlenül a P78E05 1-es (VIN) és 2-es (GND) lába mellett (adatlap: 10 µF / 50 V) |
@@ -124,6 +124,15 @@ esnek (k × 0,4125 V), nem a határukra:
 | 7 | UART_RX (USART1) | PC5 (25) |
 
 ST-Link V2 klónhoz dupont-vezetékkel bekötve; a lap szélén, hozzáférhetően.
+
+### 3.7 Revízió-azonosító és bővítő (D69)
+- **HW_REV a PB0-n:** 3V3 – R10 (DNP) – PB0 – R11 10 kΩ – GND, + C20 100 nF. v1: csak az R11 → 0 V = 0. sáv; a későbbi
+  revíziók a HW-ID sávjai (3.5) szerint ültetik be az R10/R11-et, így ugyanaz a firmware felismeri a NYÁK-változatot.
+- **J4** (2 × 5, 2,54 mm, DNP): 1 3V3 · 2 GND · 3 PA15 · 4 PB6 · 5 PB3 · 6 PB7 · 7 PB4 · 8 PB10 · 9 PB5 · 10 GND –
+  SPI1 (PB3 SCK, PB4 MISO, PB5 MOSI, PA15 NSS), I²C1 alternatív lábai (PB6 SCL, PB7 SDA), PB10. A layoutnál dől el,
+  hogy elfér-e.
+- **Relémodul (a modul saját lapján):** J105 3,5 mm-es jack az SCT-013 lakatfogónak, R107/R108 10 k + C102 10 µF
+  középfeszültség (1,65 V), R109 terhelő-ellenállás (csak áramkimenetes típushoz), R110 1 k + C103 10 nF → PA0. Minden DNP.
 
 ## 4. Izolált CAN – ISO1042BDWVR (U2)
 
@@ -222,6 +231,9 @@ alapján ellenőriztünk.)
 | 46, 49 | PA13, PA14 | SWDIO / SWCLK | | | |
 | 60 | BOOT0 | 10 kΩ GND-re | | | |
 | 61, 62 | PB8, PB9 | | | | I²C1 SCL/SDA (HDC3020) |
+| 26 | PB0 | **HW_REV** (NYÁK-revízió, ADC – D69) | | | |
+| 29, 50, 55–59 | PB10, PA15, PB3–PB7 | **J4 bővítő** (DNP, D69) | | | |
+| 14 | PA0 | | | **CT_SENSE** (SCT-013, DNP – D69) | |
 | egyéb | | szabad → firmware-ben analóg mód | | | |
 
 Megjegyzések:

@@ -70,7 +70,7 @@ VUSB → D3 → VIN_BUCK
 | D2 | TVS | SMBJ28A | `+24V_P` → GND; ~45 V-on fog (az LMR36015 60 V-os) |
 | D8 | Schottky | SS16 (60 V, 1 A) | `+24V_P` → `VIN_BUCK`; az USB ne táplálja vissza a 24 V-os oldalt |
 | D3 | Schottky | **B360 / SS36** (60 V, 3 A) | `VUSB` → `VIN_BUCK`. **60 V-os kell**: túlfeszültségnél a `VIN_BUCK` ~45 V is lehet, miközben a `VUSB` ~0 V. A 3 A-es dióda 0,5 A-en kisebbet ejt (~0,4 V) → USB-ről is meglegyen az LMR36015 4,2 V-ja |
-| R7 | ellenállás | 10 Ω, **2512, impulzusbíró** (0 Ω-mal áthidalható) | a C1-gyel RC-szűrő a P78E05 elé, korlátozza a D7 áramát (D57 mintájára). Legrosszabb esetben ~0,16 A → 1,6 V, 0,26 W – ezért 2512 |
+| R7 | ellenállás | **0 Ω (D70)**; a 2512-es footprint marad, szükség esetén 10 Ω impulzusbíró | a C1-gyel RC-szűrő a P78E05 elé, korlátozza a D7 áramát (D57 mintájára). Legrosszabb esetben ~0,16 A → 1,6 V, 0,26 W – ezért 2512 |
 | D7 | TVS | SMBJ28A | `+24V_F` → GND – az R7 miatt kis áramon, ~31–35 V-on fog (a P78E05 max. 36 V) |
 | C1 | elektrolit – **kötelező** | 47 µF, 50 V, low-ESR, 105 °C | az R7-tel soros R-C a bemeneten → a betápkábel LC-lengését is csillapítja (D57) |
 | C2 | kerámia | 10 µF, 50 V, X7R (1210) | a P78E05 1-es és 2-es lába mellett |
@@ -156,15 +156,15 @@ lábkiosztása), 8–36 V be, 5,0 V ± 3 %, 1 A, 93 %, rövidzár-védett; 11,6 
 | 1, 28, 29 | – | GND (29 = alsó pad, sok via) | |
 | 2 | – | 3V3 | 22 µF + 100 nF |
 | 3 | EN | reset | 10 kΩ / 1 µF, SW1 |
-| 4 | GPIO4 | tartalék (ADC1_CH4) | tesztpad |
-| 5 | GPIO5 | tartalék (ADC1_CH5) | tesztpad |
+| 4 | GPIO4 | **LORA_DIO1** (D68) | – |
+| 5 | GPIO5 | **EXP_GPIO5** → J8 bővítő (ADC1_CH5, D69) | DNP 4,7 kΩ fel / DNP le |
 | 6 | GPIO6 | W5500 SCLK (FSPICLK, IO_MUX) | R19 0 Ω (33 Ω-hoz footprint) + kondenzátor-footprint a GND-re (nem beültetve) |
 | 7 | GPIO7 | W5500 MOSI (FSPID, IO_MUX) | |
 | 8 | GPIO0 | VIN_SENSE (ADC1_CH0) | 2.1 |
 | 9 | GPIO1 | VBUS_SENSE (ADC1_CH1) | 2.4 |
 | 10 | GPIO8 | RGB LED adat (strapping) | 10 kΩ felhúzás → 8. fejezet |
 | 11 | GPIO10 | W5500 SCSn (GPIO-mátrixon) | 10 kΩ felhúzás |
-| 12 | GPIO11 | W5500 RSTn | 10 kΩ felhúzás |
+| 12 | GPIO11 | W5500 RSTn **+ LoRa NRST** (közös, D68) | 10 kΩ felhúzás |
 | 13 | GPIO12 | USB D− | 7. fejezet |
 | 14 | GPIO13 | USB D+ | 7. fejezet |
 | 15 | GPIO9 | BOOT gomb (strapping) | 10 kΩ felhúzás, SW2 |
@@ -172,8 +172,8 @@ lábkiosztása), 8–36 V be, 5,0 V ± 3 %, 1 A, 93 %, rövidzár-védett; 11,6 
 | 17 | GPIO19 | CAN_RX (TWAI0) | |
 | 18 | GPIO20 | VBUS_EN (alacsony = V_BUS KI) | D9 BAT54 az EN felé (2.4) |
 | 19 | GPIO21 | VBUS_FAULT | 10 kΩ felhúzás |
-| 20 | GPIO22 | tartalék (v2: TWAI1_TX, 2. lánc) | tesztpad |
-| 21 | GPIO23 | tartalék (v2: TWAI1_RX) | tesztpad |
+| 20 | GPIO22 | **LORA_CS** (D68) | R51 10 kΩ felhúzás (DNP) |
+| 21 | GPIO23 | **LORA_BUSY** (D68) | – |
 | 22 | – | NC | |
 | 23 | GPIO15 | nem használt (strapping) | 10 kΩ felhúzás |
 | 24 | GPIO17 | U0RXD (debug) | J5/4 |
@@ -352,7 +352,7 @@ Közös módusú CAN-fojtó footprintje a transceiver és a csatlakozók közöt
   USB-C nem megy.
 
 ## 9. Teljes lábkiosztás – összefoglaló
-Lásd 3.2. Szabad: GPIO4, GPIO5, GPIO22, GPIO23 (tesztpadok). Strapping: GPIO8 (felhúzva), GPIO9 (felhúzva +
+Lásd 3.2. **Szabad láb már nincs** (D68/D69): GPIO4/22/23 a LoRáé, a GPIO5 a J8 bővítőé; a v2-es második CAN-lánc (TWAI1) lába így elfogyott. Strapping: GPIO8 (felhúzva), GPIO9 (felhúzva +
 gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UART0-val (GPIO16/17).
 
 ## 10. Mechanika és layout (DIN 4 M, NYÁK ~66 × 85 mm – D50)
@@ -406,6 +406,7 @@ forrasztható jumper · SW1/SW2 nyomógomb · kondenzátorok: 47 µF 50 V elektr
 - [ ] A TCAN1044AVDRQ1 a TI-sample-listára (a TCAN330 helyett).
 
 ## 14. Változások a korábbi tervhez
+- **D68–D70 (2026-10-19):** LoRa-előkészítés, bővítő és mérőpontok, 0 Ω-os R7, a spec szerinti DNP-pótlások – 15. fejezet.
 - **D58** (Balázs, 2026-10-13): USB-C táp busz nélkül, 2 átmenő XH, RGB LED + táp-LED, csak debug-tüske.
 - **D59** (Balázs, 2026-10-14): a V_BUS a P78E05-ről (5,0 V) az LMR36006 (5,2 V) helyett; a 3,3 V marad az LMR36015
   (D46 lezárva). A modulokon a V_BUS legrosszabb esetben ~4,7 V.
@@ -416,3 +417,36 @@ forrasztható jumper · SW1/SW2 nyomógomb · kondenzátorok: 47 µF 50 V elektr
 - A független ellenőrzés javításai: D3 60 V-os dióda (a 40 V-os SS14 túlfeszültségnél tönkremehetne, és zárlatosan
   24 V-ot adna az USB-portra); VUSB-levezető ellenállás; a V_BUS alapértelmezett bekapcsolása USB-ről (táp-
   ingadozási hurok) megszüntetve; WS2812B az 5 V-ról; 22 Ω az USB-vonalakon; J5 3,3 V-ja csak referencia.
+
+## 15. Kiegészítések a rajz átnézése után (2026-10-19, D68–D70)
+
+### 15.1 LoRa – U10 Ebyte E22-900M22S (minden DNP, D68)
+SX1262, 850–930 MHz (itt 868 MHz), 22 dBm, 14 × 20 mm, bélyeglyukas (saját footprint: `modularis:Ebyte_E22-900M22S`,
+az Ebyte-kézikönyv méretrajzából; a padméret 1,8 × 0,9 mm saját választás).
+
+| E22-láb | Jel | Bekötés |
+|---|---|---|
+| 9 VCC | `+3V3_LORA` | R46 0 Ω a `3V3`-ról (leválasztás / árammérés) + C51 10 µF + C52 100 nF |
+| 19 NSS / 18 SCK / 17 MOSI / 16 MISO | SPI | LORA_CS (GPIO22, R51 10 kΩ fel) · a W5500-zal közös SCLK/MOSI/MISO |
+| 15 NRST | `W5500_RST` | közös reset a W5500-zal (GPIO11) |
+| 14 BUSY / 13 DIO1 | GPIO23 / GPIO4 | a DIO1 magas aktív → nem közösíthető a W5500 INTn-jével |
+| 8 DIO2 → 7 TXEN; U11 74LVC1G04 → 6 RXEN | RF-kapcsoló | TXEN = DIO2, RXEN = ¬DIO2 → firmware: `setDio2AsRfSwitch(true)` |
+| 21 ANT | J7 u.FL (Hirose U.FL-R-SMT-1) | rövid 50 Ω-os vonal, alatta folytonos GND; pigtail a ház SMA-jához |
+
+Adáskor ~120 mA a 3,3 V-on (az LMR36015 1,5 A-es). A W5500 MISO-ja tri-state; a KiCad-szimbólumában „output”, ezért
+a generátor tri-state-re írja át (ERC).
+
+### 15.2 Bővítés és mérőpontok (D69)
+- **J8** (JST-PH 3 tűs): 1 `3V3` · 2 GPIO5 · 3 GND; R52 4,7 kΩ felhúzás és R53 lehúzás/osztó – mindkettő DNP.
+- **TP1–TP7:** `+24V_P`, `+5V`, `3V3`, `V_BUS`, `CAN_H`, `CAN_L`, GND.
+
+### 15.3 A spec szerint eddig hiányzó DNP-footprintek
+- **C49/C50** az USB D+/D− vonalon a C6 felőli oldalon (7. fejezet); **R47** 1 MΩ a 25 MHz-es kvarccal párhuzamosan (4.3);
+  **R48–R50** PMODE-lehúzások (4.1); **L2** közös módusú CAN-fojtó + **JP4/JP5** alapból zárt áthidaló (6.4 –
+  `CAN_H_T/CAN_L_T` a transceiver oldalán).
+- **U1** saját footprint: `modularis:TI_VQFN-HR-12_RNX0012B` (a TI RNX0012B csomagrajzából).
+
+### 15.4 R7 = 0 Ω (D70)
+A D57-féle 10 Ω helyett 0 Ω; a footprint marad. Bedugáskor a TVS nagyobb áramon, magasabban fog – a 24 V-os táp
+≤ 26 V szabály ezért fontosabb.
+

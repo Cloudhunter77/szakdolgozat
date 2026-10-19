@@ -11,9 +11,9 @@ kigen.POWER_DOWN = {'GND'}
 
 OUT = sys.argv[1]
 S = kigen.Sheet('Relémodul – 4 × RTD14024 (16 A, 230 V), modulmag', 'rele-modul')
-S.label_pos.update({'Transistor_Array:ULN2803A': ((-7.62, -12.7), (-7.62, 20.32)),
-                    'Relay:Relay_SPDT': ((-10.16, -10.16), (-10.16, 11.43))})
-S.label_dx.update({'Connector_Generic:Conn_01x02': 5.08})
+S.label_pos.update({'Transistor_Array:ULN2803A': ((-7.62, -12.7), (5.08, 20.32)),     # érték a GND-láb mellett jobbra
+                    'Relay:Relay_SPDT': ((-10.16, -10.16), (-21.59, 11.43))})       # érték balra lent, nem a COIL-vezetéken
+S.label_dx.update({'Connector_Generic:Conn_01x02': 5.08, 'Device:LED': 8.89})
 
 R0603 = 'Resistor_SMD:R_0603_1608Metric'
 R0805 = 'Resistor_SMD:R_0805_2012Metric'
@@ -33,9 +33,10 @@ S.text('MODULMAG (../modulmag/modulmag.kicad_sch): táp, STM32F303RET6, ISO1042,
 left = [('+24V_IN', '+24V_IN'), ('+24V_P', '+24V_P'), ('V_BUS_P', None), ('HW_ID', 'HW_ID')]
 right = [('PB12', 'REL1'), ('PB13', 'REL2'), ('PB14', 'REL3'), ('PB15', 'REL4')]
 right += [(n, None) for n in ['PB8', 'PB9', 'PB11', 'PC2', 'PC3', 'PC6', 'PC7', 'PC8'] + [f'PA{i}' for i in range(11)]]
+right = [(n, 'CT_SENSE' if n == 'PA0' else net) for n, net in right]   # D69: SCT-013 előkészítés
 S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 50, 40, 40, 2.54 * (len(right) + 1), left=left, right=right)
 
-pp = S.comp('Connector_Generic:Conn_01x02', 'J100', '24V IN', 25, 70, {'1': None, '2': None},
+pp = S.comp('Connector_Generic:Conn_01x02', 'J100', '24V IN', 33, 70, {'1': None, '2': None},
             fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-5.0-H_1x02_P5.00mm_Horizontal',
             props=P('push-in, a típus a DIN-ház vállától függ (D50)'))
 a1, a2 = pp['1'][:2], pp['2'][:2]
@@ -43,8 +44,8 @@ S.wire(a1, (a1[0] - 5.08, a1[1]))
 S.label('+24V_IN', (a1[0] - 5.08, a1[1]), 180)
 S.wire(a2, (a2[0] - 2.54, a2[1]), (a2[0] - 2.54, a2[1] + 2.54))
 S.label('GND', (a2[0] - 2.54, a2[1] + 2.54), 270)
-S.flag('+24V_IN', 25, 85)
-S.text('24 V betáp (J100)', 12, 62)
+S.flag('+24V_IN', 33, 85)
+S.text('24 V betáp (J100)', 22, 62)
 
 # HW-ID (MODULMAG-SPEC 3.5): relé = 10k / 10k → 1,65 V → 4. sáv
 S.text('HW-ID: relé = 4. sáv (1,65 V)', 12, 102)
@@ -54,12 +55,12 @@ nh = (25, 118.11)
 S.wire((25, 115.62), nh)
 shunt('Device:R', 'R102', '10k 1%', (25, 120.65), 'GND', R0603)
 S.wire(nh, (25, 120.65))
-shunt('Device:C', 'C101', '100n', (35, 120.65), 'GND', C0603)
-S.wire(nh, (35, nh[1]), (35, 120.65))
-S.wire((35, nh[1]), (40, nh[1]))
-S.label('HW_ID', (40, nh[1]), 0)
+shunt('Device:C', 'C101', '100n', (38.1, 120.65), 'GND', C0603)
+S.wire(nh, (38.1, nh[1]), (38.1, 120.65))
+S.wire((38.1, nh[1]), (43.18, nh[1]))
+S.label('HW_ID', (43.18, nh[1]), 0)
 S.junction(nh)
-S.junction((35, nh[1]))
+S.junction((38.1, nh[1]))
 
 # ---------------- ULN2803A ----------------
 S.text('RELÉMEGHAJTÓ – ULN2803A: belső kioltó diódák', 110, 140, 1.5)
@@ -136,6 +137,34 @@ for i in range(4):
     S.wire(com, (com[0], com[1] + 2.54), (jx - 7.62, com[1] + 2.54), (jx - 7.62, pj['1'][1]), pj['1'][:2])
 S.text('Visszajelző LED: +24V_P – 10 k – LED – a tekercs alsó vége (ULN-kimenet) → ~2 mA, ha a relé BE', 200, 250)
 
-S.text('Generálva (hardware/gen/rele-modul.py) – a MODULMAG-SPEC + D62 alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 287, 1.3)
+# ---------------- Fogyasztásmérés előkészítése (D37, D69) – minden DNP ----------------
+S.text('FOGYASZTÁSMÉRÉS (D37, D69) – minden DNP: SCT-013 lakatfogós áramváltó 3,5 mm-es jackre → PA0 (ADC)', 20, 184)
+S.text('SCT-013-030 (1 V kimenet): R109 nincs; áramkimenetes típushoz R109 = terhelő-ellenállás', 20, 188.5)
+S.ref_pos['J105'] = ((-7.62, -7.62), (-7.62, -5.08))
+pjk = S.comp('Connector_Audio:AudioJack3', 'J105', 'SCT-013', 30.48, 228.6, {'S': None, 'T': None}, nc=['R'],
+             fp='Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal', dnp=True, props=P('a lakatfogó leválaszt – a 230 V-os oldalt nem érinti'))
+sl, tp = pjk['S'][:2], pjk['T'][:2]
+ym = 213.36
+S.wire(sl, (sl[0] + 5.08, sl[1]), (sl[0] + 5.08, ym), (76.2, ym))
+S.label('+3V3', (66.04, 198.12), 90)
+shunt('Device:R', 'R107', '10k', (66.04, 198.12), None, R0603, dnp=True)
+S.wire((66.04, 205.74), (66.04, ym))
+shunt('Device:R', 'R108', '10k', (66.04, ym), 'GND', R0603, dnp=True, props=P('középfeszültség 1,65 V'))
+shunt('Device:C', 'C102', '10µ', (76.2, ym), 'GND', 'Capacitor_SMD:C_0805_2012Metric', dnp=True)
+S.junction((66.04, ym))
+S.wire((50.8, ym), (50.8, ym + 2.54))
+shunt('Device:R', 'R109', 'DNP', (50.8, ym + 2.54), None, R0603, dnp=True, props=P('terhelő-ellenállás (csak áramkimenetes áramváltóhoz)'))
+S.wire((50.8, ym + 10.16), (50.8, tp[1]))
+S.junction((50.8, ym))
+S.wire(tp, (81.28, tp[1]))
+S.junction((50.8, tp[1]))
+S.place('Device:R', 'R110', '1k', {'1': None, '2': None}, '1', (81.28, tp[1]), r=90, fp=R0603, dnp=True)
+S.wire((88.9, tp[1]), (99.06, tp[1]))
+S.wire((93.98, tp[1]), (93.98, tp[1] + 2.54))
+shunt('Device:C', 'C103', '10n', (93.98, tp[1] + 2.54), 'GND', C0603, dnp=True)
+S.junction((93.98, tp[1]))
+S.label('CT_SENSE', (99.06, tp[1]), 0)
+
+S.text('Generálva (hardware/gen/rele-modul.py) – a MODULMAG-SPEC + D62 alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 281, 1.3)
 S.write(OUT, date='2026-10-16')
 print('ok', OUT)

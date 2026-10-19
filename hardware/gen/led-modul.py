@@ -13,15 +13,15 @@ kigen.POWER_DOWN = {'GND'}
 OUT = sys.argv[1]
 S = kigen.Sheet('LED-modul – 6 × 10 A low-side PWM (össz. 20 A), modulmag', 'led-modul')
 S.label_pos.update({
-    'Driver_FET:UCC27524D': ((-7.62, -12.7), (-7.62, 13.97)),
+    'Driver_FET:UCC27524D': ((-7.62, -12.7), (3.81, 13.97)),   # érték a GND-láb mellett jobbra
     'Amplifier_Current:INA181': ((7.62, 6.35), (7.62, 8.89)),
-    'Power_Management:LM74700': ((-10.16, 13.97), (-10.16, 16.51)),
+    'Power_Management:LM74700': ((12.7, 5.08), (12.7, 7.62)),
     'Regulator_Linear:MC78L12_SO8': ((-7.62, -6.35), (-7.62, -3.81)),
     'Transistor_FET:QM6006D': ((5.08, 3.81), (5.08, 6.35)),
-    'Transistor_FET:NTMFS016N06CT1G': ((-5.08, -6.35), (-5.08, -3.81)),
+    'Transistor_FET:NTMFS016N06CT1G': ((-5.08, -11.43), (-5.08, -8.89)),
     'Device:R_Shunt': ((5.08, -1.27), (5.08, 1.27)),
 })
-S.label_dx.update({'Connector_Generic:Conn_01x03': 5.08, 'Connector_Generic:Conn_01x02': 5.08, 'Device:LED': 6.35})
+S.label_dx.update({'Connector_Generic:Conn_01x03': 5.08, 'Connector_Generic:Conn_01x02': 5.08, 'Device:LED': 7.62})   # r=90-es LED: a felirat jobbra igazítva, a végpontja kerül ide
 S.ref_pos.update({'TP202': ((-10.16, -5.08), (-10.16, -2.54))})
 # a snubber-ellenállás és a drain-osztó alsó tagja: felirat balra (jobbra a szomszéd alkatrész áll)
 S.ref_pos.update({f'R{230 + n}': ((-7.62, -1.27), (-7.62, 1.27)) for n in range(1, 7)})
@@ -93,7 +93,9 @@ S.junction((30, nh[1]))
 # =================== 1. Betáp és +24V_RAIL ===================
 Y = 45
 S.text('1. BETÁP (20 A): J201 → F201 20 A → ideális dióda (U204 LM74700-Q1 + Q201) → +24V_RAIL – fordított polaritás ellen, GND-eltolódás nélkül (D65)', 80, 24, 1.5)
-S.text('Q201 hiányában a S–D padek vastag dróttal áthidalhatók', 150, 33)
+S.text('Q201 hiányában a S–D padek vastag dróttal áthidalhatók', 150, 29)
+S.ref_pos['J201'] = ((-2.54, -7.62), (-2.54, -5.08))   # a csatlakozó fölé: jobbra a C202 / U204 áll
+S.ref_pos['C202'] = ((-2.54, -1.27), (-2.54, 1.27))   # r=180: a felirat a kondenzátortól balra végződik
 pj = S.comp('Connector_Generic:Conn_01x02', 'J201', '24V IN 20A', 90, 60, {'1': None, '2': None}, fp=TB2,
             props=P('push-in, 2,5 mm², ≥ 20 A – helyőrző; barna = +24 V, kék = GND (D43)'))
 p1, p2 = pj['1'][:2], pj['2'][:2]
@@ -104,9 +106,6 @@ down('GND', (p2[0] - 2.54, p2[1] + 2.54))
 S.wire((xa + 2.54, Y), (xa + 2.54, Y - 5.08))
 S.label('+24V_IN', (xa + 2.54, Y - 5.08), 90)
 S.junction((xa + 2.54, Y))
-S.flag('+24V_IN', xa + 7.62, Y - 10)
-S.wire((xa + 7.62, Y - 10), (xa + 7.62, Y))
-S.junction((xa + 7.62, Y))
 p = series('Device:Fuse', 'F201', '20A', (xa + 12.7, Y), 'Fuse:Fuseholder_Blade_Mini_Keystone_3568',
            props=P('mini lapos autós biztosíték, NYÁK-foglalat'))
 # +24V_F → Q201 (S balra, D jobbra, G lefelé) → +24V_RAIL
@@ -120,8 +119,6 @@ xd = pq['5'][0]
 gq = pq['4'][:2]
 S.wire((xs - 7.62, Y), (xs - 7.62, Y - 5.08))
 S.label('+24V_F', (xs - 7.62, Y - 5.08), 90)
-S.flag('+24V_F', xs - 7.62, Y - 15)
-S.wire((xs - 7.62, Y - 15), (xs - 7.62, Y - 5.08))
 # LM74700 a Q201 alatt: ANODE / GATE / CATHODE felfelé
 pl = S.place('Power_Management:LM74700', 'U204', 'LM74700-Q1', {'1': None, '2': 'GND', '3': None, '4': None, '5': None, '6': None},
              '5', (gq[0], gq[1] + 7.62), fp='Package_TO_SOT_SMD:SOT-23-6', props=P('TI ideális dióda-vezérlő; EN az ANODE-ra'))
@@ -140,15 +137,13 @@ S.label('+24V_F', (en[0] - 10.16, en[1]), 180)
 
 # +24V_RAIL sín
 xr0 = pl['4'][0]
-taps = [xr0 + 10 + i * 12.7 for i in range(5)]
-xdiv = xr0 + 78.74
-xreg = xr0 + 101.6
-fuses = [xr0 + 134.62, xr0 + 170.18, xr0 + 205.74]
+taps = [xr0 + 10 + i * 15.24 for i in range(5)]   # a D201/C203 felirata ne lógjon a szomszédra
+xdiv = xr0 + 86.36
+xreg = xr0 + 116.84
+fuses = [xr0 + 162.56, xr0 + 195.58, xr0 + 228.6]
 S.rail(Y, [xd, xr0, xr0 + 5] + taps + [xdiv, xreg] + fuses)
 S.wire((xr0 + 5, Y), (xr0 + 5, Y - 7.62))
 S.label('+24V_RAIL', (xr0 + 5, Y - 7.62), 90)
-S.flag('+24V_RAIL', xr0 + 5, Y - 17)
-S.wire((xr0 + 5, Y - 17), (xr0 + 5, Y - 7.62))
 shunt('Device:D_Zener', 'D201', 'SMBJ28A', (taps[0], Y + 5.08), 'GND', 'Diode_SMD:D_SMB', r=270, props=P('TVS a sínen'))
 tap(Y, taps[0], Y + 5.08)
 shunt('Device:C_Polarized', 'C203', '470µ/50V', (taps[1], Y + 5.08), 'GND', 'Capacitor_THT:CP_Radial_D10.0mm_P5.00mm',
@@ -194,6 +189,7 @@ for k, x in enumerate(fuses, 1):
                  props=P('Littelfuse 451/453 NANO² (2410), pl. 0451010.MRL – értéke a szalag szerint (≤ 10 A)'))
     tap(Y, x, Y + 5.08)
     b = pf['2'][:2]
+    S.ref_pos[f'J{201 + k}'] = ((-2.54, -7.62), (-2.54, -5.08))
     pjb = S.comp('Connector_Generic:Conn_01x03', f'J{201 + k}', f'BLOKK {k}', x + 17.78, b[1] + 10.16, {'1': None, '2': None, '3': None},
                  fp=TB3, props=P(f'1 = +24 V, 2 = CH{2 * k - 1}, 3 = CH{2 * k}; push-in, ≥ 10 A/pólus – helyőrző'))
     S.wire(b, (b[0], pjb['1'][1]), pjb['1'][:2])
@@ -205,8 +201,8 @@ for k, x in enumerate(fuses, 1):
 
 # =================== 2. Gate-meghajtók ===================
 yg = 124.46
-S.text('2. GATE-MEGHAJTÓK – 3 × UCC27524 (12 V): EN közösen a DRV_EN-en (PB12), 1 k lehúzás → bekapcsoláskor minden csatorna KI', 80, yg - 41.9, 1.5)
-S.text('6 EN-láb belső 200 k felhúzása a 12 V-ra párhuzamosan ~33 k → 1 k-val ~0,35 V (< 0,8 V); az IN-lábakon 120 k belső lehúzás is van', 80, yg - 37.8)
+S.text('2. GATE-MEGHAJTÓK – 3 × UCC27524 (12 V): EN közösen a DRV_EN-en (PB12), 1 k lehúzás → bekapcsoláskor minden csatorna KI', 80, yg - 39, 1.5)
+S.text('6 EN-láb belső 200 k felhúzása a 12 V-ra párhuzamosan ~33 k → 1 k-val ~0,35 V (< 0,8 V); az IN-lábakon 120 k belső lehúzás is van', 80, yg - 35.5)
 xe = 85
 S.label('DRV_EN', (xe, yg), 180)
 S.wire((xe, yg), (xe + 5.08, yg))
@@ -237,13 +233,13 @@ for d in range(3):
     S.wire(pd['3'][:2], (pd['3'][0], pd['3'][1] + 2.54))
     down('GND', (pd['3'][0], pd['3'][1] + 2.54))
     v = pd['6'][:2]
-    yv = v[1] - 17.78
-    S.wire(v, (v[0], yv), (v[0] + 22, yv))
+    yv = v[1] - 15.24
+    S.wire(v, (v[0], yv), (v[0] + 25.4, yv))
     up('+12V', (v[0], yv))
-    for xc, ref, val, fp in ((v[0] + 12, f'C{210 + 2 * d}', '1µ/25V', C0805), (v[0] + 22, f'C{211 + 2 * d}', '100n', C0603)):
+    for xc, ref, val, fp in ((v[0] + 12.7, f'C{210 + 2 * d}', '1µ/25V', C0805), (v[0] + 25.4, f'C{211 + 2 * d}', '100n', C0603)):
         shunt('Device:C', ref, val, (xc, yv + 2.54), 'GND', fp)
         S.wire((xc, yv), (xc, yv + 2.54))
-    S.junction((v[0] + 12, yv))
+    S.junction((v[0] + 12.7, yv))
 
 # =================== 3. Csatornák ===================
 yB, yN = 158.75, 180.34          # +24V_Bk sor, drain-csomópont
@@ -319,12 +315,12 @@ for n in range(1, 7):
     S.junction((dn[0] + 5.08, yN))
     S.label(f'DS{n}', (dn[0] + 7.62, yN), 90)
 S.text('Drain → ADC: 24 V → 2,55 V. KI: ≈ V_RAIL = szalag rajta; ≈ V_RAIL − ~2 V = nincs szalag (a drain-LED-en át); ~0 V = kiolvadt blokk-biztosíték.'
-       ' BE: ≈ V_RAIL × (1 − kitöltés); mindig ~0 V = átütött FET', 15, 223)
+       ' BE: ≈ V_RAIL × (1 − kitöltés); mindig ~0 V = átütött FET', 15, 219)
 
 # =================== 4. Össz-áram, NTC, mérőpontok ===================
 ys = 248.92
-S.text('4. ÖSSZ-ÁRAM (D47, D53): 1 mΩ sönt a FET-ek közös source-ága (PGND_SH) és a GND között, Kelvin → INA181A2 (×50) → PA7', 15, ys - 13, 1.5)
-S.text('(ADC + COMP2 → TIM1/TIM8 break); a küszöb a DAC1-ről (PA4); 20 A → 1,0 V', 15, ys - 8.5)
+S.text('4. ÖSSZ-ÁRAM (D47, D53): 1 mΩ sönt a FET-ek közös source-ága (PGND_SH) és a GND között, Kelvin → INA181A2 (×50) → PA7', 15, ys - 23, 1.5)
+S.text('(ADC + COMP2 → TIM1/TIM8 break); a küszöb a DAC1-ről (PA4); 20 A → 1,0 V', 15, ys - 18.5)
 xsh = 40
 S.label('PGND_SH', (xsh, ys - 2.54), 90)
 S.flag('PGND_SH', xsh - 10, ys - 2.54)
@@ -360,20 +356,23 @@ S.place('Connector:TestPoint', 'TP201', 'DAC_THR', {'1': None}, '1', (isn[0] + 4
         props=P('PA4 = DAC1_OUT1, a COMP2 küszöbe – kívül nincs bekötve'))
 # NTC
 xn = 200
-S.text('NTC a FET-ek között (PC3) – D30, harmadik védelmi réteg', xn - 10, ys - 8.5)
+S.text('NTC a FET-ek között (PC3) – D30, harmadik védelmi réteg', xn - 10, ys - 12)
 up('+3V3', (xn, ys - 2.54))
 shunt('Device:R', 'R208', '10k 1%', (xn, ys - 2.54), None, R0603)
 nn = (xn, ys + 7.62)
 S.wire((xn, ys + 5.08), nn)
 shunt('Device:Thermistor_NTC', 'TH201', '10k B3435', (xn, ys + 10.16), 'GND', 'Resistor_SMD:R_0603_1608Metric')
 S.wire(nn, (xn, ys + 10.16))
-shunt('Device:C', 'C242', '100n', (xn + 7.62, ys + 10.16), 'GND', C0603)
-S.wire(nn, (xn + 7.62, nn[1]), (xn + 7.62, ys + 10.16))
-S.wire((xn + 7.62, nn[1]), (xn + 12.7, nn[1]))
-S.label('NTC', (xn + 12.7, nn[1]), 0)
+shunt('Device:C', 'C242', '100n', (xn + 15.24, ys + 10.16), 'GND', C0603)
+S.wire(nn, (xn + 15.24, nn[1]), (xn + 15.24, ys + 10.16))
+S.wire((xn + 15.24, nn[1]), (xn + 20.32, nn[1]))
+S.label('NTC', (xn + 20.32, nn[1]), 0)
 S.junction(nn)
-S.junction((xn + 7.62, nn[1]))
+S.junction((xn + 15.24, nn[1]))
+# PWR_FLAG-ek a betáp-sínekre (ERC) – külön sorban, a sínek feliratait nem takarják
+for i, n in enumerate(['+24V_IN', '+24V_F', '+24V_RAIL']):
+    S.flag(n, 262 + i * 17.78, 238)
 
-S.text('Generálva (hardware/gen/led-modul.py) – D43/D47/D53/D65 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 287, 1.3)
+S.text('Generálva (hardware/gen/led-modul.py) – D43/D47/D53/D65 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 281, 1.3)
 S.write(OUT, date='2026-10-16')
 print('ok', OUT)

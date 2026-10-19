@@ -11,15 +11,16 @@ kigen.POWER_UP = {'+3V3', '+5V'}
 kigen.POWER_DOWN = {'GND'}
 
 OUT = sys.argv[1]
-S = kigen.Sheet('Bemeneti modul – 16 bemenet (JST-PH), 4 érzékelő-tápcsoport, HDC3020, modulmag', 'bemeneti-modul')
+S = kigen.Sheet('Bemeneti modul – 16 bemenet, 4 tápcsoport, HDC3020', 'bemeneti-modul')
 S.use('modularis:HDC3020', lib='modularis', name='HDC3020',
       libpath=os.path.join(os.path.dirname(__file__), '..', 'lib', 'modularis.kicad_sym'))
-S.label_pos.update({'Power_Protection:TPD4E05U06DQA': ((-10.16, -10.16), (-10.16, 15.24)),
+S.label_pos.update({'Power_Protection:TPD4E05U06DQA': ((-2.54, -11.43), (-10.16, 15.24)),   # ref a két NC-láb között, fölöttük
                     'modularis:HDC3020': ((-7.62, -8.89), (-7.62, 8.89)),
                     'Regulator_Linear:NCP1117-3.3_SOT223': ((-7.62, -8.89), (-7.62, -6.35)),
-                    'Jumper:SolderJumper_3_Bridged12': ((-6.35, -3.81), (2.54, 6.35))})
+                    'Jumper:SolderJumper_3_Bridged12': ((-6.35, -3.81), (-17.78, 0))})   # „CSOPORT k” balra, a PTC felirata ne ütközzön
 S.label_dx.update({'Connector_Generic:Conn_01x04': 5.08})
-S.label_pos['Connector_Generic:Conn_01x03'] = ((-7.62, -5.08), (-7.62, 6.35))
+# r=180-as PH: a felirat jobbra igazítva a láb végéig, a csatlakozó fölött
+S.label_pos['Connector_Generic:Conn_01x03'] = ((5.08, -8.89), (5.08, -6.35))
 
 R0603 = 'Resistor_SMD:R_0603_1608Metric'
 C0603 = 'Capacitor_SMD:C_0603_1608Metric'
@@ -69,8 +70,8 @@ right = [(p, f'IN{i}') for i, p in enumerate(PINS)]
 right += [('PB8', 'I2C_SCL'), ('PB9', 'I2C_SDA'), ('PC2', 'HDC_ALERT'), ('PC3', None), ('PC6', None), ('PC7', None), ('PC8', None)]
 S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 25, 35, 35, 2.54 * (len(right) + 1), left=left, right=right)
 
-S.text('24 V betáp (J300)', 12, 150)
-pj = S.comp('Connector_Generic:Conn_01x02', 'J300', '24V IN', 30, 158, {'1': None, '2': None},
+S.text('24 V betáp (J300)', 20, 146)
+pj = S.comp('Connector_Generic:Conn_01x02', 'J300', '24V IN', 40, 160, {'1': None, '2': None},
             fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-5.0-H_1x02_P5.00mm_Horizontal',
             props=P('push-in, a típus a DIN-ház vállától függ (D50)'))
 a1, a2 = pj['1'][:2], pj['2'][:2]
@@ -89,12 +90,12 @@ nh = (20, 128.27)
 S.wire((20, 125.62), nh)
 shunt('Device:R', 'R302', '10k 1%', (20, 130.81), 'GND', R0603)
 S.wire(nh, (20, 130.81))
-shunt('Device:C', 'C301', '100n', (30, 130.81), 'GND', C0603)
-S.wire(nh, (30, nh[1]), (30, 130.81))
-S.wire((30, nh[1]), (36, nh[1]))
-S.label('HW_ID', (36, nh[1]), 0)
+shunt('Device:C', 'C301', '100n', (38.1, 130.81), 'GND', C0603)
+S.wire(nh, (38.1, nh[1]), (38.1, 130.81))
+S.wire((38.1, nh[1]), (43.18, nh[1]))
+S.label('HW_ID', (43.18, nh[1]), 0)
 S.junction(nh)
-S.junction((30, nh[1]))
+S.junction((38.1, nh[1]))
 
 # =================== 1. Érzékelő-táp ===================
 S.text('1. ÉRZÉKELŐ-TÁP: külön 3,3 V-os sín (U301, NCP1117) az 5 V-ról – egy zárlatos érzékelő nem indítja újra az MCU-t;', 80, 22, 1.5)
@@ -147,14 +148,18 @@ for n in range(16):
     yJ = 114.3 + row * 29.21          # a JEL sora
     pj = S.place('Connector_Generic:Conn_01x03', f'J{301 + n}', f'IN{n}', {'1': None, '2': None, '3': None}, '3', (x0 + 7.62, yJ),
                  r=180, fp=PH3, props=P(f'{k}. tápcsoport' + (' – 5 V-tűrő láb' if n in FT else '')))
-    stub(pj['2'][:2], 'GND', 0)
+    # GND: jobbra a SUP-vezeték mögé, majd lefelé (szabályos GND-szimbólum)
+    g2 = pj['2'][:2]
+    S.wire(g2, (g2[0] + 7.62, g2[1]), (g2[0] + 7.62, g2[1] + 7.62))
+    down('GND', (g2[0] + 7.62, g2[1] + 7.62))
     s1 = pj['1'][:2]
     S.wire(s1, (s1[0] + 2.54, s1[1]), (s1[0] + 2.54, s1[1] + 2.54))
     S.label(f'SUP{k}', (s1[0] + 2.54, s1[1] + 2.54), 270)
     # JEL → R_s → csomópont → IN címke
     S.wire((x0 + 7.62, yJ), (x0 + 12.7, yJ))
+    S.ref_pos[f'R{310 + n}'] = ((3.81, -5.08), (3.81, -2.54))   # r=90: jobbra igazítva, a GND-vezeték fölött
     p = series('Device:R', f'R{310 + n}', '1k', (x0 + 12.7, yJ), R0603)
-    xp, xd, xc, xo = p[0] + 5.08, p[0] + 12.7, p[0] + 20.32, p[0] + 30.48
+    xp, xd, xc, xo = p[0] + 5.08, p[0] + 12.7, p[0] + 22.86, p[0] + 33.02
     S.rail(yJ, [p[0], xp, xd, xc, xo])
     S.place('Device:R', f'R{330 + n}', '10k', {'1': '+3V3', '2': None}, '2', (xp, yJ), fp=R0603)
     shunt('Device:R', f'R{350 + n}', 'DNP', (xd, yJ + 2.54), 'GND', R0603, dnp=True, props=P('osztó 5/12/24 V-os jelhez'))
@@ -179,11 +184,11 @@ for gi in range(4):
     stub(pe['3'][:2], 'GND', 270, 2.54)
 
 # =================== 3. HDC3020 + külső I²C ===================
-S.text('3. HŐMÉRSÉKLET / PÁRATARTALOM:', 335, 102, 1.3)
-S.text('HDC3020 a NYÁK szélén (marással) + 4 tűs PH', 335, 106)
-S.text('külső érzékelőhöz (D66). Cím 0x44 (ADDR = ADDR1', 335, 109.5)
-S.text('= GND); a külső más címen. Az EP lebegve.', 335, 113)
-hx, hy = 355.6, 137.16
+S.text('3. HŐMÉRSÉKLET / PÁRATARTALOM:', 330, 102, 1.3)
+S.text('HDC3020 a NYÁK szélén (marással) + 4 tűs PH', 330, 106)
+S.text('külső érzékelőhöz (D66). Cím 0x44 (ADDR = ADDR1', 330, 109.5)
+S.text('= GND); a külső más címen. Az EP lebegve.', 330, 113)
+hx, hy = 350.52, 137.16
 ph = S.comp('modularis:HDC3020', 'U302', 'HDC3020DEFR', hx, hy, {'5': None, '6': None, '2': None, '7': None, '1': None, '4': None,
             '3': None, '8': None}, nc=['9'])
 # táp: VDD (5) + RESET (6) → +3V3, ADDR (2) + ADDR1 (7) → GND
@@ -194,9 +199,9 @@ S.wire(r6, (xv, r6[1]))
 S.wire((xv, r6[1]), (xv, v5[1]), (xv, v5[1] - 5.08))
 up('+3V3', (xv, v5[1] - 5.08))
 S.junction((xv, v5[1]))
-S.rail(v5[1] - 2.54, [xv, xv - 7.62])
+S.rail(v5[1] - 2.54, [xv, xv - 15.24])
 S.junction((xv, v5[1] - 2.54))
-shunt('Device:C', 'C320', '100n', (xv - 7.62, v5[1] - 2.54), 'GND', C0603)
+shunt('Device:C', 'C330', '100n', (xv - 15.24, v5[1] - 2.54), 'GND', C0603)
 a2_, a7 = ph['2'][:2], ph['7'][:2]
 xg = xv + 2.54
 S.wire(a2_, (xg, a2_[1]))
@@ -212,8 +217,8 @@ ytop = ph['1'][1] - 12.7
 for i, (pin, net, rref, rval) in enumerate((('1', 'I2C_SDA', 'R372', '4k7'), ('4', 'I2C_SCL', 'R371', '4k7'),
                                              ('3', 'HDC_ALERT', 'R373', '10k'))):
     q = ph[pin][:2]
-    x = q[0] + 5.08 + i * 7.62
-    xe = q[0] + 25.4
+    x = q[0] + 3.81 + i * 8.89
+    xe = q[0] + 26.67
     S.rail(q[1], [q[0], x, xe])
     S.place('Device:R', rref, rval, {'1': '+3V3', '2': None}, '1', (x, ytop), fp=R0603)
     S.wire((x, ytop + 7.62), (x, q[1]))
@@ -222,15 +227,17 @@ for i, (pin, net, rref, rval) in enumerate((('1', 'I2C_SDA', 'R372', '4k7'), ('4
 xi = 345.44
 S.text('KÜLSŐ I²C (J320)', xi, 161)
 for i, (a, b, ref) in enumerate((('I2C_SCL', 'SCL_EXT', 'R374'), ('I2C_SDA', 'SDA_EXT', 'R375'))):
-    y = 167.64 + i * 5.08
+    y = 167.64 + i * 10.16
     S.label(a, (xi, y), 180)
     S.wire((xi, y), (xi + 2.54, y))
     p = series('Device:R', ref, '100R', (xi + 2.54, y), R0603)
     stub(p, b, 0, 7.62)
-pjx = S.comp('Connector_Generic:Conn_01x04', 'J320', 'I2C KÜLSŐ', 398.78, 185.42, {'1': None, '2': None, '3': None, '4': None},
+pjx = S.comp('Connector_Generic:Conn_01x04', 'J320', 'I2C KÜLSŐ', 386.08, 190.5, {'1': None, '2': None, '3': None, '4': None},
              fp=PH4, props=P('külső HDC3020 / I²C-érzékelő, kábel ≤ 2 m, 100 kHz'))
 stub(pjx['1'][:2], 'SUP_I2C', 180, 7.62)
-stub(pjx['2'][:2], 'GND', 180, 7.62)
+g2 = pjx['2'][:2]   # GND: a címkék szövege mögött balra, majd lefelé a 4. láb alá
+S.wire(g2, (g2[0] - 20.32, g2[1]), (g2[0] - 20.32, pjx['4'][1] + 5.08))
+down('GND', (g2[0] - 20.32, pjx['4'][1] + 5.08))
 stub(pjx['3'][:2], 'SDA_EXT', 180, 7.62)
 stub(pjx['4'][:2], 'SCL_EXT', 180, 7.62)
 pe = S.comp('Power_Protection:TPD4E05U06DQA', 'U307', 'TPD4E05U06DQAR', 378.46, 213.36, {'1': None, '2': None, '3': None, '8': None},
@@ -243,6 +250,6 @@ S.wire((345.44, 236.22), (347.98, 236.22))
 p = series('Device:Polyfuse', 'F305', 'PTC 0,2A', (347.98, 236.22), 'Fuse:Fuse_1206_3216Metric')
 stub(p, 'SUP_I2C', 0, 5.08)
 
-S.text('Generálva (hardware/gen/bemeneti-modul.py) – D44/D48/D51/D66 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 287, 1.3)
+S.text('Generálva (hardware/gen/bemeneti-modul.py) – D44/D48/D51/D66 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 281, 1.3)
 S.write(OUT, date='2026-10-16')
 print('ok', OUT)

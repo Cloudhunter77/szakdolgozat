@@ -11,7 +11,7 @@ kigen.POWER_UP = {'+3V3', '+5V'}
 kigen.POWER_DOWN = {'GND', 'GND_BUS'}
 
 OUT = sys.argv[1]
-S = kigen.Sheet('Modulmag – STM32F303RET6 + izolált CAN + 24 V → 5 V → 3,3 V', 'modulmag')
+S = kigen.Sheet('Modulmag – STM32F303RET6, izolált CAN, 24 → 5 → 3,3 V', 'modulmag')
 # a modulmag a három modul hierarchikus lapja is → ott is legyenek hivatkozásai
 S.extra_inst = [(p, f'/{kigen.root_uuid(p)}/{kigen.sheet_uuid(p, "modulmag")}')
                 for p in ('rele-modul', 'led-modul', 'bemeneti-modul')]
@@ -28,7 +28,7 @@ C0603 = 'Capacitor_SMD:C_0603_1608Metric'
 S.label_dx.update({'MCU_ST_STM32F3:STM32F303RETx': 20.32, 'modularis:ISO1042BDWV': 10.16,
                    'Converter_DCDC:R-78E5.0-1.0': 10.16, 'Regulator_Linear:NCP1117-3.3_SOT223': 10.16,
                    'Connector_Generic:Conn_01x04': 5.08, 'Connector_Generic:Conn_01x07': 5.08,
-                   'Device:Crystal_GND24': 5.08, 'Power_Protection:NUP2105L': 5.08})
+                   'Device:Crystal_GND24': 5.08, 'Power_Protection:NUP2105L': 5.08, 'Device:LED': 8.89})
 
 
 S.label_pos.update({
@@ -67,8 +67,8 @@ def series(lib, ref, val, left, fp, r=90, lpin='1', rpin='2', **k):
 # =====================================================================================================
 # 1. TÁP – +24V_IN → F1 → D1 → R6 → +24V_P → P78E05 (5 V) → NCP1117 (3,3 V)
 # =====================================================================================================
-S.text('1. TÁP: +24V_IN → F1 → D1 → R6 → +24V_P → U1 P78E05 (5 V) → U5 NCP1117 (3,3 V)', 20, 25, 1.6)
-S.text('D56, D57 – a C12 elkó kötelező; a 24 V-os tápot ≤ 26 V-ra! (a P78E05 max. 36 V)', 20, 30)
+S.text('1. TÁP: +24V_IN → F1 → D1 → R6 → +24V_P → U1 P78E05 (5 V) → U5 NCP1117 (3,3 V)', 20, 20, 1.6)
+S.text('D56, D57 – a C12 elkó kötelező; a 24 V-os tápot ≤ 26 V-ra! (a P78E05 max. 36 V)', 20, 25)
 Y = 45
 x0 = 30
 S.label('+24V_IN', (x0, Y), 180)
@@ -80,10 +80,10 @@ p = series('Device:D_Schottky', 'D1', 'SS16', a, 'Diode_SMD:D_SMA', r=180, lpin=
            props=P('fordított polaritás ellen'))
 a = (p[0] + 5, Y)
 S.wire(p, a)
-p = series('Device:R', 'R6', '10R', a, 'Resistor_SMD:R_1206_3216Metric',
-           props=P('impulzusbíró (pl. ERJ-P08); 0 Ω-mal áthidalható (D57)'))
+p = series('Device:R', 'R6', '0R', a, 'Resistor_SMD:R_1206_3216Metric',
+           props=P('D70: 0 Ω; a footprint marad – szükség esetén 10 Ω impulzusbíró (ERJ-P08) ültethető'))
 # +24V_P sín
-taps = [75, 87.5, 100, 112.5]
+taps = [75, 90, 102.5, 115]   # a D2 felirata ne lógjon a C12-re
 xin = 135
 S.rail(Y, [p[0], p[0] + 2.54] + taps + [xin])
 S.wire((p[0] + 2.54, Y), (p[0] + 2.54, Y - 7.62))
@@ -164,8 +164,11 @@ nets = {'1': None, '19': None, '32': None, '48': None, '64': None, '13': None, '
         '20': 'PA4', '21': 'PA5', '22': 'PA6', '23': 'PA7', '24': 'UART_TX', '25': 'UART_RX', '30': 'PB11',
         '33': 'PB12', '34': 'PB13', '35': 'PB14', '36': 'PB15', '37': 'PC6', '38': 'PC7', '39': 'PC8',
         '41': 'PA8', '42': 'PA9', '43': 'PA10', '44': 'CAN_RX', '45': 'CAN_TX', '46': 'SWDIO', '49': 'SWCLK',
-        '60': 'BOOT0', '61': 'PB8', '62': 'PB9'}
-nc = ['3', '4', '26', '27', '28', '29', '40', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59']
+        '60': 'BOOT0', '61': 'PB8', '62': 'PB9',
+        # D69: revízió-azonosító + DNP bővítő-tüskesor
+        '26': 'HW_REV', '29': 'EXP_PB10', '50': 'EXP_PA15', '55': 'EXP_PB3', '56': 'EXP_PB4', '57': 'EXP_PB5',
+        '58': 'EXP_PB6', '59': 'EXP_PB7'}
+nc = ['3', '4', '27', '28', '40', '51', '52', '53', '54']
 pp = S.comp('MCU_ST_STM32F3:STM32F303RETx', 'U6', 'STM32F303RET6', MX, MY, nets, nc=nc,
             fp='Package_QFP:LQFP-64_10x10mm_P0.5mm')
 # VDD-lábak (1 VBAT, 19, 32, 48, 64) egy sínre, VDDA (13) külön
@@ -200,7 +203,9 @@ S.wire((xr - 10, 128), (xr - 20, 128))
 S.junction((xr - 10, 128))
 S.place('Connector:TestPoint', 'TP1', 'BOOT0', {'1': None}, '1', (xr - 20, 128), r=90, fp='TestPoint:TestPoint_Pad_D1.5mm',
         props=P('3V3-ra húzva: ROM-bootloader (USART1)'))
-S.place('Connector:TestPoint', 'TP2', '3V3', {'1': '+3V3'}, '1', (xr - 20, 140), r=90, fp='TestPoint:TestPoint_Pad_D1.5mm')
+S.place('Connector:TestPoint', 'TP2', '3V3', {'1': None}, '1', (xr - 25, 145), r=90, fp='TestPoint:TestPoint_Pad_D1.5mm')
+S.wire((xr - 25, 145), (xr - 20, 145), (xr - 20, 142.46))
+up('+3V3', (xr - 20, 142.46))
 
 # Kvarc (3.2)
 xc, yc = 145, 160
@@ -219,8 +224,8 @@ S.label('OSC_OUT', (x3 + 7.62, yc), 0)
 
 # Debug (3.6)
 xd, yd = 70, 125
-S.text('DEBUG – J1: 1 VTref · 2 SWCLK · 3 GND · 4 SWDIO · 5 NRST · 6 TX · 7 RX', xd - 50, yd - 16)
-S.text('(ST-Link klón dupont-tal; beültetés opcionális)', xd - 50, yd - 12)
+S.text('DEBUG – J1: 1 VTref · 2 SWCLK · 3 GND · 4 SWDIO · 5 NRST · 6 TX · 7 RX', xd - 50, yd - 22)
+S.text('(ST-Link klón dupont-tal; beültetés opcionális)', xd - 50, yd - 18)
 pp = S.comp('Connector_Generic:Conn_01x07', 'J1', 'DEBUG', xd, yd, {str(i): None for i in range(1, 8)},
             fp='Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical')
 for n, net in {'1': '+3V3', '2': 'SWCLK', '3': 'GND', '4': 'SWDIO', '5': 'NRST', '6': 'UART_TX', '7': 'UART_RX'}.items():
@@ -231,9 +236,32 @@ for n, net in {'1': '+3V3', '2': 'SWCLK', '3': 'GND', '4': 'SWDIO', '5': 'NRST',
         S.wire(b, (b[0], b[1] - 5.08))
         up('+3V3', (b[0], b[1] - 5.08))
     elif net == 'GND':
-        S.label('GND', b, 180)
+        # a címkék szövege mögött balra, majd lefelé a 7. láb alá → szabályos, lefelé mutató GND
+        g = (a[0] - 25.4, pp['7'][1] + 5.08)
+        S.wire(b, (g[0], a[1]), g)
+        down('GND', g)
     else:
         S.label(net, b, 180)
+
+# Bővítés (D69): HW_REV – a NYÁK-revízió a PB0-n (ADC), a HW-ID sávjaival; J4 – DNP 2 × 5-ös tüskesor
+S.text('BŐVÍTÉS (D69) – HW_REV: NYÁK-revízió a PB0-n (v1: csak R11 → 0. sáv) · J4: DNP bővítő-tüskesor', 20, 158)
+xv = 30.48
+up('+3V3', (xv, 165.1))
+shunt('Device:R', 'R10', '10k 1%', (xv, 165.1), None, R0603, dnp=True, props=P('revízió: v1-en üres (0. sáv); később a HW-ID sávjai szerint'))
+S.wire((xv, 172.72), (xv, 177.8))
+shunt('Device:R', 'R11', '10k 1%', (xv, 177.8), 'GND', R0603)
+shunt('Device:C', 'C20', '100n', (xv + 10.16, 177.8), 'GND', C0603)
+S.wire((xv, 175.26), (xv + 10.16, 175.26), (xv + 10.16, 177.8))
+S.wire((xv + 10.16, 175.26), (xv + 17.78, 175.26))
+S.label('HW_REV', (xv + 17.78, 175.26), 0)
+S.junction((xv, 175.26))
+S.junction((xv + 10.16, 175.26))
+S.ref_pos['J4'] = ((-3.81, 8.89), (-3.81, 11.43))
+S.comp('Connector_Generic:Conn_02x05_Odd_Even', 'J4', 'BŐVÍTŐ', 86.36, 180.34,
+       {'1': '+3V3', '2': 'GND', '3': 'EXP_PA15', '4': 'EXP_PB6', '5': 'EXP_PB3', '6': 'EXP_PB7', '7': 'EXP_PB4',
+        '8': 'EXP_PB10', '9': 'EXP_PB5', '10': 'GND'},
+       fp='Connector_PinHeader_2.54mm:PinHeader_2x05_P2.54mm_Vertical', dnp=True,
+       props=P('SPI1: PB3 SCK / PB4 MISO / PB5 MOSI / PA15 NSS · I²C1 (alt.): PB6 SCL / PB7 SDA · PB10'))
 
 # Hidegítés (3.1)
 yh = 225
@@ -274,21 +302,21 @@ S.wire(N, (xa - 7.62, N[1]))
 S.junction(N)
 shunt('Device:C', 'C17', '100n', (xa - 7.62, N[1]), 'GND', C0603)
 S.label('CAN_TX', pp['2'][:2], 180)
-S.text('TXD felhúzás (bootkor recesszív busz):', IX - 62, IY + 14)
-up('+3V3', (IX - 40, IY + 17))
-S.wire((IX - 40, IY + 17), (IX - 40, IY + 19.54))
-shunt('Device:R', 'R1', '10k', (IX - 40, IY + 19.54), 'CAN_TX', R0603)
+S.text('TXD felhúzás (bootkor recesszív busz):', IX - 62, IY + 13)
+up('+3V3', (IX - 50, IY + 18))
+S.wire((IX - 50, IY + 18), (IX - 50, IY + 20.54))
+shunt('Device:R', 'R1', '10k', (IX - 50, IY + 20.54), 'CAN_TX', R0603)
 g1 = pp['4'][:2]
 S.wire(g1, (g1[0] - 2.54, g1[1]), (g1[0] - 2.54, g1[1] + 2.54))
 down('GND', (g1[0] - 2.54, g1[1] + 2.54))
 # VCC2 + C18/C19, GND2
 v2 = pp['8'][:2]
 xb = v2[0] + 7.62
-S.wire(v2, (xb + 12.7, v2[1]))
+S.wire(v2, (xb + 17.78, v2[1]))
 S.junction((xb, v2[1]))
 S.wire((xb, v2[1]), (xb, v2[1] - 7.62))
 S.label('V_BUS_P', (xb, v2[1] - 7.62), 90)
-for x, ref, val in ((xb + 5.08, 'C18', '100n'), (xb + 12.7, 'C19', '4µ7')):
+for x, ref, val in ((xb + 5.08, 'C18', '100n'), (xb + 17.78, 'C19', '4µ7')):
     shunt('Device:C', ref, val, (x, v2[1] + 2.54), 'GND_BUS', C0603)
     S.wire((x, v2[1]), (x, v2[1] + 2.54))
 S.junction((xb + 5.08, v2[1]))
@@ -322,13 +350,13 @@ for i, n in enumerate(['4', '3', '1', '2']):        # CAN_H, CAN_L, V_BUS_P, GND
         S.label(net, (JX - 40, yt), 180)
 # TVS (D5), ESD (U3), lezárás (JP1 + R5) – címkékkel, egy sorban
 yp = 238
-S.text('V_BUS TVS · CAN ESD · lezárás (JP1: csak a lánc két végén)', 248, yp - 12)
+S.text('V_BUS TVS · CAN ESD · lezárás (JP1: csak a lánc két végén)', 248, yp - 19)
 shunt('Device:D_Zener', 'D5', 'SMF5.0A', (253, yp), 'GND_BUS', 'Diode_SMD:D_SOD-123F', r=270,
       props=P('ESD / hot-plug tüskék ellen, a J2/J3 mellé'))
 S.wire((253, yp), (253, yp - 5.08))
 S.label('V_BUS_P', (253, yp - 5.08), 90)
 pp = S.comp('Power_Protection:NUP2105L', 'U3', 'ESD2CAN24-Q1', 270, yp + 2.54, {'1': 'CAN_L', '2': 'CAN_H', '3': 'GND_BUS'})
-pp = S.place('Jumper:Jumper_2_Open', 'JP1', 'LEZÁRÁS', {'1': 'CAN_H', '2': None}, '1', (292, yp),
+pp = S.place('Jumper:Jumper_2_Open', 'JP1', 'LEZÁRÁS', {'1': 'CAN_H', '2': None}, '1', (302, yp),
              fp='Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical')
 S.wire(pp['2'][:2], (pp['2'][0] + 2.54, pp['2'][1]))
 p = series('Device:R', 'R5', '120R', (pp['2'][0] + 2.54, pp['2'][1]), 'Resistor_SMD:R_0805_2012Metric')
@@ -344,13 +372,18 @@ p = series('Device:D_Schottky', 'D6', 'SS14', (205, yo), 'Diode_SMD:D_SMA', r=18
 S.wire((200, yo), (205, yo))
 S.wire(p, (p[0] + 5, yo))
 up('+5V', (p[0] + 5, yo))
-S.place('Jumper:SolderJumper_2_Open', 'JP2', 'GND_BUS–GND', {'1': 'GND_BUS', '2': 'GND'}, '1', (235, yo),
-        fp='Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm',
-        props=P('nyitva = izolált (alap); bezárva a D6-tal együtt = buszos táp'))
+S.ref_pos['JP2'] = ((-5.08, -5.08), (-5.08, -2.54))
+pj = S.place('Jumper:SolderJumper_2_Open', 'JP2', 'GND_BUS–GND', {'1': None, '2': None}, '1', (235, yo),
+             fp='Jumper:SolderJumper-2_P1.3mm_Open_RoundedPad1.0x1.5mm',
+             props=P('nyitva = izolált (alap); bezárva a D6-tal együtt = buszos táp'))
+for pin, net, dx in (('1', 'GND_BUS', -2.54), ('2', 'GND', 2.54)):
+    q = pj[pin][:2]
+    S.wire(q, (q[0] + dx, q[1]), (q[0] + dx, q[1] + 2.54))
+    down(net, (q[0] + dx, q[1] + 2.54))
 
 # PWR_FLAG-ek (ERC: a tápokat a hierarchikus címkék hozzák be)
 for i, n in enumerate(['+24V_P', 'GND', 'GND_BUS', 'V_BUS_P', '+3V3A']):
-    S.flag(n, 110 + i * 14, 268)
-S.text('Generálva a MODULMAG-SPEC.md alapján (hardware/gen/modulmag.py) – kézi szerkesztés helyett a generátort módosítsd.', 20, 287, 1.3)
+    S.flag(n, 110 + i * 14, 262)
+S.text('Generálva a MODULMAG-SPEC.md alapján (hardware/gen/modulmag.py) – kézi szerkesztés helyett a generátort módosítsd.', 20, 281, 1.3)
 S.write(OUT, date='2026-10-16')
 print('ok', OUT)
