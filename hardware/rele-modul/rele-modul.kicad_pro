@@ -5,5 +5,12 @@
   },
   "boards": [],
   "sheets": [],
-  "text_variables": {}
+  "text_variables": {},
+  "board": {
+    "design_settings": {
+      "rules": {
+        "min_through_hole_diameter": 0.2
+      }
+    }
+  }
 }

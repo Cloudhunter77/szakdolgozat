@@ -39,3 +39,15 @@ ERC, netlista-export és összevetés a specifikációval, később DRC és gerb
 üzemmódnevek a CubeMX 6.18 adatbázisából). Indítás: `flatpak run com.st.STM32CubeMX` → File → Load Project.
 A pinout nézet a lábhozzárendelést ellenőrzi; a belső kapcsolatokat (COMP2 → TIM1/TIM8 BKIN2, DAC1_OUT1 → COMP2 INM,
 ADC2_IN4 + COMP2_INP a PA7-en) a CubeMX-ben kézzel kell beállítani és megnézni.
+
+## NYÁK-előkészítés (2026-10-21, D73)
+`gen/pcbgen.py` a netlistából (`out/<lap>.net`) elkészíti a `<lap>/<lap>.kicad_pcb`-t: 4 réteg, körvonal (86,5 × 68 mm;
+a bemeneti modul 86,5 × 103 mm), DIN-zónák a Dwgs.User rétegen (felső/alsó váll, előlapi ablak), a footprintek a
+hálózatokkal és a kapcsolási rajzhoz kötve (az „Update PCB from Schematic” működik), kezdő elhelyezés: a csatlakozók
+a ház szerinti élen, a többi a hozzá kötött IC köré. Huzalozás nincs – azt kézzel.
+
+    flatpak run --command=python3 org.kicad.KiCad gen/pcbgen.py <lap> [--force]   # board generálása
+    gen/pcbshow.sh <lap> kep.png                                                  # kép ellenőrzéshez
+
+**A D67 a NYÁK-ra is érvényes:** amint egy `.kicad_pcb`-t kézzel szerkesztettél, az a forrás; a szkript csak
+`--force`-szal írja felül. Kapcsolási rajz változása után a KiCad-ben: *Tools → Update PCB from Schematic*.
