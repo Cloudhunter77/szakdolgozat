@@ -13,7 +13,7 @@ Részletek: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`, `NYAK-ELOKESZITES.md`, `SAMPL
 | P 10-16 – Szo 10-17 | [x] KiCad: **modulmag** hierarchikus lap (táp, STM32, ISO1042, busz-oldal) | [x] hiányzó szimbólumok/footprintek (ISO1042 DWV, P78E05, TCAN1044AV …) · [ ] a modulmag rajzának átnézése a spec alapján |
 | V 10-18 | [x] KiCad: **vezérlő** (táp, C6, CAN, USB-C, W5500) | [ ] átnézés a VEZERLO-SPEC alapján |
 | H 10-19 – K 10-20 | [x] KiCad: **LED-, relé-, bemeneti modul** (modulmag + a saját részük) | [ ] átnézés lapról lapra |
-| Sze 10-21 | [ ] ERC + javítások → **rajz lezárva** | [ ] teljes átnézés: minden láb, minden érték a spec szerint (netlista-összevetés) |
+| Sze 10-21 → **Cs 10-22** (D71) | [ ] ERC + javítások → **rajz lezárva** (a konzultáció utáni táp-átdolgozás miatt egy nappal később) | [ ] teljes átnézés: minden láb, minden érték a spec szerint (netlista-összevetés) |
 
 Esti, rövid feladatok ezen a héten:
 - [ ] **W5500 + C6 breadboard-teszt** (a kézben lévő modullal) **10-21 előtt** – a vezérlő SPI-lábkiosztásának

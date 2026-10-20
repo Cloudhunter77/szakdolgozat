@@ -1,4 +1,4 @@
-# Vezérlő (központi egység) – kapcsolási specifikáció (v1) – 2026-10-14
+# Vezérlő (központi egység) – kapcsolási specifikáció (v1) – 2026-10-14, frissítve 2026-10-20 (D71)
 
 A KiCad-rajz alapja, a `MODULMAG-SPEC.md` párja. Források: Espressif ESP32-C6-WROOM-1/1U adatlap v1.4, ESP32-C6
 adatlap v1.5, hardvertervezési útmutató és KiCad-könyvtár; WIZnet W5500 adatlap v1.1.0 + referencia-kapcsolás;
@@ -10,6 +10,10 @@ közben nézd át.
 - 2026-10-13 (D58): USB-C-ről is jár (busz nélkül) · 2 átmenő XH (a vezérlő a lánc végén vagy közepén is lehet) ·
   RGB LED + táp-LED · bővítő tüskesor nincs, csak debug.
 - 2026-10-14: a V_BUS-t a kézben lévő **P78E05** adja (D59) · CAN transceiver: **TCAN1044AV** (D60).
+- **2026-10-20 (D71, konzultáció után): központi 5 V.** A vezérlő adja az összes modul logikai tápját a buszon:
+  **U2 LMR33630ADDA** (5,2 V, 3 A-es buck) → **U12 LM66200** (ideális dióda, az USB-vel VAGY-olva) → **U3 TPS259531**
+  eFuse (2 A, 5,7 V-os vágás) → V_BUS. **USB-ről is van V_BUS** (1–2 modul teszteléséhez). Bemenet **12–26 V**.
+  A 2.1, 2.3, 2.4 és a 11. fejezet ennek megfelelően; a modulok oldala: `MODULMAG-SPEC.md` (D71).
 
 ## 0. Tartalom
 
@@ -57,16 +61,19 @@ A vezérlő földje így a 24 V-os tápjának és (USB-n) a laptopnak a földje 
 VUSB → D3 → VIN_BUCK
 ```
 
-- **Csak USB-ről** (24 V nélkül): az USB csak az LMR36015-öt táplálja → a C6 + W5500 megy (~0,5 A az USB-ből).
-  A `+24V_P` 0 V → a P78E05 nem kap tápot (nincs `5V`), a TPS2553 EN-je alacsony → **a V_BUS hardveresen KI**
-  (nem a firmware-en múlik). Az USB-t így nem terheli a busz, és nem tölti a 47 µF-os elkót.
+- **Csak USB-ről** (24 V nélkül, D71): az USB a D3-on át az LMR36015-öt, az U12 VIN2-jén át a `+5V`-ot táplálja →
+  a C6 + W5500 megy, és **a V_BUS is bekapcsol** (1–2 modul asztali teszteléséhez). Laptop-porton (0,5–0,9 A)
+  csak néhány modul fér el; túlterhelésnél a port maga kapcsol le. A buck (+24V_F) oldala nem kap feszültséget,
+  mert az U12 nem táplál vissza.
+- **12 V-ról is működik (D71):** az LMR33630 (3,8 V-tól) és az LMR36015 (~4,2 V-tól) is jár; a szalag- és a
+  tekercsfeszültség a modulokon a tápé (`MODULMAG-SPEC.md`, D71).
 - **24 V-ról:** a D3 zár, az USB-portba nem jut feszültség.
 
 | Ref | Alkatrész | Érték / típus | Megjegyzés |
 |---|---|---|---|
 | J1 | push-in sorkapocs, 2 pólus | 24 V be | felső váll |
-| F1 | SMD-biztosíték | **1 A**, ≥ 32 V, gyors (1206) | a vezérlő 24 V-on ~0,25 A-t vesz fel (11. fejezet) |
-| D1 | Schottky | SS16 / B160 (60 V, 1 A, SMA) | fordított polaritás ellen |
+| F1 | SMD-biztosíték | **2 A** (D71), ≥ 32 V, gyors (1206) | 2 A-es buszterhelésnél 24 V-on ~0,6 A, 12 V-on ~1,2 A (11. fejezet) |
+| D1 | Schottky | **B360** (60 V, 3 A, SMC) – D71 | fordított polaritás ellen; 12 V-on és 2 A-es buszterhelésnél ~1,2 A folyik rajta |
 | D2 | TVS | SMBJ28A | `+24V_P` → GND; ~45 V-on fog (az LMR36015 60 V-os) |
 | D8 | Schottky | SS16 (60 V, 1 A) | `+24V_P` → `VIN_BUCK`; az USB ne táplálja vissza a 24 V-os oldalt |
 | D3 | Schottky | **B360 / SS36** (60 V, 3 A) | `VUSB` → `VIN_BUCK`. **60 V-os kell**: túlfeszültségnél a `VIN_BUCK` ~45 V is lehet, miközben a `VUSB` ~0 V. A 3 A-es dióda 0,5 A-en kisebbet ejt (~0,4 V) → USB-ről is meglegyen az LMR36015 4,2 V-ja |
@@ -97,45 +104,50 @@ Lábak (RNX): 1 PGND · 2 VIN · 3 NC → SW · 4 BOOT · 5 VCC · 6 AGND · 7 F
 10 VIN · 11 PGND · 12 SW. Min. bekapcsolási idő max. 83 ns; 24 V → 3,3 V-on 137 ns – rendben. USB-ről (~4,4 V a
 `VIN_BUCK`-on) a kimenet még szabályoz.
 
-### 2.3 5 V – U2: P78E05-1000 (D59)
-Ugyanaz a modul, mint a modulmagon (D56): SIP-3, furatszerelt, **1 +VIN · 2 GND · 3 +VOUT** (a 7805
-lábkiosztása), 8–36 V be, 5,0 V ± 3 %, 1 A, 93 %, rövidzár-védett; 11,6 × 8,0 × 10,4 mm.
+### 2.3 5 V – U2: LMR33630ADDA (400 kHz) + U12: LM66200 (D71)
+TI 3,8–36 V-os, 3 A-es szinkron buck, HSOIC-8 PowerPAD (lábas tok). Értékek a TI adatlap 9-2./9-3. táblázata
+szerint (5 V, 400 kHz), a kimenet 5,2 V-ra hangolva, hogy 24 V mellett biztosan ő tápláljon, ne az USB.
 
 | Ref | Érték | Megjegyzés |
 |---|---|---|
-| C1, C2 | lásd 2.1 | bemenet (az adatlap 30 V felett 22 µF / 50 V-ot kér – a C1 ezt teljesíti) |
-| C13 | 22 µF, 10 V, X7R (1206) | `5V` kimenet; a P78E05 max. kapacitív terhelése 680 µF (a `5V` + a bekapcsolt `V_BUS` összesen ~60 µF) |
+| C1, C2 | lásd 2.1 | bemenet (47 µF elkó + 10 µF / 50 V) |
+| C53 | 220 nF, 50 V | CHF, közvetlenül a VIN (2) – PGND (1) lábaknál |
+| C54 | 1 µF, 16 V | VCC (6) – csak ez kerülhet rá |
+| C55 | 100 nF | BOOT (7) – SW (8) |
+| L3 | **8,2 µH**, Isat ≥ 3,5 A, ~14 mΩ, árnyékolt (pl. Bourns SRN6045TA-8R2M, 6 × 6 mm) | TI: 8 µH |
+| R54 / R55 | 100 kΩ / **23,7 kΩ** 1 % | VOUT = 1,0 V × (1 + 100/23,7) = **5,22 V** |
+| C56–C59 | 4 × 22 µF, 10 V, X7R (1206) | |
+| EN (3) | → VIN | UVLO belső |
+| PG (4) | nem bekötve | (szabad GPIO nincs) |
 
-**V_BUS-tartalék a modulokon:** 5,0 V − 3 % = 4,85 V; − TPS2553 (85 mΩ × 0,43 A ≈ 0,04 V) − 0,5 m XH-kábel (~0,03 V)
-→ **legrosszabb esetben ~4,75 V** a modulon (a modulokon nincs PTC, D55); az ISO1042-nek 4,5 V kell
-(a korábbi 5,2 V-os LMR36006 helyett, D46 → D59).
+**U12 LM66200DRLR** (TI kettős ideális dióda, SOT-583-8, 2 × 2,5 A, 40 mΩ, VIN max. 5,5 V, abs. 6 V):
+3 VIN1 ← `+5V_BUCK` · 6 VIN2 ← `VUSB` · 4 ~ON → GND (mindig BE) · 2, 7 VOUT → `+5V` (+ C13 22 µF) · 1, 5 GND · 8 ST nem
+bekötve. Mindig a nagyobb feszültségű bemenet táplál, a másikba nem folyik vissza áram – ez fontos, mert az USB
+különben a buck kimenetén át a 24 V-os oldalt is feszültség alá helyezné (a felső FET testdiódáján át).
 
-### 2.4 V_BUS-kapcsoló – U3: TPS2553DBVR (SOT-23-6)
+**A 24 V-os tápot ne állítsd 26 V fölé** (az LMR33630 bemenete max. 36 V – D57 marad).
+
+### 2.4 V_BUS-eFuse – U3: TPS259531DSGR (WSON-8, 2 × 2 mm) (D71)
+TI eFuse, 2,7–18 V (abs. 20 V), 0,5–4 A, **5,7 V-os túlfeszültség-vágás**, auto-retry, EN magas aktív.
 
 | Láb | Név | Bekötés |
 |---|---|---|
-| 1 | IN | `5V` + 1 µF + 100 nF |
-| 2 | GND | GND |
-| 3 | EN | **R10 470 kΩ a `+24V_P`-ről, R11 47 kΩ a GND-re** (osztó) + **D9 BAT54** (anód az EN-en, katód a **GPIO20**-on – VBUS_EN) |
-| 4 | FAULT | **GPIO21** (VBUS_FAULT), 10 kΩ felhúzás a `3V3`-ra (nyitott drain, aktív alacsony) |
-| 5 | ILIM | **R12 = 61,9 kΩ 1 %** a GND-re → áramkorlát **382 / 425 / 476 mA** (min. / tip. / max.) |
-| 6 | OUT | `V_BUS` + 100 nF + 10 µF (16 V) |
+| 3, 4 | IN | `+5V` + C22 1 µF + C23 100 nF |
+| 2 | EN/UVLO | **R10 100 kΩ a `+5V`-ról, R11 47 kΩ a GND-re** (5,2 V → 1,66 V; BE ~3,7 V felett) + **D9 BAT54** (anód az EN-en, katód a **GPIO20**-on – VBUS_EN) |
+| 1 | dVdt | **C60 22 nF** → ~1,9 V/ms: 5 V ~2,7 ms alatt, 200 µF buszkapacitáson ~0,4 A bekapcsolási áram |
+| 7 | ILM | **R12 = 1,02 kΩ 1 %** → `R = 2000 / (I − 0,04)` → **2,0 A**; a láb feszültsége a terhelőárammal arányos (276 µA/A) |
+| 6 | FLT | **GPIO21** (VBUS_FAULT), R34 10 kΩ felhúzás a `3V3`-ra (nyitott drain) |
+| 5 | OUT | `V_BUS` + C24 100 nF + C25 10 µF (16 V) |
+| 8, PAD | GND | GND |
 
-- **EN-logika (D61):** 24 V-on az EN 2,18 V (az EN 1,1 V felett biztosan BE, 0,66 V alatt KI) → a V_BUS bekapcsol,
-  amint a 24 V megvan – **a C6 újraindulása (OTA, hiba) alatt is** (a GPIO20 resetkor gyenge felhúzással
-  nagyimpedanciás, a dióda zár). A firmware a GPIO20 alacsonyra húzásával kapcsolja KI (EN ≈ 0,3 V) – pl. szándékos
-  busz-újraindításhoz (ez a buszos tápra kapcsolt modulokat újraindítja, D66). Biztosan BE ~12 V fölött, biztosan KI
-  ~7,3 V alatt; 45 V-os tüskénél az EN ~4,1 V (abs. max. 7 V).
-- **Áramkorlát:** I ≈ 73 mA (az éppen adó ISO1042) + 4 mA × modul (MODULMAG-SPEC 5.5, D64, D66) – több tucat
-  modul is belefér a 382 mA-be; a buszos tápra kapcsolt modulok (D66) ~80–150 mA-t húznak. Túlterhelésnél a TPS2553
-  korlátoz, túlmelegedésnél lekapcsol, majd lehűlve magától újraindul; a FAULT 7,5 ms késleltetéssel jelez.
-  Ha a `V_BUS` a bemenet fölé kerülne (~135 mV, ~4 ms), lekapcsol és jelez.
+- **EN-logika (D71):** a V_BUS bekapcsol, amint bármelyik forrásból (24 V vagy USB) megvan az 5 V – a C6
+  újraindulása alatt is. A firmware a GPIO20 alacsonyra húzásával kapcsolja KI (EN ≈ 0,3 V, a KI-küszöb 1,03 V) –
+  pl. szándékos busz-újraindításhoz (ez minden modult újraindít).
+- **Áramkorlát 2 A:** a modulok logikája + a bemeneti modul érzékelői (MODULMAG-SPEC 5.5). A nagy fogyasztók
+  (szalag, relétekercs) a modul saját 12–26 V-járól mennek.
+- **Túlfeszültség:** ha a `+5V` 5,7 V fölé menne, az eFuse vág – ez a modulok egyetlen túlfeszültség-védelme.
 - **D4:** TVS, 5 V standoff (SMF5.0A): `V_BUS` → GND, a csatlakozók közelében.
-- **R13, R14, C14:** 100 kΩ / 22 kΩ, 100 nF: `V_BUS` → **GPIO1** (VBUS_SENSE, ADC1_CH1): 5,0 V → 0,90 V. Rövidzár,
-  kikapcsolt állapot és túlfeszültség is látszik; egy félredugott 24 V is csak ~4,3 V-ot adna 100 kΩ-on át.
-- **Nincs 24 V elleni védelem (D55):** a TPS2553 OUT-lába abszolút max. 7 V; a láncon nincs 24 V (D28), a TVS az
-  ESD és a hot-plug tüskék ellen van. A TPS2553 azért marad (a P78E05 maga is zárlatbiztos): a C6 távolról
-  újraindíthatja a buszt (bootloader, D20), a FAULT jelzi a zárlatot, és korlátozza a bedugáskori áramot.
+- **R13, R14, C14:** 100 kΩ / 22 kΩ, 100 nF: `V_BUS` → **GPIO1** (VBUS_SENSE, ADC1_CH1): 5,2 V → 0,94 V.
 
 ## 3. ESP32-C6-WROOM-1-N16 (U4)
 
@@ -371,19 +383,19 @@ gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UAR
 - **CAN:** U6 a J2/J3 közelében; a CANH/CANL párban.
 - Rétegrend: jel / GND / táp / jel (D42); SMD csak felül.
 
-## 11. Teljesítménymérleg
+## 11. Teljesítménymérleg (D71)
 
 | Sín | Fogyasztó | Áram (csúcs) |
 |---|---|---|
 | `3V3` | C6 (Wi-Fi adás 382 mA; Thread 302 mA) + W5500 132 mA + LED-ek ~20 mA | **≈ 0,54 A** → LMR36015 (1,5 A) |
-| `5V` | V_BUS ≤ 476 mA (korlát) + transceiver ≤ 70 mA (buszhibánál 130) + RGB LED ≤ 60 mA | **≤ 0,61 A** (hibánál 0,67) → P78E05 (1 A) |
-| `+24V_IN` | (0,54 × 3,3 / 0,85 + 0,61 × 5 / 0,9) / ~23 V | **≈ 0,25 A** → F1 1 A |
-| `VUSB` (csak USB) | 0,54 × 3,3 / 0,85 / ~4,4 V | **≈ 0,48 A** – USB 2.0-s porton a Wi-Fi-csúcsoknál határeset, USB 3-on bőven elég |
+| `+5V` | V_BUS ≤ 2 A (korlát) + transceiver ≤ 70 mA + RGB LED ≤ 60 mA | **≤ 2,1 A** → LMR33630 (3 A) |
+| `+24V_IN` (24 V) | (0,54 × 3,3 / 0,85 + 2,1 × 5,2 / 0,9) / ~23 V | **≈ 0,62 A**; 12 V-on **≈ 1,2 A** → F1 2 A, D1 B360 (3 A) |
+| `VUSB` (csak USB) | C6-ág ~0,48 A + V_BUS (amennyit a port ad) | a port korlátozza |
 
 ## 12. Darabjegyzék (vezérlő)
-U1 LMR36015BRNXR · U2 P78E05-1000 (kézben) · U3 TPS2553DBVR · U4 ESP32-C6-WROOM-1-N16 (vagy -1U) · U5 W5500 ·
+U1 LMR36015BRNXR · U2 LMR33630ADDA · U12 LM66200DRLR · U3 TPS259531DSGR · L3 8,2 µH (≥ 3,5 A) · U4 ESP32-C6-WROOM-1-N16 (vagy -1U) · U5 W5500 ·
 U6 TCAN1044AVDRQ1 · U7 ESD2CAN24-Q1 · U8 USBLC6-2SC6 · U9 74HCT14D (kézben) · Y1 25 MHz · L1 6,8 µH (≥ 2,1 A) ·
-FB1 ferrit 120 Ω @ 100 MHz · F1 1 A / 32 V · D1, D8 SS16 · D3 B360 / SS36 · D2, D7 SMBJ28A · D4 SMF5.0A ·
+FB1 ferrit 120 Ω @ 100 MHz · F1 2 A / 32 V · D8 SS16 · D1, D3 B360 / SS36 · D2, D7 SMBJ28A · D4 SMF5.0A ·
 D9 BAT54 · D5 zöld LED · D6 WS2812B-V5 (vagy WS2812C-2020) · J1 2 pólusú push-in · J2/J3 B4B-XH-A · J4 USB-C
 (16 tűs) · J5 1 × 6 tüskesor · J6 MagJack (J1B1211CCD / HR911105A) · JP1 2 tűs + jumper · JP2/JP3 3 padas
 forrasztható jumper · SW1/SW2 nyomógomb · kondenzátorok: 47 µF 50 V elektrolit (kötelező), 10 µF 50 V (1210),

@@ -16,7 +16,7 @@ CORE = [
     ('PF0-OSC_IN', 'RCC_OSC_IN', 'HSE-External-Oscillator', None),
     ('PF1-OSC_OUT', 'RCC_OSC_OUT', 'HSE-External-Oscillator', None),
     ('PC0', 'ADC1_IN6', 'IN6-Single-Ended', 'HW_ID'),
-    ('PC1', 'ADC1_IN7', 'IN7-Single-Ended', 'VIN_SENSE'),
+    ('PC1', 'ADC1_IN7', 'IN7-Single-Ended', 'VBUS_SENSE'),   # D71: a busz 5 V-ja a modulnál
     ('PB0', 'ADC3_IN12', 'IN12-Single-Ended', 'HW_REV'),
     ('PC4', 'USART1_TX', 'Asynchronous', 'UART_TX'),
     ('PC5', 'USART1_RX', 'Asynchronous', 'UART_RX'),
@@ -34,6 +34,7 @@ MODULES = {
     'led-modul': [
         ('PC2', 'ADC1_IN8', 'IN8-Single-Ended', 'V_RAIL_SENSE'),
         ('PC3', 'ADC1_IN9', 'IN9-Single-Ended', 'NTC'),
+        ('PB11', 'ADC1_IN14', 'IN14-Single-Ended', 'VIN_SENSE'),   # D71: 24 V a főbiztosíték előtt
         ('PA0', 'ADC1_IN1', 'IN1-Single-Ended', 'DS1'),
         ('PA1', 'ADC1_IN2', 'IN2-Single-Ended', 'DS2'),
         ('PA2', 'ADC1_IN3', 'IN3-Single-Ended', 'DS3'),
@@ -56,6 +57,7 @@ MODULES = {
         ('PB14', 'GPIO_Output', None, 'REL3'),
         ('PB15', 'GPIO_Output', None, 'REL4'),
         ('PA0', 'ADC1_IN1', 'IN1-Single-Ended', 'CT_SENSE'),
+        ('PB11', 'ADC1_IN14', 'IN14-Single-Ended', 'VIN_SENSE'),   # D71: a tekercs-táp
     ],
     'bemeneti-modul': [(f'PA{i}', EXTI, None, f'IN{i}') for i in range(11)]
                       + [(f'PB{i}', EXTI, None, f'IN{i}') for i in range(11, 16)]

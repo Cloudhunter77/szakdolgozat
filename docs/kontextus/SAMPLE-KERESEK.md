@@ -84,7 +84,17 @@ alá férő magasságút (D50):
 - **74HCT14D** (36 db) – a vezérlő RGB LED-jének szintillesztője (U9); **WS2812C-2020** – a vezérlő RGB LED-je lehet
 - LM2904 / LM2902, IRFR1205, ACS758LCB-100B, LM2576S – tartaléknak / későbbre
 
+## D71 (2026-10-20) – új tétel: vásárlás
+A konzultáció után a táp központi lett (D71) → új alkatrészek, egyik sincs a 10-19-i TI-kérésben:
+- **DigiKey/Mouser (TI):** LMR33630ADDA (5 V-os buck, vezérlő) · TPS259531DSGR (eFuse, vezérlő) · LM66200DRLR
+  (ideális dióda, vezérlő) · +3 db TCAN1044AVDRQ1 (a modulokra, az ISO1042 helyett) – tartalékkal együtt
+- **Kínai kör:** AP2112K-3.3TRG1 (LDO, modulonként 2 – modulmag + a bemeneti modul érzékelősínje) · 8,2 µH-s
+  árnyékolt tekercs (Isat ≥ 3,5 A, pl. SRN6045TA-8R2M) · B360 (SMC) a vezérlő D1-ére · 2 A-es 1206 biztosíték
+- **Csak 12 V-os relémodulhoz:** 12 V-os tekercsű Schrack relé (RTD14012), 4 db
+- Ha az ISO1042 minta mégis megjön: tartalék egy későbbi izolált változathoz.
+
 ## Már nem kell
+- **ISO1042BDWVR** a v1-hez (D71: közös föld) · a modulokon a **P78E05** és az **NCP1117** (D71) · TPS2553 (D71)
 - THVD1450, ADM2587E, LTC2862 – RS-485-höz kellettek, a CAN-busz kiváltotta.
 - ADE7953 (ADI) – a fogyasztásmérés v2 (D37).
 - INA181A3 (×100) – helyette INA181A2 (×50), D53.
@@ -105,10 +115,8 @@ alá férő magasságút (D50):
 - **Littelfuse NANO² 451/453 (2410)** SMD biztosíték, pl. 0451010.MRL (10 A) – a LED-modul 3 kimeneti blokkjára (D65), + néhány
   kisebb érték (5 A, 7 A) a szalagokhoz
 - Mini lapos (autós) biztosíték NYÁK-foglalattal + 20 A-es biztosíték (LED-modul)
-- **SMD-biztosítékok (1206, ≥ 32 V):** modulmag F1 0,5 A (a LED-modulon a 20 A-es biztosíték ELŐTT leágazva, D54);
-  vezérlő F1 1 A
-- **Modulmag-táp apróságai (D56, D57):** 10 µF / 50 V-os kerámia (1210), 22 µF / 10 V-os kerámia (1206), 10 µF-os
-  tantál (3216) az NCP1117 kimenetére, 10 Ω-os impulzusbíró ellenállás (1206, R6, opc.)
+- **SMD-biztosítékok (1206, ≥ 32 V):** relémodul F100 0,5 A (tekercs-táp); vezérlő F1 **2 A** (D71)
+- **Modulmag-táp (D71):** 2 × 10 µF / 16 V (0805) az AP2112K körül
 - **Vezérlő-táp apróságai (D59, D61):** 10 Ω-os impulzusbíró ellenállás **2512**-ben (R7), 10 µF / 50 V (1210),
   22 µF / 10 V (1206), 3 × 22 µF / 10 V a 3,3 V-ra
 - **Sönt: 1 mΩ, 2512, ≥ 1 W** (LED-modul össz-árama, D47) – 2 db

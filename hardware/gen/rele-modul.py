@@ -29,10 +29,11 @@ def shunt(lib, ref, val, top, bottom_net, fp, r=0, top_pin='1', bot_pin='2', **k
 
 
 # ---------------- Modulmag + betáp ----------------
-S.text('MODULMAG (../modulmag/modulmag.kicad_sch): táp, STM32F303RET6, ISO1042, busz-csatlakozók (J2/J3), lezárás', 20, 25, 1.5)
-left = [('+24V_IN', '+24V_IN'), ('+24V_P', '+24V_P'), ('V_BUS_P', None), ('HW_ID', 'HW_ID')]
+S.text('MODULMAG (../modulmag/modulmag.kicad_sch): táp a buszról, STM32F303RET6, TCAN1044, busz-csatlakozók (J2/J3), lezárás (D71)', 20, 25, 1.5)
+left = [('HW_ID', 'HW_ID')]
 right = [('PB12', 'REL1'), ('PB13', 'REL2'), ('PB14', 'REL3'), ('PB15', 'REL4')]
-right += [(n, None) for n in ['PB8', 'PB9', 'PB11', 'PC2', 'PC3', 'PC6', 'PC7', 'PC8'] + [f'PA{i}' for i in range(11)]]
+right += [('PB11', 'VIN_SENSE')]
+right += [(n, None) for n in ['PB8', 'PB9', 'PC2', 'PC3', 'PC6', 'PC7', 'PC8'] + [f'PA{i}' for i in range(11)]]
 right = [(n, 'CT_SENSE' if n == 'PA0' else net) for n, net in right]   # D69: SCT-013 előkészítés
 S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 50, 40, 40, 2.54 * (len(right) + 1), left=left, right=right)
 
@@ -47,13 +48,14 @@ S.label('GND', (a2[0] - 2.54, a2[1] + 2.54), 270)
 S.flag('+24V_IN', 33, 85)
 S.text('24 V betáp (J100)', 22, 62)
 
-# HW-ID (MODULMAG-SPEC 3.5): relé = 10k / 10k → 1,65 V → 4. sáv
-S.text('HW-ID: relé = 4. sáv (1,65 V)', 12, 102)
+# HW-ID (MODULMAG-SPEC 3.5, D71): relé, 24 V-os tekercs = 10k / 1,54k → 0,44 V → 2. sáv; 12 V-os tekercs: 3,65k → 4. sáv
+S.text('HW-ID: relé 24 V = 2. sáv (0,44 V)', 12, 102)
+S.text('12 V-os relé: R102 = 3k65 → 4. sáv', 45, 110)
 S.label('+3V3', (25, 108), 90)
 shunt('Device:R', 'R101', '10k 1%', (25, 108), None, R0603)
 nh = (25, 118.11)
 S.wire((25, 115.62), nh)
-shunt('Device:R', 'R102', '10k 1%', (25, 120.65), 'GND', R0603)
+shunt('Device:R', 'R102', '1k54 1%', (25, 120.65), 'GND', R0603, props=P('24 V-os tekercs: 1,54k (2. sáv); 12 V-os tekercs: 3,65k (4. sáv)'))
 S.wire(nh, (25, 120.65))
 shunt('Device:C', 'C101', '100n', (38.1, 120.65), 'GND', C0603)
 S.wire(nh, (38.1, nh[1]), (38.1, 120.65))
@@ -61,6 +63,42 @@ S.wire((38.1, nh[1]), (43.18, nh[1]))
 S.label('HW_ID', (43.18, nh[1]), 0)
 S.junction(nh)
 S.junction((38.1, nh[1]))
+
+# ---------------- Tekercs-táp (D71): +24V_IN → F100 → D100 → +24V_P; TVS, puffer, VIN_SENSE → PB11 ----------------
+S.text('TEKERCS-TÁP (D71): J100 → F100 → D100 → +24V_P (12 V-os tápnál 12 V-os relé!)', 12, 137)
+S.text('VIN_SENSE (PB11): 150k / 10k – a firmware összeveti a HW-ID-vel', 12, 141)
+Yt = 152.4
+S.label('+24V_IN', (17.78, Yt), 180)
+S.wire((17.78, Yt), (20.32, Yt))
+p = S.place('Device:Fuse', 'F100', '0,5A', {'1': None, '2': None}, '1', (20.32, Yt), r=90, fp='Fuse:Fuse_1206_3216Metric',
+            props=P('≥ 32 V, gyors, 1206; 4 tekercs × ~17 mA'))['2'][:2]
+S.wire(p, (p[0] + 2.54, Yt))
+p = S.place('Device:D_Schottky', 'D100', 'SS16', {'1': None, '2': None}, '2', (p[0] + 2.54, Yt), r=180, fp='Diode_SMD:D_SMA',
+            props=P('fordított polaritás ellen'))['1'][:2]
+tt = [p[0] + 5.08, p[0] + 16.51, p[0] + 27.94, p[0] + 39.37, p[0] + 50.8]
+S.rail(Yt, [p[0]] + tt)
+shunt('Device:D_Zener', 'D105', 'SMBJ28A', (tt[0], Yt + 5.08), 'GND', 'Diode_SMD:D_SMB', r=270, props=P('TVS, 28 V standoff'))
+S.wire((tt[0], Yt), (tt[0], Yt + 5.08))
+shunt('Device:C', 'C104', '10µ/50V', (tt[1], Yt + 5.08), 'GND', 'Capacitor_SMD:C_1210_3225Metric')
+S.wire((tt[1], Yt), (tt[1], Yt + 5.08))
+shunt('Device:C_Polarized', 'C105', '47µ/50V', (tt[2], Yt + 5.08), 'GND', 'Capacitor_SMD:CP_Elec_6.3x7.7',
+      props=P('elektrolit: a betápkábel LC-lengését csillapítja (D57 mintájára)'))
+S.wire((tt[2], Yt), (tt[2], Yt + 5.08))
+shunt('Device:R', 'R111', '150k', (tt[3], Yt + 5.08), None, R0603)
+S.wire((tt[3], Yt), (tt[3], Yt + 5.08))
+nvs = (tt[3], Yt + 15.24)
+S.wire((tt[3], Yt + 12.7), nvs)
+shunt('Device:R', 'R112', '10k', (tt[3], Yt + 17.78), 'GND', R0603)
+S.wire(nvs, (tt[3], Yt + 17.78))
+shunt('Device:C', 'C106', '100n', (tt[3] + 8.89, Yt + 17.78), 'GND', C0603)
+S.wire(nvs, (tt[3] + 8.89, nvs[1]), (tt[3] + 8.89, Yt + 17.78))
+S.wire((tt[3] + 8.89, nvs[1]), (tt[3] + 13.97, nvs[1]))
+S.label('VIN_SENSE', (tt[3] + 13.97, nvs[1]), 0)
+S.junction(nvs)
+S.junction((tt[3] + 8.89, nvs[1]))
+S.wire((tt[4], Yt), (tt[4], Yt - 5.08))
+S.label('+24V_P', (tt[4], Yt - 5.08), 90)
+S.flag('+24V_P', 48, 85)
 
 # ---------------- ULN2803A ----------------
 S.text('RELÉMEGHAJTÓ – ULN2803A: belső kioltó diódák', 110, 140, 1.5)
@@ -166,5 +204,5 @@ S.junction((93.98, tp[1]))
 S.label('CT_SENSE', (99.06, tp[1]), 0)
 
 S.text('Generálva (hardware/gen/rele-modul.py) – a MODULMAG-SPEC + D62 alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 281, 1.3)
-S.write(OUT, date='2026-10-16')
+S.write(OUT, date='2026-10-20')
 print('ok', OUT)

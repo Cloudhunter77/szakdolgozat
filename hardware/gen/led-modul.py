@@ -66,22 +66,22 @@ def tap(rail_y, x, top_y):
 
 
 # =================== Modulmag ===================
-S.text('MODULMAG – a logikai táp a 20 A-es', 15, 24, 1.5)
-S.text('főbiztosíték ELŐTT ágazik le (D54)', 15, 28.5, 1.5)
-left = [('+24V_IN', '+24V_IN'), ('+24V_P', None), ('V_BUS_P', None), ('HW_ID', 'HW_ID')]
+S.text('MODULMAG – táp a buszról (D71)', 15, 24, 1.5)
+S.text('a 24 V-ot a PB11 méri, a főbiztosíték előtt', 15, 28.5, 1.5)
+left = [('HW_ID', 'HW_ID')]
 right = [('PA8', 'CH1_PWM'), ('PA9', 'CH2_PWM'), ('PA10', 'CH3_PWM'), ('PC6', 'CH4_PWM'), ('PC7', 'CH5_PWM'),
          ('PC8', 'CH6_PWM'), ('PB12', 'DRV_EN'), ('PA7', 'I_SENSE'), ('PA4', 'DAC_THR'), ('PC2', 'V_RAIL_SENSE'),
          ('PC3', 'NTC'), ('PA0', 'DS1'), ('PA1', 'DS2'), ('PA2', 'DS3'), ('PA3', 'DS4'), ('PA5', 'DS5'), ('PA6', 'DS6'),
-         ('PB8', None), ('PB9', None), ('PB11', None), ('PB13', None), ('PB14', None), ('PB15', None)]
+         ('PB8', None), ('PB9', None), ('PB11', 'VIN_SENSE'), ('PB13', None), ('PB14', None), ('PB15', None)]
 S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 25, 35, 35, 2.54 * (len(right) + 1), left=left, right=right)
 
-# HW-ID (MODULMAG-SPEC 3.5): LED = 10k / 3,3k → 0,82 V → 2. sáv
-S.text('HW-ID: LED-modul = 2. sáv (0,82 V)', 15, 104)
+# HW-ID (MODULMAG-SPEC 3.5, D71): LED = 10k / 715 Ω → 0,22 V → 1. sáv (16 sáv)
+S.text('HW-ID: LED-modul = 1. sáv (0,22 V)', 15, 104)
 up('+3V3', (20, 108))
 shunt('Device:R', 'R201', '10k 1%', (20, 108), None, R0603)
 nh = (20, 118.11)
 S.wire((20, 115.62), nh)
-shunt('Device:R', 'R202', '3k3 1%', (20, 120.65), 'GND', R0603)
+shunt('Device:R', 'R202', '715R 1%', (20, 120.65), 'GND', R0603)
 S.wire(nh, (20, 120.65))
 shunt('Device:C', 'C201', '100n', (30, 120.65), 'GND', C0603)
 S.wire(nh, (30, nh[1]), (30, 120.65))
@@ -89,6 +89,22 @@ S.wire((30, nh[1]), (36, nh[1]))
 S.label('HW_ID', (36, nh[1]), 0)
 S.junction(nh)
 S.junction((30, nh[1]))
+
+# VIN_SENSE (D71): a 24 V a főbiztosíték ELŐTT → PB11 (150k / 10k: 24 V → 1,5 V, 12 V → 0,75 V)
+S.text('VIN_SENSE (PB11): 24 V az F201 előtt', 50, 137)
+xvs = 55.88
+up('+24V_IN', (xvs, 109.22))
+shunt('Device:R', 'R290', '150k', (xvs, 109.22), None, R0603, props=P('fordított polaritásnál ~0,16 mA folyik a PB11 védődiódáján – megengedett'))
+nvs = (xvs, 119.38)
+S.wire((xvs, 116.84), nvs)
+shunt('Device:R', 'R291', '10k', (xvs, 121.92), 'GND', R0603)
+S.wire(nvs, (xvs, 121.92))
+shunt('Device:C', 'C290', '100n', (xvs + 8.89, 121.92), 'GND', C0603)
+S.wire(nvs, (xvs + 8.89, nvs[1]), (xvs + 8.89, 121.92))
+S.wire((xvs + 8.89, nvs[1]), (xvs + 13.97, nvs[1]))
+S.label('VIN_SENSE', (xvs + 13.97, nvs[1]), 0)
+S.junction(nvs)
+S.junction((xvs + 8.89, nvs[1]))
 
 # =================== 1. Betáp és +24V_RAIL ===================
 Y = 45
@@ -374,5 +390,5 @@ for i, n in enumerate(['+24V_IN', '+24V_F', '+24V_RAIL']):
     S.flag(n, 262 + i * 17.78, 238)
 
 S.text('Generálva (hardware/gen/led-modul.py) – D43/D47/D53/D65 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 281, 1.3)
-S.write(OUT, date='2026-10-16')
+S.write(OUT, date='2026-10-20')
 print('ok', OUT)
