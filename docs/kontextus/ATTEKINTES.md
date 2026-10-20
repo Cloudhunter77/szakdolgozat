@@ -18,7 +18,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
 - 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`. **Mind az öt KiCad-lap kész** (`hardware/`: modulmag,
   vezérlő, LED-, relé-, bemeneti modul) – generátorral rajzolva, elrendezve, ERC 0 (relé: 4 elfogadott lib-jelzés),
   lapról lapra átnézve a spec és az adatlapok szerint (10-19; C320-duplikátum javítva). Új: LoRa-előkészítés DNP (D68),
-  bővítők + mérőpontok + HW_REV + SCT-013 (D69), R6/R7 = 0 Ω (D70). **Hátra a lezárásig: a 2 saját footprint, CubeMX.**
+  bővítők + mérőpontok + HW_REV + SCT-013 (D69), R6/R7 = 0 Ω (D70). CubeMX-ellenőrzés kész (10-20). **Hátra a lezárásig: a 2 saját footprint.**
 - ✏️ **D67:** amint Balázs kézzel szerkeszt egy lapot, onnantól a `.kicad_sch` a forrás (generátort arra nem futtatunk);
   munkafolyamat: `hardware/README.md`
 - 📦 `SAMPLE-KERESEK.md` – TI kérés + rendelés leadva (10-19); a többi gyártó hátra (határidő 10-22)

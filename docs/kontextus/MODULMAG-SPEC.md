@@ -252,6 +252,9 @@ Megjegyzések:
 - **Relék:** a ULN2803A bemenetein opcionális 100 kΩ lehúzás (boot alatti lebegés ellen).
 - A bemeneti modulon 12 bemenet ADC-képes (IN0–IN7, IN11–IN15), az IN8–IN10 csak digitális – de ezek (PA8–PA10)
   5 V-tűrők (FT); az ADC-s lábak TTa típusúak (≤ 3,6 V) → 5 V-os jelhez osztó (D66). A HDC3020 ALERT-je a PC2-n.
+- **EXTI-ütközés (CubeMX-adatbázis, 2026-10-20):** a PC2 az EXTI2 vonalon osztozna az IN2-vel (PA2) – egy EXTI-vonal
+  egyszerre csak egy porté. Ezért a HDC3020 ALERT-je **sima bemenet, a firmware lekérdezi** (a riasztás úgyis lassú
+  esemény). Más lábra tenni sem segítene: az IN0–IN15 mind a 16 EXTI-vonalat lefoglalja.
 
 ## 8. Layout-irányelvek
 - A modulmag **mindhárom lapon ugyanott**, a felső vállnál (D50). KiCad-ben a layoutot is újrahasználható
@@ -290,8 +293,9 @@ opc.), 1 k, 2,2 k, 120 Ω. (A HW-ID osztó a modul saját lapján van, 3.5.)
   382/425/476 mA → D59, D61.
 
 ## 11. Rajz előtt / közben ellenőrizni
-- [ ] **STM32CubeMX-projekt** a 7. fejezet szerint mindhárom modulra: nincs-e ütközés; a COMP2 → TIM1 BKIN2 +
-      TIM8 BKIN2 és a DAC1_OUT1 → COMP2 invertáló bemenet kiválasztható-e.
+- [x] **STM32CubeMX-projekt** (2026-10-20, `hardware/cubemx/`): lábütközés nincs (CubeMX 6.18, mindhárom .ioc);
+      a CubeMX-adatbázis szerint a COMP2 invertáló bemenete lehet a DAC1_CH1, a kimenete a TIM1 BKIN2 + TIM8 BKIN2.
+      Egyetlen megkötés: a HDC3020 ALERT (PC2) nem kaphat EXTI-t (7. fejezet).
 - [ ] A kvarc kiválasztása (CL) → a terhelőkondenzátorok értéke.
 - [ ] SMD-biztosíték (F1: ≥ 32 V!) konkrét típusa.
 - [ ] KiCad-footprintek: ISO1042 **DWV** (7,5 mm széles test, nem sima SOIC-8) – a TI EDA-modelljéből; **P78E05:**

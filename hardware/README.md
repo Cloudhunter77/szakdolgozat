@@ -33,3 +33,9 @@ ERC, netlista-export és összevetés a specifikációval, később DRC és gerb
     szomszédos alkatrész, többegységes U9), ezért PDF → PNG kivágáson is megnézni.
 - **KiCad MCP:** `kicad-mcp-pro` (uvx, Python 3.13), helyi scope, munkaterület = `hardware/`, **írható mód**
   (`KICAD_MCP_OPERATING_MODE=write`). Minden projektmappában `output/` munkamappát hoz létre (gitignore-ban).
+
+## STM32CubeMX-projektek (`cubemx/`)
+`python3 gen/cubemx.py` → `cubemx/<modul>/<modul>.ioc` a MODULMAG-SPEC 7. fejezetének lábkiosztásából (a jel- és
+üzemmódnevek a CubeMX 6.18 adatbázisából). Indítás: `flatpak run com.st.STM32CubeMX` → File → Load Project.
+A pinout nézet a lábhozzárendelést ellenőrzi; a belső kapcsolatokat (COMP2 → TIM1/TIM8 BKIN2, DAC1_OUT1 → COMP2 INM,
+ADC2_IN4 + COMP2_INP a PA7-en) a CubeMX-ben kézzel kell beállítani és megnézni.
