@@ -246,21 +246,24 @@ TI eFuse, 2,7–18 V (abs. 20 V), 0,5–4 A, **5,7 V-os túlfeszültség-vágás
 - Hidegítés: 7 × 100 nF (AVDD-k + VDD) + 10 µF a `3V3`-on + 10 µF a `3V3A`-n.
 - Áramfelvétel ~132 mA (100 Mbit adás). Nincs auto-MDIX – ma már szinte minden switch elintézi.
 
-### 4.2 Hálózati illesztés (MDI) – a WIZnet „use_mag” referencia szerint
+### 4.2 Hálózati illesztés (MDI) – a WIZnet „W5500-Ref-RJ45WithMag” referencia szerint (D72, 2026-10-20)
 
-| Ref | Érték | Bekötés |
+A referencia képe: https://docs.wiznet.io/assets/images/w5500_sch_v110_use_mag_-19e2939c3f018e5d72f1b957f990f96d.png –
+a rajz ezzel lábról lábra összevetve (a breadboard-teszt elmaradt, D72).
+
+| Ref | Érték | Bekötés (a referencia jelölése) |
 |---|---|---|
-| R20, R21 | 49,9 Ω 1 % | TXP → `TXB`, TXN → `TXB`; a `TXB` csomópont a `3V3A`-ra, + C16 10 nF a GND-re |
-| R22, R23 | 49,9 Ω 1 % | RXP → `RXB`, RXN → `RXB`; a `RXB` csomópont **csak** C17 6,8 nF-on át a GND-re (nem a 3,3 V-ra!) |
-| R24 | 10 Ω 1 % | `3V3A` → a MagJack **TCT**-je (adó középleágazás), + C18 22 nF a GND-re |
-| C19 | 6,8 nF | a MagJack **RCT**-je (vevő középleágazás) → GND |
-| C20 | 1 nF / 2 kV | a MagJack árnyékolása (shield) → GND |
+| R20, R21 | 49,9 Ω 1 % | `ETH_TXP` és `ETH_TXN` → **`3V3A`** (ref. R2, R1); mellette C16 10 nF a `3V3A`-n (hidegítés) |
+| R24 | 10 Ω 1 % | `3V3A` → a MagJack **TCT**-je (ref. R3), + C18 22 nF a GND-re (ref. C8) |
+| R22, R23 | 49,9 Ω 1 % | `ETH_RXP_W` és `ETH_RXN_W` (a W5500 RX-lábai) → közös pont = **`ETH_RCT`** (ref. R6, R7) |
+| C17 | 10 nF | `ETH_RCT` → GND (ref. C15); az `ETH_RCT` egyben a MagJack **RCT**-je |
+| C19, C61 | 6,8 nF | **soros** az RX-vonalakban: W5500 RXP → C19 → RD+, RXN → C61 → RD− (ref. C9, C10) |
+| C20 | 1 nF / 2 kV | `ETH_CGND` (a MagJack árnyékolása **és** 8-as lába – a Bob Smith-lezárás) → GND (ref. C16, CGND) |
 
-> **Rajz előtt ellenőrizd:** az értékek a WIZnet-referenciából (és a WIZ550io rajzából) biztosak, a bekötést
-> viszont a referencia képén kell visszaigazolni – a WIZnet oldalán csak képként van meg:
-> https://docs.wiznet.io/assets/images/w5500_sch_v110_use_mag_-19e2939c3f018e5d72f1b957f990f96d.png
-> A kézben lévő W5500-modulon is meg lehet nézni. A WIZnet szerint a vevő oldali 2 × 50 Ω-os illesztést **el kell
-> választani** a 3,3 V-os középleágazástól – ezért kell olyan MagJack, amelynek a TCT és az RCT külön lábon van.
+- A TX-vonalakban a referencia opcionális 0 Ω-os csillapító-ellenállásokat (R21–R24) mutat EMC-hez – nálunk nincs,
+  a 100 Mbit/s-os rövid vonalon nem szükséges.
+- A LED-ek a referenciával egyeznek (anód a 3,3 V-on, katód 330 Ω-on át – nálunk az ellenállás az anód oldalán, ami
+  egyenértékű).
 
 **MagJack (J6):** WIZnet által használt: **CETUS J1B1211CCD** (1 TD+, 2 TCT, 3 TD−, 4 RD+, 5 RCT, 6 RD−, 7 NC,
 8 GND, 9/10 zöld LED −/+, 11/12 sárga LED −/+, 13/14 árnyékolás). Olcsó, könnyen kapható: **HR911105A** – a
@@ -457,6 +460,7 @@ a generátor tri-state-re írja át (ERC).
   **R48–R50** PMODE-lehúzások (4.1); **L2** közös módusú CAN-fojtó + **JP4/JP5** alapból zárt áthidaló (6.4 –
   `CAN_H_T/CAN_L_T` a transceiver oldalán).
 - **U1** saját footprint: `modularis:TI_VQFN-HR-12_RNX0012B` (a TI RNX0012B csomagrajzából).
+- **Footprint-ellenőrzés (2026-10-20):** U1 (RNX0012B), U10 (E22 – két független referencia-footprinttel is: azonos lábsorrend, a padok ±7,0 mm-re igazítva), U12 LM66200 (SOT-583-8), U3 TPS2595 (DSG, ThermalVias) – a TI/Ebyte-rajzokkal egyeznek.
 
 ### 15.4 R7 = 0 Ω (D70)
 A D57-féle 10 Ω helyett 0 Ω; a footprint marad. Bedugáskor a TVS nagyobb áramon, magasabban fog – a 24 V-os táp

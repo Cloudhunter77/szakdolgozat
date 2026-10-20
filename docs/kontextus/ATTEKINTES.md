@@ -19,7 +19,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **24
   vezérlő, LED-, relé-, bemeneti modul) – generátorral rajzolva, elrendezve, ERC 0 (relé: 4 elfogadott lib-jelzés),
   lapról lapra átnézve a spec és az adatlapok szerint (10-19; C320-duplikátum javítva). Új: LoRa-előkészítés DNP (D68),
   bővítők + mérőpontok + HW_REV + SCT-013 (D69), R6/R7 = 0 Ω (D70). CubeMX-ellenőrzés kész (10-20). **Konzultáció után (10-20) átdolgozva: központi 5 V, közös föld, 12–26 V, HW-ID 16 sáv (D71)** –
-  mind az öt lap ERC-tiszta. **Hátra a lezárásig (10-22): a 2 saját footprint + az LM66200/TPS2595 footprintje.**
+  mind az öt lap ERC-tiszta. **Footprintek a TI/Ebyte-rajzokkal összevetve (10-20): E22 (padok ±7,0 mm-re igazítva), LMR36015 RNX, LM66200, TPS2595 – egyeznek; hátra: Balázs vizuális megerősítése a KiCad-ben.**
 - ✏️ **D67:** amint Balázs kézzel szerkeszt egy lapot, onnantól a `.kicad_sch` a forrás (generátort arra nem futtatunk);
   munkafolyamat: `hardware/README.md`
 - 📦 `SAMPLE-KERESEK.md` – TI kérés + rendelés leadva (10-19); a többi gyártó hátra (határidő 10-22)
@@ -116,7 +116,7 @@ SCT-013-030 (v2) és az ULN2803A.
       11 típus × 10 db), válasz 5 munkanapon belül; a többi gyártó még hátra (`SAMPLE-KERESEK.md`) (határidő 2026-10-22); ha a TI elutasít: LMR36015 és W5500 megvenni, transceiverekhez
       tartalék (D36, D60)
 - [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/USB-C/gombok típusa;
-      W5500 MDI-hálózat a WIZnet-referencián; MagJack lábkiosztása; RGB LED + 74HCT14 vagy WS2812B-V5)
+      ~~W5500 MDI-hálózat~~ ✅ (D72, WIZnet-referencia); MagJack lábkiosztása (KiCad Hanrun-szimbólum szerint); RGB LED + 74HCT14 vagy WS2812B-V5)
 - [ ] **DIN-ház kiválasztása** (pl. Camdenboss CNMB) → NYÁK-méret, furatok, vállmagasság (elkók!)
 - [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil
 - [ ] Beszerzés: AH1911 (+ mágnesek), W5500 + MagJack + 25 MHz, 1 mΩ-os sönt, JST-XH/PH, kvarcok, elkók, USB-C aljzat
@@ -133,7 +133,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D71 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D72 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32, TCAN1044, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni

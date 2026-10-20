@@ -449,26 +449,36 @@ for n, ref, val, lib, fp, dx in (('10', 'R40', '12,4k 1%', 'Device:R', R0603, 5.
     shunt(lib, ref, val, (q[0] + dx, q[1]), 'GND', fp)
 for n, net in (('25', 'ETH_LED_LINK'), ('27', 'ETH_LED_ACT')):
     stub(pw[n][:2], net, 0, 22.86)
-for n, net in (('1', 'ETH_TXN'), ('2', 'ETH_TXP'), ('5', 'ETH_RXN'), ('6', 'ETH_RXP')):
+for n, net in (('1', 'ETH_TXN'), ('2', 'ETH_TXP'), ('5', 'ETH_RXN_W'), ('6', 'ETH_RXP_W')):
     stub(pw[n][:2], net, 0, 7.62)
-# MDI-lezárás (WIZnet use_mag): TX → 49,9 Ω → +3V3A (TXB, C16); RX → 49,9 Ω → RXB (C17 → GND)
+# MDI-lezárás (WIZnet W5500-Ref-RJ45WithMag): TX → 49,9 Ω → +3V3A; RX: 49,9 Ω-ok közös pontja = RCT, 10 nF a GND-re;
+# az RX-vonalakban soros 6,8 nF (C19, C61) a W5500 és a MagJack között
 mx, my = 419.1, 190.5
-S.text('MDI-lezárás: TX 49,9 Ω a +3V3A-ra (TXB), RX 49,9 Ω a RXB-re; a RXB csak C17-en át a GND-re', mx - 8, my - 10)
-S.rail(my, [mx, mx + 7.62, mx + 15.24, mx + 22.86])
+S.text('MDI (WIZnet-referencia): TX 49,9 Ω a +3V3A-ra; RX 49,9 Ω → RCT + 10 nF; RX-ben soros 6,8 nF', mx + 25.4, my - 12)
+S.rail(my, [mx, mx + 7.62, mx + 17.78, mx + 27.94])
 S.label('+3V3A', (mx, my), 180)
-for x, ref, net in ((mx + 7.62, 'R20', 'ETH_TXP'), (mx + 15.24, 'R21', 'ETH_TXN')):
-    S.place('Device:R', ref, '49,9R 1%', {'1': None, '2': None}, '2', (x, my), fp=R0603)
+for x, ref, net in ((mx + 7.62, 'R20', 'ETH_TXP'), (mx + 17.78, 'R21', 'ETH_TXN')):
+    S.place('Device:R', ref, '49R9', {'1': None, '2': None}, '2', (x, my), fp=R0603, props=P('1 %'))
     S.label(net, (x, my - 7.62), 90)
-S.wire((mx + 22.86, my), (mx + 22.86, my + 2.54))
-S.place('Device:C', 'C16', '10n', {'1': None, '2': 'GND'}, '1', (mx + 22.86, my + 2.54), fp=C0603, props=P('a TXB csomópontnál'))
+S.wire((mx + 27.94, my), (mx + 27.94, my + 2.54))
+S.place('Device:C', 'C16', '10n', {'1': None, '2': 'GND'}, '1', (mx + 27.94, my + 2.54), fp=C0603, props=P('a TXB csomópontnál'))
 ry = my + 27.94
-S.rail(ry, [mx + 7.62, mx + 15.24, mx + 22.86])
-for x, ref, net in ((mx + 7.62, 'R22', 'ETH_RXP'), (mx + 15.24, 'R23', 'ETH_RXN')):
-    S.place('Device:R', ref, '49,9R 1%', {'1': None, '2': None}, '2', (x, ry), fp=R0603)
+S.rail(ry, [mx + 7.62, mx + 17.78, mx + 27.94, mx + 35.56])
+S.label('ETH_RCT', (mx + 35.56, ry), 0)
+for x, ref, net in ((mx + 7.62, 'R22', 'ETH_RXP_W'), (mx + 17.78, 'R23', 'ETH_RXN_W')):
+    S.place('Device:R', ref, '49R9', {'1': None, '2': None}, '2', (x, ry), fp=R0603, props=P('1 %'))
     S.label(net, (x, ry - 7.62), 90)
-S.wire((mx + 22.86, ry), (mx + 22.86, ry + 2.54))
-S.place('Device:C', 'C17', '6,8n', {'1': None, '2': 'GND'}, '1', (mx + 22.86, ry + 2.54), fp=C0603,
-        props=P('a RXB csak kondenzátoron át a GND-re, NEM a 3,3 V-ra'))
+S.wire((mx + 27.94, ry), (mx + 27.94, ry + 2.54))
+S.place('Device:C', 'C17', '10n', {'1': None, '2': 'GND'}, '1', (mx + 27.94, ry + 2.54), fp=C0603,
+        props=P('a WIZnet-referencia C15-je: az RX-lezárás közepe és az RCT, 10 nF a GND-re'))
+# soros 6,8 nF az RX-vonalakban (WIZnet-referencia C9, C10)
+for k, (ref, a, b) in enumerate((('C19', 'ETH_RXP_W', 'ETH_RXP'), ('C61', 'ETH_RXN_W', 'ETH_RXN'))):
+    yy = ry + 17.78 + k * 7.62
+    S.label(a, (mx + 2.54, yy), 180)
+    S.wire((mx + 2.54, yy), (mx + 5.08, yy))
+    q = series('Device:C', ref, '6,8n', (mx + 5.08, yy), C0603, props=P('soros, a W5500 RX-lába és a MagJack között'))
+    S.wire(q, (q[0] + 5.08, yy))
+    S.label(b, (q[0] + 5.08, yy), 0)
 # J6 MagJack
 JX, JY = 515.62, 226.06
 pjx = S.comp('Connector:RJ45_Hanrun_HR911105A_Horizontal', 'J6', 'HR911105A', JX, JY,
@@ -489,18 +499,19 @@ S.label('+3V3A', (xt - 7.62, yct), 180)
 S.wire((xt + 5.08, yct), (xt + 5.08, yct + 2.54))
 S.junction((xt + 5.08, yct))
 S.place('Device:C', 'C18', '22n', {'1': None, '2': 'GND'}, '1', (xt + 5.08, yct + 2.54), fp=C0603)
-S.wire((xt + 15.24, yct + 12.7), (xt + 15.24, yct + 15.24))
-S.place('Device:C', 'C19', '6,8n', {'1': None, '2': 'GND'}, '1', (xt + 15.24, yct + 15.24), fp=C0603)
+S.label('ETH_RCT', (xt + 15.24, yct + 12.7), 0)
 # LED-ek: anód 330 Ω-on át a +3V3-ra, katód a W5500 LED-kimenetén
 for n_a, n_k, ref, nt, net in (('9', '10', 'R41', 'zöld = link', 'ETH_LED_LINK'), ('12', '11', 'R42', 'sárga = aktivitás', 'ETH_LED_ACT')):
     qa = pjx[n_a][:2]
     S.wire(qa, (qa[0] + 2.54, qa[1]))
     pr = S.place('Device:R', ref, '330R', {'1': '+3V3', '2': None}, '2', (qa[0] + 2.54, qa[1]), r=270, fp=R0603, props=P(nt))
     stub(pjx[n_k][:2], net, 0, 15.24)
-stub(pjx['8'][:2], 'GND', 270, 2.54)
+stub(pjx['8'][:2], 'ETH_CGND', 270, 2.54)
 sh = pjx['SH'][:2]
 S.wire(sh, (sh[0], sh[1] + 7.62))
-S.place('Device:C', 'C20', '1n/2kV', {'1': None, '2': 'GND'}, '1', (sh[0], sh[1] + 7.62), fp=C1206)
+S.label('ETH_CGND', (sh[0], sh[1] + 3.81), 0)
+S.place('Device:C', 'C20', '1n/2kV', {'1': None, '2': 'GND'}, '1', (sh[0], sh[1] + 7.62), fp=C1206,
+        props=P('WIZnet-referencia C16: a MagJack árnyékolása és a Bob Smith-lezárás (8-as láb) → 1 nF / 2 kV → GND'))
 # W5500 hidegítés: +3V3 → FB1 → +3V3A
 hy = 297.18
 S.text('W5500 hidegítés: AVDD-lábanként 100 nF; FB1 = HH-1M1608-121JT, ≥ 300 mA', 300, hy - 10)
@@ -827,7 +838,7 @@ for i, net in enumerate(tps):
         S.label(net, (x, 299.72), 270)
 
 # PWR_FLAG-ek
-for i, n in enumerate(['GND', '+3V3', '+24V_P', '+24V_F', 'VIN_BUCK', '+3V3A', 'CAN_VCC', 'CAN_VIO', 'VUSB', '+3V3_LORA', '+5V_BUCK']):
+for i, n in enumerate(['GND', '+3V3', '+24V_P', '+24V_F', 'VIN_BUCK', '+3V3A', 'CAN_VCC', 'CAN_VIO', 'VUSB', '+3V3_LORA', '+5V_BUCK', 'ETH_CGND']):
     S.flag(n, 20 + i * 20.32, 405)
 S.text('Generálva (hardware/gen/vezerlo.py) – a VEZERLO-SPEC.md alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 414, 1.4)
 S.write(OUT, date='2026-10-19')

@@ -16,7 +16,7 @@ Részletek: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`, `NYAK-ELOKESZITES.md`, `SAMPL
 | Sze 10-21 → **Cs 10-22** (D71) | [ ] ERC + javítások → **rajz lezárva** (a konzultáció utáni táp-átdolgozás miatt egy nappal később) | [ ] teljes átnézés: minden láb, minden érték a spec szerint (netlista-összevetés) |
 
 Esti, rövid feladatok ezen a héten:
-- [ ] **W5500 + C6 breadboard-teszt** (a kézben lévő modullal) **10-21 előtt** – a vezérlő SPI-lábkiosztásának
+- [~] ~~**W5500 + C6 breadboard-teszt**~~ elmarad (nincs kéznél a modul) → a rajz a WIZnet-referenciával összevetve, D72; (a kézben lévő modullal) **10-21 előtt** – a vezérlő SPI-lábkiosztásának
       (GPIO6/7/2/10/11/3) megerősítése, mielőtt a layout rögzül. Firmware: Claude Code.
 - [ ] **A CCT szalag bekapcsolási felvillanása – 3 próba** (5 perc): (1) csak 24 V, C6 áram nélkül; (2) 24 V megy,
       C6 bedugás / RESET; (3) a szokásos bekapcsolás módja. Utána: CCT commit + `cp-03-cct-szalag`.

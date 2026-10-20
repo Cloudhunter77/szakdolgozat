@@ -273,5 +273,5 @@ kondenzátorok: 10 µF 16 V (0805, 2 db), 100 nF (≈ 9 db), 1 µF, 4,7 µF (2),
       a CubeMX-adatbázis szerint a COMP2 invertáló bemenete lehet a DAC1_CH1, a kimenete a TIM1 BKIN2 + TIM8 BKIN2.
       Egyetlen megkötés: a HDC3020 ALERT (PC2) nem kaphat EXTI-t (7. fejezet).
 - [ ] A kvarc kiválasztása (CL) → a terhelőkondenzátorok értéke.
-- [ ] Az LM66200 (vezérlő) és a TPS2595 footprintje a TI-rajz szerint (SOT-583-8, WSON-8 2 × 2).
+- [x] Az LM66200 (SOT-583-8) és a TPS2595 (DSG, ThermalVias) KiCad-footprintje a TI-rajzzal összevetve (2026-10-20) – egyezik.
 - [ ] A lánc végén mért V_BUS az első prototípuson (a PC1-en) – ha 4,5 V alá esik: vastagabb kábel / rövidebb lánc.
