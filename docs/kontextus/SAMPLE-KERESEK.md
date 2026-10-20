@@ -93,6 +93,9 @@ A konzultáció után a táp központi lett (D71) → új alkatrészek, egyik si
 - **Csak 12 V-os relémodulhoz:** 12 V-os tekercsű Schrack relé (RTD14012), 4 db
 - Ha az ISO1042 minta mégis megjön: tartalék egy későbbi izolált változathoz.
 
+## D73 (2026-10-21) – DIN-ház
+- **TME:** Gainta **D4MG** × 3 (vezérlő, LED-, relémodul) + 1 tartalék, ~4,4 €/db; a bemeneti modulhoz a **6 modulos** Gainta (86,5 × 103 mm-es NYÁK) – a pontos típust a TME-n kikeresni
+
 ## Már nem kell
 - **ISO1042BDWVR** a v1-hez (D71: közös föld) · a modulokon a **P78E05** és az **NCP1117** (D71) · TPS2553 (D71)
 - THVD1450, ADM2587E, LTC2862 – RS-485-höz kellettek, a CAN-busz kiváltotta.

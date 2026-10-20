@@ -117,10 +117,10 @@ SCT-013-030 (v2) és az ULN2803A.
       tartalék (D36, D60)
 - [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/USB-C/gombok típusa;
       ~~W5500 MDI-hálózat~~ ✅ (D72, WIZnet-referencia); MagJack lábkiosztása (KiCad Hanrun-szimbólum szerint); RGB LED + 74HCT14 vagy WS2812B-V5)
-- [ ] **DIN-ház kiválasztása** (pl. Camdenboss CNMB) → NYÁK-méret, furatok, vállmagasság (elkók!)
+- [x] **DIN-ház (D73, 10-21):** Gainta D4MG (TME), NYÁK **86,5 × 68 mm** (vezérlő, LED, relé), a bemeneti modul 6 M **86,5 × 103 mm**; tartalék CNMB/4, OKW RAILTEC C (ugyanaz a NYÁK). Hátra: a vállmagasság (relék, elkók) és a kivágások a ház rajzából
 - [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil
 - [ ] Beszerzés: AH1911 (+ mágnesek), W5500 + MagJack + 25 MHz, 1 mΩ-os sönt, JST-XH/PH, kvarcok, elkók, USB-C aljzat
-- [ ] NYÁK: kapcsolási rajzok ✅ (D71-átdolgozás kész 10-20, lezárás 10-22), **DIN-ház kell a layout előtt**, layout (10-20 – 10-26), rendelés ≈ 10-31 (határidő 2026-10-30)
+- [ ] NYÁK: kapcsolási rajzok ✅ (D71-átdolgozás kész 10-20, lezárás 10-22), DIN-ház ✅ (D73), layout (10-20 – 10-26), rendelés ≈ 10-31 (határidő 2026-10-30)
 - [ ] Firmware később: LED-modul (önteszt, árammintavétel, 20 A-es összegkorlát, DAC-küszöb, kiégett biztosíték
       jelzése), csatorna-csoportosítás a regisztertáblában → Matter-lámpák; modul-protokoll + bootloader; vezérlő:
       V_BUS-kezelés (VIN_SENSE / VBUS_SENSE / FAULT)
@@ -133,7 +133,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D72 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D73 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32, TCAN1044, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni

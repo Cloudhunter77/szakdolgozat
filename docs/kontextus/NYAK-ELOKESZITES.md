@@ -80,10 +80,10 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 
 | Lap | Ház | NYÁK kb. | Felső váll | Alsó váll |
 |---|---|---|---|---|
-| Vezérlő | 4 M (~71 mm) | 66 × 85 mm | 24 V be, busz BE/KI (2 × XH), jumper, USB-C | RJ45 |
-| LED-modul | 4 M | 66 × 85 mm | 24 V be (2,5 mm², 20 A), busz BE/KI, jumper | 3 × 3 pólusú kimenet (~45–50 mm) |
-| Relémodul | 4 M | 66 × 85 mm | 24 V be, busz BE/KI, jumper | 4 relé kimenete (4 × 2 pólus, COM + NO) |
-| Bemeneti modul | 6 M (~106 mm) | 100 × 85 mm | 24 V be, busz BE/KI, jumper + ~6 bemenet | ~10 bemenet |
+| Vezérlő | 4 M (~71 mm) | **86,5 × 68 mm** (D73) | 24 V be, busz BE/KI (2 × XH), jumper, USB-C | RJ45 |
+| LED-modul | 4 M | **86,5 × 68 mm** (D73) | 24 V be (2,5 mm², 20 A), busz BE/KI, jumper | 3 × 3 pólusú kimenet (~45–50 mm) |
+| Relémodul | 4 M | **86,5 × 68 mm** (D73) | 24 V be, busz BE/KI, jumper | 4 relé kimenete (4 × 2 pólus, COM + NO) |
+| Bemeneti modul | 6 M (~106 mm) | **86,5 × 103 mm** (D73) | 24 V be, busz BE/KI, jumper + ~6 bemenet | ~10 bemenet |
 
 - Egy 3 tűs XH kb. 10 mm, egy PH kb. 8 mm széles → 16 XH a busz mellett a 6 M-es ház vállain már nagyon szoros,
   PH-val kényelmes (D51).
@@ -139,7 +139,7 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
       nincs (pl. a vezérlő LMR36015-je, W5500), azt meg kell venni.
 
 ## C – Layout előtt
-- [ ] **A DIN-ház kiválasztása** (gyári típus, amihez a NYÁK méreteződik, D50) és a ház adatlapjának méretei.
+- [x] **A DIN-ház kiválasztása** → Gainta D4MG / CamdenBoss CNMB/4 / OKW RAILTEC C, NYÁK 86,5 × 68 mm (D73, 2026-10-21).
 - [ ] **Footprint-ellenőrzés** a nem szokványos tokoknál: ISO1042 DWV (7,5 mm széles test), LMR36015 (VQFN-HR,
       RNX – csak a vezérlőn), **P78E05 (SIP-3)**, TPD4E05U06 (USON), W5500 + MagJack, USB-C aljzat, Schrack relé,
       push-in sorkapcsok, mini lapos biztosítékfoglalat, 2512-es sönt, JST-XH és -PH. Nyomtasd ki 1:1-ben, és tedd
