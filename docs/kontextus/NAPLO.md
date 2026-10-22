@@ -30,7 +30,7 @@ Sablon:
   10-22 reggel, újabb teljes ellenőrzés: a NYÁK-footprintek UUID-útvonala egyik rajzi szimbólumra sem mutatott (a generátor
   minden futáskor új, véletlen UUID-t adott) → a szimbólum-UUID most a projekt + hivatkozási jel alapján stabil, a többi elemé
   laponként sorszámból képzett (két generálás bájtra azonos); a NYÁK-ok újragenerálva, mind a 581 footprint a szimbólumára mutat;
-  az ellenőrző ezt is figyeli.
+  az ellenőrző ezt is figyeli. Költségbecslés után (~140–220 e Ft/készlet): **D82 – 1 oz + fedetlen, utólag ónozott sávok** a 2 oz helyett.
 - Tanultuk: az L4-es .ioc-ban az ADC-lábak megosztott jelként (ADCx) kellenek, és az ADC-órajel nélkül a CubeMX nem generál;
   a TPD4E05U06 letörése (6,4–8,7 V) az 5 V-tűrő láb határa körül van → D81 javaslat.
 - Nyitott: D81 (TPD4E02B04 a bemeneteken – Balázs dönt); a relé 230 V-os push-in típusa; huzalozás (Balázs, 10-26-ig);

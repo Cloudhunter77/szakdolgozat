@@ -15,12 +15,12 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
 - ✅ `firmware/esphome-demo` → `cp-01-esphome-demo` · ✅ `firmware/matter-c6` (Thread, HA-ba párosítva, szín csak
   részben) → `cp-02-matter-thread-ha` · ✅ breadboard 24 V-os LED-meghajtó, 2 csatorna (D15)
 - 📝 CCT szalag firmware (D16): prompt kész, **még nincs lefuttatva**
-- 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`. **Mind az öt KiCad-lap kész** (`hardware/`, generátorral, ERC 0;
-  relé: 4 elfogadott lib-jelzés); D71 (központi 5 V, közös föld, 12–26 V, HW-ID 16 sáv), D72–D77 beépítve; NYÁK-ok
-  előkészítve (körvonal, rétegek, kezdő elhelyezés – a huzalozást Balázs csinálja). Footprintek összevetve (hátra: vizuális megerősítés).
-- 🔁 **D78–D79 (10-22): modul-MCU = STM32L433RCT3** (75 db kézben; a relé- és a bemeneti lapra az F303 is jó), modul-transceiver
-  = **SN65HVD230** (kézben), **N-FET a GND-ágban** (fordított polaritás közös földdel), MCP9701A, zöld táp-LED a +5V-ról,
-  2 oz a LED-/relémodulon – rajzok ERC-tiszták, NYÁK-ok újragenerálva (DRC: csak huzalozatlan + szitanyomat), CubeMX újra.
+- 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`. **Mind az öt KiCad-lap kész** (`hardware/`, generátorral); D71–D77 beépítve;
+  NYÁK-ok előkészítve (körvonal, rétegek, kezdő elhelyezés – a huzalozást Balázs csinálja).
+- 🔁 **D78–D80 (10-22):** modul-MCU **STM32L433RCT3**, modul-transceiver **SN65HVD230**, **N-FET a GND-ágban**, MCP9701A, zöld
+  táp-LED a +5V-ról, AP2112K marad, 1 oz + fedetlen nagyáramú sávok (D82) – **rajzok lezárva (10-22)**; teljes ellenőrzés: `hardware/gen/ellenorzes.py` (0 hiba),
+  a NYÁK-ok a rajzi szimbólumokra mutatnak (determinisztikus UUID-k); darabjegyzék: `hardware/bom/`; konzulensnek:
+  `docs/komponenslista.md` + `hardware/out/kapcsolasi-rajzok-2026-10-22.pdf`. **Következik: layout (Balázs, 10-23 – 10-28).**
 - ✏️ **D67:** amint Balázs kézzel szerkeszt egy lapot, onnantól a `.kicad_sch` a forrás (generátort arra nem futtatunk);
   munkafolyamat: `hardware/README.md`
 - 📦 `SAMPLE-KERESEK.md` – TI kérés + rendelés leadva (10-19); a többi gyártó hátra (határidő 10-22)
@@ -141,7 +141,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D81 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D82 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, SN65HVD230, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni

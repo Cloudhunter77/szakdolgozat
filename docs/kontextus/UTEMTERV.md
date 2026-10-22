@@ -13,7 +13,7 @@ Részletek: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`, `NYAK-ELOKESZITES.md`, `SAMPL
 | P 10-16 – Szo 10-17 | [x] KiCad: **modulmag** hierarchikus lap (táp, STM32, ISO1042, busz-oldal) | [x] hiányzó szimbólumok/footprintek (ISO1042 DWV, P78E05, TCAN1044AV …) · [ ] a modulmag rajzának átnézése a spec alapján |
 | V 10-18 | [x] KiCad: **vezérlő** (táp, C6, CAN, USB-C, W5500) | [ ] átnézés a VEZERLO-SPEC alapján |
 | H 10-19 – K 10-20 | [x] KiCad: **LED-, relé-, bemeneti modul** (modulmag + a saját részük) | [ ] átnézés lapról lapra |
-| Sze 10-21 → **Cs 10-22** (D71) | [ ] ERC + javítások → **rajz lezárva** (a konzultáció utáni táp-átdolgozás miatt egy nappal később) | [ ] teljes átnézés: minden láb, minden érték a spec szerint (netlista-összevetés) |
+| Sze 10-21 → **Cs 10-22** (D71) | [x] ERC + javítások → **rajz lezárva** (10-22; D74–D80 után) | [x] teljes átnézés: `gen/ellenorzes.py` – 0 hiba (10-22) |
 
 Esti, rövid feladatok ezen a héten:
 - [~] ~~**W5500 + C6 breadboard-teszt**~~ elmarad (nincs kéznél a modul) → a rajz a WIZnet-referenciával összevetve, D72; (a kézben lévő modullal) **10-21 előtt** – a vezérlő SPI-lábkiosztásának
@@ -25,7 +25,7 @@ Esti, rövid feladatok ezen a héten:
 
 | Nap | Balázs | Claude Code |
 |---|---|---|
-| Cs 10-22 | [ ] **TI-válasz** → ami nem jön sample-ként, megrendelni (**LMR36015-re nincs tartalék**) · [ ] rétegrend + impedancia (JLC-kalkulátor) · [ ] lapkörvonalak | [ ] beszerzési lista (sample vs. vásárlás) |
+| Cs 10-22 | [ ] **TI-válasz** → ami nem jön sample-ként, megrendelni (**LMR36015-re nincs tartalék**) · [x] rétegrend: 1 oz mindenhol, a nagyáramú sávok fedetlenek (D82) – impedancia: JLC-kalkulátor · [x] lapkörvonalak | [x] beszerzési lista (`SAMPLE-KERESEK.md` + `hardware/bom/*.csv`) |
 | P 10-23 – Szo 10-24 | [ ] **modulmag** layout (újrahasznosítható blokk) · [ ] **LED-modul** (20 A-es sávok, sönt Kelvin-bekötéssel) | [ ] layout-ellenőrzőlista a két spec layout-fejezetéből |
 | V 10-25 | [ ] **relé- és bemeneti modul** layout | |
 | H 10-26 – K 10-27 | [ ] **vezérlő** layout (antenna keepout, Ethernet-párok, USB, VQFN buck) – 2 nap | |

@@ -171,7 +171,11 @@ class Sheet:
         el.append(prop('Datasheet', '', 0, 0, hide=True))
         for k, v in (props or {}).items():
             el.append(prop(k, v, 0, 0, hide=True))
-        for num in pins:
+        # a KiCad minden egységpéldánynál a szimbólum ÖSSZES lábát felsorolja – ha itt hiányzik, a „sch upgrade” véletlen
+        # UUID-vel pótolja, és a fájl minden generáláskor változna (többegységes tokok, pl. 74HC14)
+        allp = list(pins) + [n for sub in sx.find(d, 'symbol') for pn in sx.find(sub, 'pin')
+                             for n in [sx.first(pn, 'number')[1]] if n not in pins]
+        for num in dict.fromkeys(allp):
             el.append([Sym('pin'), num, [Sym('uuid'), U() if power else DU(f'{self.project}/sym/{ref}/{unit}/pin/{num}')]])
         inst = [Sym('instances'), [Sym('project'), self.project,
                 [Sym('path'), '/' + self.uuid, [Sym('reference'), ref], [Sym('unit'), unit]]]]

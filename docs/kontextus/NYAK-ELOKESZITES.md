@@ -7,7 +7,7 @@
 > **2026-10-22 – D78–D80:** modul-MCU **STM32L433RCT3** (a LED-modulon a CH4–CH6 TIM15/TIM16 a PB14/PB15/PB8-on, az I_SENSE a
 > PA3-on, a VIN_SENSE a PB1-en; a COMP2 a TIM1/TIM15/TIM16 break-jét állítja le), modul-transceiver **SN65HVD230**,
 > polaritásvédelem **N-FET a GND-ágban** (vezérlő Q1, LED Q201, relé Q100 – az LM74700 és a vezérlő D1-e kikerült),
-> hőmérő **MCP9701A** (az NTC helyett), LDO **AP2112K** marad, **2 oz** a LED- és a relémodulon, csavaros sorkapocs a LED-modul
+> hőmérő **MCP9701A** (az NTC helyett), LDO **AP2112K** marad, **1 oz + fedetlen nagyáramú sávok (D82, a D79 2 oz-a helyett)**, csavaros sorkapocs a LED-modul
 > 20 A-es útján. A lent áthúzás nélkül maradt régi részletek (TIM8, PA7, F303, 4,7 kΩ, NTC) ennek fényében olvasandók.
 
 Ütemterv (D25): kapcsolási rajzok 10-13 – 10-19, layout 10-20 – 10-26, átnézés + rendelés 10-27 – 10-31.
@@ -111,8 +111,9 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 - Ár: a tényleges méretekkel a JLC-ajánlatkérőben ellenőrizni (2026 augusztusában árkorrekció volt). A 4 réteges
   lap gyártási ideje 2–5 nap (a 2 rétegesé ~24 óra) – a határidőbe belefér.
 - Rétegrend: jel / GND / táp / jel. A belső rétegek réze a JLC-nél alapból 0,5 oz → **a nagyáramú utak a külső
-  rétegeken** (1 vagy 2 oz), belül csak sík és jel. **D79: a LED- és a relémodul 2 oz-os külső rézzel** (a NYÁK-fájlban
-  a rétegrend már így áll: 70 µm kívül, 35 µm belül) – a JLC-rendelésnél ezt kell kiválasztani; a vezérlő és a bemeneti modul 1 oz.
+  rétegeken** (1 vagy 2 oz), belül csak sík és jel. **D82: minden lap 1 oz** (a JLC alapbeállítása; a 2 oz-hoz ≥ 0,2 mm szélesség/távolság
+  kellene, az LQFP-64 padjai közti rés épp ennyi). A nagyáramú sávok **fedetlenek**, beültetés után ónnal vagy vezetékkel
+  megerősítve – lásd lent: „A 20 A-es út”.
 - ~~Az ISO1042 alatti izolációs rés~~ – D71 óta nincs izoláció; helyette: a LED-modul 20 A-es visszatérő útja ne a
   busz-csatlakozók alatt menjen (csillagpont, közös föld).
 - **Ethernet:** a két differenciális érpár 100 Ω-os, az USB D+/D− 90 Ω-os – a sávszélességet/rést a JLC
@@ -133,7 +134,16 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 - [x] **Teljesítménymérleg:** modulonként < 100 mA a 3,3 V-on (P78E05 1 A, az NCP1117-en ~0,17 W); vezérlő: 3,3 V
       ≈ 0,54 A (LMR36015, 1,5 A), 5 V ≤ 0,61 A (P78E05, 1 A), 24 V-on ≈ 0,25 A (`VEZERLO-SPEC.md` 11.); V_BUS worst
       case ≈ 0,3 A < TPS2553 min. 382 mA; 12 V a gate drivereknek (MC78L12).
-- [ ] **A 20 A-es út (LED-modul):** külső rétegen, **2 oz (D79)**, sávszélesség ~6 mm (IPC-2221, 10 °C),
+- [ ] **A 20 A-es út (LED-modul) – D82: 1 oz, fedetlen sáv, utólag megerősítve.** Huzalozás:
+      - a sávot a felső **és** az alsó rétegen is kiönteni, sűrű vián-sorral összekötve (0,6/0,3 mm-es via ~1 A-t bír, 20 A-hez
+        ≥ 20 via, a sáv mentén elosztva); 1 oz-on 10 A ≈ 4,5 mm, 20 A ≈ 12 mm (IPC-2221, 10 °C) – ónozva ennek töredéke is elég;
+      - **a lakk kihagyása KiCad-ben:** a sáv fölé ugyanakkora kitöltött alakzatot rajzolni az **F.Mask** (alul a **B.Mask**)
+        rétegre – a maszkrétegen rajzolt alakzat nyílást jelent; a nyílás ~0,1 mm-rel kisebb legyen a réznél;
+      - melyik sáv: +24 V (J201 → F201 → sín → F202–F204 → J202–J204), a drain-sávok a sorkapcsokig, a visszatérő út
+        (FET-source-ok → PGND_SH → sönt → GND → Q201 → J201); relémodul: COM/NO a relétől a J101–J104-ig;
+      - **a sönt (R209) környékét nem szabad ónozni**: a Kelvin-pontok közti réz része a mérésnek – a nyílás a sönt padjai előtt
+        érjen véget; beültetés után: ónozás vagy 1–1,5 mm²-es csupasz rézhuzal a sáv mentén;
+      eredeti szöveg: sávszélesség ~6 mm (IPC-2221, 10 °C),
       sorkapocs- és biztosítékértékek, a sönt helye. A nagyáramú út legyen rövid: sorkapocs → FET → sönt → sorkapocs.
 - [x] ~~**Védelem helye:**~~ → D71 (a modulmag a buszról jár) és D78 (N-FET a GND-ágban). Régi szöveg: a modulmag logikai tápján Schottky (SS16) a fordított polaritás ellen + SMBJ28A +
       **kötelező 47 µF-os elkó** + opcionális 10 Ω soros ellenállás (spec 2. fejezet, D57; a P78E05 bemenete max.

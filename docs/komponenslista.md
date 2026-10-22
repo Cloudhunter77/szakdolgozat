@@ -8,7 +8,7 @@ A modulmag egy közös hierarchikus lap: a LED-, a relé- és a bemeneti modulon
 
 Jelölések: DNP = az alkatrész helye (footprintje) a NYÁK-on van, de alapból nincs beültetve (későbbi bővítés vagy mérés utáni hangolás). A „D” számok (pl. D71) a döntésnapló bejegyzéseire utalnak.
 
-Állapot: 2026-10-22, a D78–D80 döntésekkel (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V). A rajzok pontosan ezt az állapotot mutatják: a lista minden alkatrésze és értéke gépileg össze van vetve a kapcsolási rajzok netlistájával, és a rajzok ERC-ellenőrzése hibátlan. A NYÁK-ok huzalozása még hátra van.
+Állapot: 2026-10-22, a D78–D80 döntésekkel (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V). A lista a kapcsolási rajzok mostani állapotát írja le; a NYÁK-ok huzalozása még hátra van.
 
 # 1. Modulmag (közös lap: a LED-, a relé- és a bemeneti modulon azonos)
 

@@ -42,7 +42,6 @@ BOARDS = {
         hv=(0, 43, W4, L),       # 230 V-os tartomány: ide csak a relék érintkezői és a sorkapcsok kerülhetnek
         hv_parts=['K1', 'K2', 'K3', 'K4', 'J101', 'J102', 'J103', 'J104'],
         attach={'R114': 'J100', 'D106': 'J100'},   # a Q100 gate-ellenállása és Zenere a betáp mellé
-        outer_oz=2,              # D79: 16 A-es érintkezőutak
     ),
     'vezerlo': dict(
         size=(W4, L),
@@ -75,7 +74,6 @@ BOARDS = {
                  'U201': (0, 43, 18, 54), 'U202': (26, 43, 44, 54), 'U203': (48, 43, 68, 54),
                  'U206': (14, 40, 34, 54), 'U205': (0, 22, 14, 44)},
         attach={'C243': 'U207'},   # a hőmérő hidegítése közvetlenül mellé
-        outer_oz=2,              # D79: a 20 A-es út 2 oz-on ~6 mm széles (1 oz-on ~12 mm)
     ),
     'bemeneti-modul': dict(
         size=(103.0, L),
@@ -258,7 +256,8 @@ def groups(comps, nets, anchors, fixed, attach=None):
 
 
 def add_stackup(path):
-    """2 oz-os külső réz (D79) – a KiCad 10 Python-felülete nem éri el a rétegrendet, ezért a mentett fájlba írjuk"""
+    """2 oz-os külső réz (outer_oz=2 a lap beállításában) – a KiCad 10 Python-felülete nem éri el a rétegrendet, ezért
+    a mentett fájlba írjuk. D82 óta egyik lap sem használja (1 oz + fedetlen nagyáramú sávok, utólag ónozva)."""
     d = lambda n, t, th: f'(layer "dielectric {n}" (type "{t}") (thickness {th}) (material "FR4") (epsilon_r 4.5) (loss_tangent 0.02))'
     st = ('(stackup (layer "F.SilkS" (type "Top Silk Screen")) (layer "F.Paste" (type "Top Solder Paste")) '
           '(layer "F.Mask" (type "Top Solder Mask") (thickness 0.01)) (layer "F.Cu" (type "copper") (thickness 0.07)) '

@@ -48,7 +48,7 @@ DAC1_OUT1 → COMP2 INM, ADC1_IN8 + COMP2_INP a PA3-on) a CubeMX-ben kézzel kel
 4. a CubeMX-projekt címkéi ↔ a rajz hálózatai ↔ az L433-adatbázis (rendelhető-e a jel a lábhoz); 4b. a CubeMX
    fejsorból betölti az .ioc-kat és kódot generál (`out/cubemx-test/`) – minden periféria inicializálódik-e;
 5. a GND-ági polaritásvédő FET-ek (D78) bekötése;
-6. NYÁK ↔ rajz (alkatrészek, padok hálózatai, footprintek), 2 oz-os rétegrend, tiltott területek, DRC;
+6. NYÁK ↔ rajz (alkatrészek, padok hálózatai, footprintek, szimbólum-kapcsolat), 1 oz-os rétegrend (D82), tiltott területek, DRC;
 7. elavult kifejezések a generátorokban és a dokumentációban (csak figyelmeztetés).
 Kapcsolók: `--no-build` (a meglévő netlistákból), `--no-cubemx`. „HIBA” = javítandó; a szitanyomat-jelzések a
 layoutnál rendeződnek (figyelmeztetés). Kilépési kód 1, ha van hiba.

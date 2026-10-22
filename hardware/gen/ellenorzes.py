@@ -332,11 +332,10 @@ def nyak():
         if rossz:
             hiba(f'{lap} NYÁK: {len(rossz)} footprint nem a rajz szimbólumára mutat – a NYÁK-ot újra kell generálni (pcbgen --force), '
                  'vagy KiCad-ben „Update PCB” a hivatkozási jel szerinti újrakapcsolással')
-        # rétegrend (D79)
+        # rétegrend (D82): 1 oz mindenhol – a nagyáramú sávok fedetlenek, utólag ónozva / vezetékkel megerősítve
         cu = re.search(r'\(layer "F\.Cu" \(type "copper"\) \(thickness ([\d.]+)\)', t)
-        want = 0.07 if lap in ('led-modul', 'rele-modul') else None
-        if want and (not cu or float(cu.group(1)) != want):
-            hiba(f'{lap} NYÁK: a külső réz nem 2 oz (D79)')
+        if cu and float(cu.group(1)) > 0.04:
+            hiba(f'{lap} NYÁK: a külső réz {cu.group(1)} mm – D82 óta 1 oz (0,035 mm) kell')
         # tiltott területek (D77)
         if lap == 'rele-modul' and 'keepout' not in t and 'rule_area' not in t:
             hiba('rele-modul NYÁK: hiányzik a 230 V-os belső rétegi tiltás')
