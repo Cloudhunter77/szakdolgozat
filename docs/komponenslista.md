@@ -8,7 +8,7 @@ A modulmag egy közös hierarchikus lap: a LED-, a relé- és a bemeneti modulon
 
 Jelölések: DNP = az alkatrész helye (footprintje) a NYÁK-on van, de alapból nincs beültetve (későbbi bővítés vagy mérés utáni hangolás). A „D” számok (pl. D71) a döntésnapló bejegyzéseire utalnak.
 
-Állapot: 2026-10-22, a D78–D84 döntésekkel (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V; a sorkapcsok, tekercsek és néhány passzív a beszerezhető típusokra igazítva). A lista a kapcsolási rajzok mostani állapotát írja le; a NYÁK-ok huzalozása még hátra van.
+Állapot: 2026-10-22, a D78–D85 döntésekkel (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V; a sorkapcsok, tekercsek és néhány passzív a beszerezhető típusokra igazítva). A lista a kapcsolási rajzok mostani állapotát írja le; a NYÁK-ok huzalozása még hátra van.
 
 # 1. Modulmag (közös lap: a LED-, a relé- és a bemeneti modulon azonos)
 
@@ -112,7 +112,7 @@ JP1 (jumper) + R5 (120 Ω): a CAN-busz lezárása – csak a lánc két végén 
 
 ### Bemenet és védelem (12–26 V)
 
-J1 (2 pólusú rugós sorkapocs, Degson DG250, 8 A): a 12–26 V-os betáp.
+J1 (2 pólusú csavaros sorkapocs, Degson DG128, 5,0 mm, 15 A): a 12–26 V-os betáp.
 
 F1 (2 A biztosíték): zárlat esetén a tápot leválasztja (12 V-on és teljes 2 A-es buszterhelésnél a bemeneti áram ~1,2 A).
 
@@ -138,7 +138,7 @@ C7 (100 nF): bootstrap-kondenzátor – a buck felső kapcsolótranzisztorának 
 
 C8 (1 µF): a buck belső segédtápjának (VCC) kondenzátora.
 
-L1 (6,8 µH, árnyékolt tekercs, HPI0630-6R8): a buck energiatároló tekercse.
+L1 (6,8 µH, árnyékolt 0630-as tekercs, pl. SLO0630H6R8MTT): a buck energiatároló tekercse.
 
 C10–C12 (22 µF, 3 db): a 3,3 V-os kimenet szűrése – a hullámosságot és a terhelésugrásokat (Wi-Fi-adás) kezelik.
 
@@ -164,7 +164,7 @@ C54 (1 µF): a buck belső segédtápja (VCC).
 
 C55 (100 nF): bootstrap-kondenzátor.
 
-L3 (8,2 µH, árnyékolt tekercs, HPI0630-8R2, Isat 3,8 A): a buck energiatároló tekercse.
+L3 (8,2 µH, árnyékolt 0630-as tekercs, pl. APS0630M8R2A, Isat ≥ 3,8 A): a buck energiatároló tekercse.
 
 C56–C59 (22 µF, 4 db): az 5 V-os kimenet szűrése (a TI ajánlása szerint).
 
@@ -234,7 +234,7 @@ R33 (0 Ω, DNP): a J5 referenciatápja – alapból nincs beültetve, hogy a sor
 
 U5 (W5500, Ethernet-vezérlő SPI-n): az ESP32-C6-ban nincs Ethernet-MAC, ezért egy külső chip adja a vezetékes hálózatot (Thread mellett is használható).
 
-Y1 (25 MHz kvarc, Kyocera CX3225, CL = 10 pF), C40, C41 (12 pF): a W5500 órajele és terhelőkondenzátorai – a kondenzátor értéke a kvarc terhelő kapacitásából: C = 2 × (CL − 3…5 pF).
+Y1 (25 MHz kvarc, CL = 10 pF, ESR ≤ 30 Ω), C40, C41 (12 pF): a W5500 órajele és terhelőkondenzátorai – a kondenzátor értéke a kvarc terhelő kapacitásából: C = 2 × (CL − 3…5 pF).
 
 R47 (1 M, DNP): a kvarccal párhuzamos ellenállás a WIZnet-referencia szerint – alapból nem kell.
 
@@ -364,9 +364,9 @@ R293 (1 Ω, 1206): a busz GND-ér és a modul GND-je közötti ellenállás (D74
 
 J201 (2 pólusú csavaros sorkapocs, Degson DG128, 15 A UL / 18 A IEC): a LED-szalagok 12–26 V-os betápja – a modul össz-árama ehhez igazodik (15 A).
 
-F201 (15 A, autós mini lapos biztosíték foglalatban): a teljes modul főbiztosítéka – zárlatnál leválasztja a tápot.
+F201 (15 A, NANO² SMD biztosíték, beforrasztva): a teljes modul főbiztosítéka – zárlatnál leválasztja a tápot.
 
-Q201 (NTMFS5C604NL, N-csatornás FET a GND-ágban, ~1,2 mΩ) + R294 (10 k) + D202 (BZT52C15, 15 V-os Zener): fordított polaritás elleni védelem (D78). Fordított bekötésnél a FET zár, így a +24 V nem jut a lap GND-jére, és a közös földön (busz) át sem alakul ki zárlat. Helyes polaritásnál a FET nyitva van: 20 A-en ~24 mV esik rajta. Az R294 a gate-et a 24 V-os sínről nyitja, a Zener a gate-feszültséget 15 V-ra korlátozza. (Ez váltja ki a korábbi ideális diódát, az LM74700-at.)
+Q201 (NCEP6090AGU, N-csatornás FET a GND-ágban, ~2,8 mΩ) + R294 (10 k) + D202 (BZT52C15, 15 V-os Zener): fordított polaritás elleni védelem (D78). Fordított bekötésnél a FET zár, így a +24 V nem jut a lap GND-jére, és a közös földön (busz) át sem alakul ki zárlat. Helyes polaritásnál a FET nyitva van: 20 A-en ~24 mV esik rajta. Az R294 a gate-et a 24 V-os sínről nyitja, a Zener a gate-feszültséget 15 V-ra korlátozza. (Ez váltja ki a korábbi ideális diódát, az LM74700-at.)
 
 D201 (SMBJ28A, TVS): túlfeszültség-védelem a sínen (pl. a szalagkábelek induktivitásából eredő tüskék).
 
@@ -398,13 +398,13 @@ J202–J204 (3 pólusú csavaros sorkapocs, KF128, 10 A): a kimenetek – blokko
 
 ## Csatornák (× 6)
 
-Q202–Q207 (NTD5C648NL, 60 V-os N-csatornás FET, ~4–5 mΩ, DPAK): az alsó oldali kapcsolók – a szalag negatív vezetékét kapcsolják a GND-re PWM-mel (fényerő-szabályozás, 25 kHz).
+Q202–Q207 (NCE6080K, 60 V-os N-csatornás FET, ~8,5 mΩ, DPAK): az alsó oldali kapcsolók – a szalag negatív vezetékét kapcsolják a GND-re PWM-mel (fényerő-szabályozás, 25 kHz).
 
 R211–R216 (10 Ω): gate-ellenállások – lassítják a kapcsolási élt (kisebb EMC-zavar, csillapítják a gate-kör lengését).
 
 R221–R226 (10 k): gate–source lehúzások – ha a meghajtó nem kap tápot, a FET biztosan zárva marad.
 
-D211–D216 (STPS3L60U, Schottky, 3 A / 60 V): szabadonfutó diódák a szalag két vége között – a kábel induktivitásából kikapcsoláskor keletkező feszültségtüskét elvezetik, így az nem üti át a FET-et.
+D211–D216 (SS56B, Schottky, 5 A / 60 V): szabadonfutó diódák a szalag két vége között – a kábel induktivitásából kikapcsoláskor keletkező feszültségtüskét elvezetik, így az nem üti át a FET-et.
 
 R231–R236 (10 Ω) + C221–C226 (2,2 nF) (DNP): RC-snubber a drainen – csak akkor kerül be, ha a mérés kapcsolási lengést mutat (D24).
 
@@ -452,7 +452,7 @@ R113 (0 Ω, 1206): a busz GND-ér és a modul GND-je közötti kapcsolat (D74) �
 
 ## Betáp és tekercs-táp
 
-J100 (2 pólusú rugós sorkapocs, Degson DG250): a 12–26 V-os betáp (csak a relétekercseknek, kis áram).
+J100 (2 pólusú csavaros sorkapocs, Degson DG128): a 12–26 V-os betáp (csak a relétekercseknek, kis áram).
 
 Q100 (IRFR120N, N-csatornás FET a GND-ágban) + R114 (10 k) + D106 (BZT52C15, 15 V-os Zener-dióda): fordított polaritás elleni védelem a közös föld miatt (D78), mint a vezérlőn és a LED-modulon.
 

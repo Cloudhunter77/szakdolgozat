@@ -34,7 +34,7 @@ innen indul:**
     +24 V-on, iker érvéghüvellyel.
   - Csatornánként 10 A, össz-áram max. 20 A (firmware-korlát a csatornák összegére).
   - Betáp: 2 pólusú push-in 2,5 mm²-hez, 3 eres kábel – barna +24 V, kék GND, a zöld-sárga nem használható
-    (védőföld színe); a kábelt „24 V DC” jelöléssel, hogy ne kössék 230 V-ra. 20 A-es mini lapos biztosíték
+    (védőföld színe); a kábelt „24 V DC” jelöléssel, hogy ne kössék 230 V-ra. 15 A-es NANO² (D85; korábban 20 A-es mini lapos) biztosíték
     NYÁK-foglalatban. **A modulmag 24 V-ja a főbiztosíték ELŐTT ágazik le** (saját 0,5 A-es F1-gyel) → a kiégett
     főbiztosíték jelezhető (D54).
   - PWM: TIM1 CH1–3 (PA8–PA10) = CH1–CH3 + TIM8 CH1–3 (PC6–PC8) = CH4–CH6, szinkronizálva, 25 kHz (D54).
@@ -164,7 +164,7 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 - [x] **A DIN-ház kiválasztása** → Gainta D4MG / CamdenBoss CNMB/4 / OKW RAILTEC C, NYÁK 86,5 × 68 mm (D73, 2026-10-21).
 - [ ] **Footprint-ellenőrzés** a nem szokványos tokoknál: ISO1042 DWV (7,5 mm széles test), LMR36015 (VQFN-HR,
       RNX – csak a vezérlőn), **P78E05 (SIP-3)**, TPD4E05U06 (USON), W5500 + MagJack, USB-C aljzat, Schrack relé,
-      push-in sorkapcsok, mini lapos biztosítékfoglalat, 2512-es sönt, JST-XH és -PH. Nyomtasd ki 1:1-ben, és tedd
+      sorkapcsok (DG128, KF128), NANO²-biztosítékok, 2512-es sönt, JST-XH és -PH. Nyomtasd ki 1:1-ben, és tedd
       rá a kézben lévő alkatrészt.
 - [ ] **Gyártói tervezési szabályok** (JLC / PCBWay, 4 réteg) és a rétegrend betöltése a KiCadbe.
 - [ ] **4 külön terv vagy egy panel** (költség).

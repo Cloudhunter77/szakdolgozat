@@ -109,8 +109,8 @@ S.text('1. TÁP (12–26 V): +24V_IN → F1 → +24V_P (Q1 a GND-ágban, D78) �
 S.text('D71: központi 5 V a buszra (2 A); USB-ről is: az U12 a nagyobbat választja (buck 5,2 V > USB). D57: a C1 elkó kötelező; a tápot ≤ 26 V-ra (az U2 max. 36 V)', 20, 27, 1.4)
 Y = 45.72
 pj = S.comp('Connector_Generic:Conn_01x02', 'J1', '24V IN', 27.94, 55.88, {'1': None, '2': None},
-            fp='TerminalBlock_Degson:TerminalBlock_Degson_DG250-3.5-02P_1x02_P3.50mm_45Degree',
-            props=P('D84: Degson DG250-3.5-02P – rugós, nyomógombos, 8 A (UL), 0,2–1,5 mm²; Hestore 100.441.02'))
+            fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal',
+            props=P('D85: Degson DG128-5.0-02P – csavaros, 5,0 mm, 15 A (UL), 2,5 mm² (mint a LED-modul J201-e)'))
 a1, a2 = pj['1'][:2], pj['2'][:2]
 x0 = a1[0] - 5.08
 S.wire(a1, (x0, a1[1]), (x0, Y))
@@ -182,7 +182,7 @@ S.wire(p, (xr + 15.24, Y - 7.62), (xr + 15.24, Y + 2.54))
 S.wire(pu2['8'][:2], (xr + 20.32, Y + 2.54))
 S.junction((xr + 15.24, Y + 2.54))
 pL3 = S.place('Device:L', 'L3', '8,2µH', {'1': None, '2': None}, '1', (xr + 20.32, Y + 2.54), r=90,
-              fp='modularis:L_FerroCore_HPI0630', props=P('D84: HPI0630-8R2 – árnyékolt, Isat 3,8 A, 59,5 mΩ (2 A-en ~0,24 W)'))
+              fp='modularis:L_FerroCore_HPI0630', props=P('D85: 0630-as árnyékolt, 8,2 µH, Isat ≥ 3,8 A, ≤ 60 mΩ – APS0630M8R2A (LCSC) vagy HPI0630-8R2 (Hestore)'))
 xo5 = pL3['2'][0]
 ys5 = Y + 2.54
 c5 = [xo5 + 7.62, xo5 + 17.78, xo5 + 27.94, xo5 + 38.1, xo5 + 48.26]
@@ -268,7 +268,7 @@ S.wire(p, (p[0] + 2.54, yc7), (p[0] + 2.54, sw1[1]), (xs, sw1[1]))
 S.wire((xs, sw2[1]), (xs + 7.62, sw2[1]))
 S.junction((xs, sw2[1]))
 pL = S.place('Device:L', 'L1', '6,8µH', {'1': None, '2': None}, '1', (xs + 7.62, sw2[1]), r=90,
-             fp='modularis:L_FerroCore_HPI0630', props=P('D84: HPI0630-6R8 – árnyékolt, Isat 4,9 A, 53 mΩ'))
+             fp='modularis:L_FerroCore_HPI0630', props=P('D85: 0630-as árnyékolt, 6,8 µH, Isat ≥ 4,5 A – SLO0630H6R8MTT (LCSC) vagy HPI0630-6R8 (Hestore)'))
 ysw = sw2[1]
 xo = pL['2'][0]
 fb = [xo + 7.62, xo + 15.24, xo + 25.4, xo + 33.02, xo + 40.64, xo + 48.26]
@@ -443,7 +443,7 @@ xi, xq = pw['30'][:2], pw['31'][:2]
 xc = xi[0] - 20.32
 pyx = S.place('Device:Crystal_GND24', 'Y1', '25MHz ±30ppm', {'1': None, '3': None, '2': 'GND', '4': 'GND'}, '1',
               (xc, xi[1] - 2.54), r=270, fp='Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm',
-              props=P('D84: Kyocera CX3225FB25000F0FZZH1 – ±20 ppm, CL = 10 pF (Hestore 100.494.61)'))
+              props=P('D85: SX3B25.000F1010F30 (LCSC C2901684) – CL = 10 pF, ESR ≤ 30 Ω; vagy Kyocera CX3225FB25000F0FZZH1'))
 y1t, y1b = pyx['1'][:2], pyx['3'][:2]
 # XTAL25_I = Y1.1, XTAL25_O = Y1.3 → a felső lábról a 30-as, az alsóról a 31-es lábra
 pin_i = pyx['1'][:2]

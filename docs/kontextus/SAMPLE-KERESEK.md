@@ -5,7 +5,7 @@ Az aktuális architektúra (D27–D61) alapján, a 2026-10-10-i lista helyett. M
 prototípushoz kell, **Kérni** = ennyit érdemes kérni (ha a program kevesebbet enged, a minimum a fontos).
 A pontos alkatrészek: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`.
 
-> **2026-10-22 – a rendeléshez ez a mérvadó:** `hardware/bom/beszerzes.csv` (a `hardware/gen/beszerzes.py` állítja elő a
+> **2026-10-23 – a rendeléshez ez a mérvadó (D85):** `hardware/bom/beszerzes.csv` (a `hardware/gen/beszerzes.py` állítja elő a
 > BOM-ból: tételenként forrás – Hestore-kód, ár, készlet / Mouser-TME típusszám / TI-rendelés / kézben). Összefoglaló a
 > fájl végén („Beszerzés 2026-10-22”). A lenti listák a sample-kérések története.
 
@@ -162,20 +162,18 @@ A konzultáció után a táp központi lett (D71) → új alkatrészek, egyik si
 **LDO (D80):** marad az **AP2112K-3.3** (2 db/modulkészlet: modulmag + bemeneti modul érzékelősín) – kínai kör vagy Hestore;
 a TC2117-nek tantál kellene (ESR 0,2–10 Ω). A relé 230 V-os kimenetének sorkapcsa: **5,08 mm-es THT a készletből (D83)** – nem kell venni.
 
-## Beszerzés 2026-10-22 – Hestore + DigiKey, D84 (`hardware/bom/beszerzes.csv`)
-Egy készlet (vezérlő + 3 modul) + tartalék: passzívból 10 db, ha olcsó (különben +20 %), más tételből +1, ha 300 Ft alatti.
-Frissítés rendelés előtt: `python3 gen/beszerzes.py --frissit` (a `hardware/` mappából). A Hestore-árak **nettók**.
-A D84 szerint a rajz a Hestore-ban kapható típusokra lett igazítva (sorkapcsok, tekercsek, sönt, kvarc-kondenzátorok stb.).
+## Beszerzés 2026-10-23 – LCSC a JLC-s NYÁK-rendeléssel, D85 (`hardware/bom/beszerzes.csv`, `hardware/bom/lcsc-kosar.csv`)
+Egy készlet (vezérlő + 3 modul) + tartalék. A `gen/beszerzes.py` soronként a legolcsóbb forrást választja (Hestore vagy LCSC,
+ÁFA-val; az LCSC-árak a JLC alkatrészkeresőjéből, 1 USD = 360 Ft-tal). Frissítés rendelés előtt: `python3 gen/beszerzes.py --frissit`.
 
-- **Hestore (78 tétel, ~39 800 Ft bruttó, benne 4 × D4MG + 1 × D6MG ≈ 10 100 Ft;** + opcionális kábeloldal ~3 000 Ft):
-  minden passzív (az E96-osok és néhány kondenzátor kivételével), kvarcok, a legtöbb dióda, ESP32-C6-WROOM-1-N8, W5500,
-  HR911105A, AP2112K, USBLC6, LM66200, WS2812B-V5, USB-C, JST-XH/PH, tüskesor, PTC-k, HPI0630 tekercsek, CRE2512 sönt,
-  Degson DG250 / DG128 és KF128 sorkapcsok, PTS525 gombok, Gainta-házak. Szállítás: GLS CsomagPont 25 000 Ft bruttó felett ingyenes.
-- **DigiKey (26 tétel, becslés ~52–58 € nettó, ÁFA-val ~27–30 eFt; 15 000 Ft felett ingyenes szállítás):** LMR33630, TPS2595,
-  NUCLEO-L433RC-P, NTD5C648NL × 7, NTMFS5C604NL × 2, MC78L12ACD (SOIC-8), SMBJ28A, SMBJ6.0A, NANO² 10 A, 1206-os 2 A / 0,5 A
-  biztosíték, Keystone 3568 + 15 A-es mini betét, 47 µF / 50 V (6,3 × 7,7), 22 µF / 10 V X7R (1206), 220 nF / 50 V (0603),
-  12 pF C0G (0603), 1 nF / 2 kV, B4B-PH-K-S, E96-os ellenállások (1,02 k, 1,54 k, 2,49 k, 23,7 k, 43,2 k, 499 Ω, 715 Ω).
-- **TI-rendelés (8 tétel, ha megjön):** TCAN1044AV, LMR36015, UCC27524 × 3, INA181A2, ESD2CAN24 × 4, TPD4E05U06 × 5, ULN2803A,
-  HDC3020. Ha nem jön: DigiKey; ULN2803A és ESD2CAN24 Hestore-ból is (ULN2803A-CF, PESD2CAN).
-- **Beültetés előtt ellenőrizni:** a kézben lévő 5,08-as sorkapcsok (J101–J104) névleges értéke; a 470 µF-os elkó 20 mm magas
-  (ház); a CRE2512 sönt a Kelvin-footprint két-két padját összeforrasztja (szándékos).
+- **LCSC (99 tétel, ~15 200 Ft ÁFA-val, ~33 USD nettó;** + opcionális kábeloldal ~1 250 Ft): minden, ami nincs kézben és nem a
+  TI-rendelésből jön. Feltöltés: lcsc.com → BOM Tool → `bom/lcsc-kosar.csv` (LCSC-kód, darab). Szállítás: a JLC-s NYÁK-rendeléssel
+  egy csomagban (az LCSC pénztárában ellenőrizni); néhány passzívnál 100 db a minimum (összesen legfeljebb +1–2 eFt).
+- **Hestore: nincs rendelés.** A böngészőben összerakott Hestore-kosár (10-22) elavult – üríthető.
+- **Később:** Gainta D4MG × 3 + D6MG × 1 (~8 200 Ft, Hestore) – a működő prototípushoz nem kell.
+- **Kézben:** ST-Link és Nucleo (programozás, firmware-kezdés), STM32L433, SN65HVD230, MCP9701A, IRFR1205/IRFR120N, relék, zöld LED,
+  74HCT14, a relékimenet 5,08-as sorkapcsai (D83).
+- **TI-rendelés (8 tétel, ha megjön);** ha nem: ugyanezek az LCSC-n ~6 400 Ft (a `beszerzes.csv` „Alternatíva” oszlopa).
+- **Megszűnt / nem kapható → csere (D85):** NTD5C648NL → NCE6080K, NTMFS5C604NL → NCEP6090AGU, Keystone 3568 → NANO² 15 A.
+- **Beültetés előtt ellenőrizni:** a kézben lévő 5,08-as sorkapcsok (J101–J104) névleges értéke; a 470 µF-os elkó 20 mm magas (ház);
+  a 2 kivezetésű sönt a Kelvin-footprint két-két padját összeforrasztja (szándékos).

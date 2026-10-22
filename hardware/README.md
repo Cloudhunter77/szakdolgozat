@@ -61,10 +61,10 @@ laponként sorszámból képződik (két futás bájtra azonos fájlt ad).
 `bash gen/bom.sh` → `bom/<lap>.csv` – laponként, értékenként és footprintenként csoportosítva, a DNP-k nélkül
 (a „Megjegyzés” mezővel). A kézben lévő és a megveendő tételek: `docs/kontextus/SAMPLE-KERESEK.md`.
 
-**Beszerzési lista (`gen/beszerzes.py`, 10-22):** `python3 gen/beszerzes.py [--frissit]` → `bom/beszerzes.csv` – a négy BOM
-összesítve, tételenként forrással (Hestore-kód + nettó ár + készlet a termékoldalról / Mouser-TME típusszám / TI-rendelés /
-kézben). A forrás-hozzárendelés a szkript `FORRAS` táblájában van; ha a BOM-ba új tétel kerül, „HIBA”-t ad, amíg nincs sora.
-Gyorsítótár: `out/hestore/`.
+**Beszerzési lista (`gen/beszerzes.py`, D85):** `python3 gen/beszerzes.py [--frissit]` → `bom/beszerzes.csv` (a négy BOM
+összesítve, soronként a legolcsóbb forrás ÁFA-val: Hestore – a termékoldalról – vagy LCSC – a JLC alkatrészkeresőjéből,
+`gen/lcsc.py`) és `bom/lcsc-kosar.csv` (az LCSC BOM Tooljába feltölthető: kód, darab). A forrás-hozzárendelés a `FORRAS`
+táblában van (ellenállás / kondenzátor magától); ha a BOM-ba ismeretlen tétel kerül, „HIBA”. Gyorsítótár: `out/hestore/`, `out/lcsc/`.
 
 ## NYÁK-előkészítés (2026-10-21, D73)
 `gen/pcbgen.py` a netlistából (`out/<lap>.net`) elkészíti a `<lap>/<lap>.kicad_pcb`-t: 4 réteg, körvonal (86,5 × 68 mm;

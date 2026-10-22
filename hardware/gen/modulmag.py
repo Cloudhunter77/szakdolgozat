@@ -181,7 +181,8 @@ up('+3V3', (xr - 20, 142.46))
 xc, yc = 145, 160
 S.text('HSE 8 MHz', xc - 12, yc - 9)
 pp = S.place('Device:Crystal_GND24', 'Y1', '8MHz', {'1': None, '3': None, '2': 'GND', '4': 'GND'}, '1', (xc, yc),
-             fp='Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm')
+             fp='Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm',
+             props=P('D85: 3TJ480000JWLAC (LCSC C3031779) – CL = 10 pF, ESR ≤ 120 Ω (HSE gm-tartalék ~7)'))
 x1, x3 = pp['1'][0], pp['3'][0]
 S.wire((x1, yc), (x1 - 7.62, yc))
 S.wire((x3, yc), (x3 + 7.62, yc))

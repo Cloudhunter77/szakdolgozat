@@ -56,4 +56,4 @@
 "U6","STM32L433RCT3","Package_QFP:LQFP-64_10x10mm_P0.5mm","1","D78: 75 db kézben, −40…125 °C, MSL3 – reflow előtt kisütni; tartalék: STM32F303RET6 (a LED-modulon nem)"
 "U302","HDC3020DEFR","modularis:TI_WSON-8-1EP_2.5x2.5mm_DEF0008A","1","a ház belsejének klímáját méri (elosztószekrény), nem a szobáét – szobához a külső I²C-érzékelő (D77); cím 0x44, a külső ne legyen 0x44"
 "U303-U307","TPD4E05U06DQAR","Package_SON:USON-10_2.5x1.0mm_P0.5mm","5",""
-"Y1","8MHz","Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm","1",""
+"Y1","8MHz","Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm","1","D85: 3TJ480000JWLAC (LCSC C3031779) – CL = 10 pF, ESR ≤ 120 Ω (HSE gm-tartalék ~7)"

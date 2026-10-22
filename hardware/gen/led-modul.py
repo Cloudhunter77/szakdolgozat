@@ -132,16 +132,16 @@ S.label('GND_IN', (p2[0] - 2.54, p2[1] + 2.54), 270)
 S.wire((xa + 2.54, Y), (xa + 2.54, Y - 5.08))
 S.label('+24V_IN', (xa + 2.54, Y - 5.08), 90)
 S.junction((xa + 2.54, Y))
-p = series('Device:Fuse', 'F201', '15A', (xa + 12.7, Y), 'Fuse:Fuseholder_Blade_Mini_Keystone_3568',
-           props=P('mini lapos autós biztosíték (normál mini, pl. Littelfuse 0297015), Keystone 3568 foglalat; 15 A = a J201 névleges árama (D84)'))
+p = series('Device:Fuse', 'F201', '15A', (xa + 12.7, Y), 'Fuse:Fuse_Littelfuse-NANO2-451_453',
+           props=P('D85: Littelfuse 0451015.MRL (NANO² 15 A, 2410) – beforrasztott; 15 A = a J201 névleges árama (D84)'))
 # Q201 a GND-ágban: D = J201 GND-pólusa (GND_IN), S = a lap GND-je; G a +24V_RAIL-ről 10 k-n át, 15 V-os Zener védi.
-# Helyes polaritásnál a gate ~15 V-ot kap → vezet (20 A × ~1,2 mΩ ≈ 24 mV); fordítva Vgs ≤ 0 és a body-dióda is zár →
+# Helyes polaritásnál a gate ~15 V-ot kap → vezet (15 A × ~2,8 mΩ ≈ 42 mV, ~0,6 W); fordítva Vgs ≤ 0 és a body-dióda is zár →
 # a GND-pólusra kerülő +24 V nem jut a lap (és a busz) GND-jére.
 S.ref_pos['Q201'] = ((6.35, -1.27), (6.35, 1.27))   # a FET jobb oldalára
-pq = S.place('Transistor_FET:NTMFS016N06CT1G', 'Q201', 'NTMFS5C604NL', {'1': None, '2': None, '3': None, '4': None, '5': None},
+pq = S.place('Transistor_FET:NTMFS016N06CT1G', 'Q201', 'NCEP6090AGU', {'1': None, '2': None, '3': None, '4': None, '5': None},
              '4', (114.3, 66.04), fp='Package_SO:ONSemi_SO-8FL_488AA',
-             props={'Megjegyzés': 'onsemi 60 V, ~1,2 mΩ, SO-8FL; D = GND_IN (J201), S = GND; nagy padek (áthidalható)',
-                    'Description': 'N-MOSFET 60 V, ~1,2 mΩ (onsemi NTMFS5C604NL)'})
+             props={'Megjegyzés': 'D85: NCE 60 V, 2,8 mΩ, DFN5×6 (power-SO8, az SO-8FL padképére; az NTMFS5C604NL nem kapható); D = GND_IN (J201), S = GND',
+                    'Description': 'N-MOSFET 60 V, 2,8 mΩ (NCE NCEP6090AGU)'})
 qd, qs, qg = pq['5'][:2], pq['1'][:2], pq['4'][:2]
 S.wire(qd, (qd[0], qd[1] - 2.54))
 S.label('GND_IN', (qd[0], qd[1] - 2.54), 90)
@@ -266,7 +266,7 @@ for d in range(3):
 
 # =================== 3. Csatornák ===================
 yB, yN = 158.75, 180.34          # +24V_Bk sor, drain-csomópont
-S.text('3. CSATORNÁK (× 6): FET NTD5C648NL (DPAK; tartalék IRFR1205) · szabadonfutó STPS3L60U a blokk +24 V-jára · RC snubber (DNP) ·'
+S.text('3. CSATORNÁK (× 6): FET NCE6080K (DPAK; tartalék IRFR1205) · szabadonfutó SS56B a blokk +24 V-jára · RC snubber (DNP) ·'
        ' gate-LED + drain-LED · drain → ADC osztó', 15, yB - 12, 1.5)
 for n in range(1, 7):
     k = (n + 1) // 2
@@ -278,8 +278,8 @@ for n in range(1, 7):
     S.wire((xl, yB), (xs, yB))
     S.label(f'+24V_B{k}', (xl, yB), 180)
     S.wire((xs, yB), (xs, yB + 2.54))
-    S.place('Device:D_Schottky', f'D{210 + n}', 'STPS3L60U', {'1': None, '2': None}, '1', (xs, yB + 2.54), r=270,
-            fp='Diode_SMD:D_SMB', props=P('szabadonfutó, 3 A / 60 V, SMB'))
+    S.place('Device:D_Schottky', f'D{210 + n}', 'SS56B', {'1': None, '2': None}, '1', (xs, yB + 2.54), r=270,
+            fp='Diode_SMD:D_SMB', props=P('szabadonfutó, 5 A / 60 V, SMB (D85)'))
     S.wire((xs, yB + 10.16), (xs, yN))
     # drain-LED: +24V_Bk → 10k → LED → drain
     S.wire((xl, yB), (xl, yB + 2.54))
@@ -289,10 +289,10 @@ for n in range(1, 7):
     S.wire((xl, yB + 10.16), (xl, yB + 12.7))
     S.wire((xl, yB + 20.32), (xl, yN))
     # FET: D felfelé a csomópontra, S lefelé PGND_SH, G balra
-    pq = S.place('Transistor_FET:QM6006D', f'Q{201 + n}', 'NTD5C648NL', {'1': None, '2': None, '3': None}, '2', (xs, yN + 5.08),
+    pq = S.place('Transistor_FET:QM6006D', f'Q{201 + n}', 'NCE6080K', {'1': None, '2': None, '3': None}, '2', (xs, yN + 5.08),
                  fp='Package_TO_SOT_SMD:TO-252-2',
-                 props={'Megjegyzés': 'onsemi 60 V, ~4–5 mΩ, DPAK; tartalék: IRFR1205 (kis áramra)',
-                        'Description': 'N-MOSFET 60 V, DPAK (onsemi NTD5C648NL)'})
+                 props={'Megjegyzés': 'D85: NCE 60 V, 8,5 mΩ @ 10 V, DPAK (az NTD5C648NL megszűnt); 10 A-en ~0,85 W; tartalék: IRFR1205',
+                        'Description': 'N-MOSFET 60 V, DPAK (NCE NCE6080K)'})
     S.wire((xs, yN), (xs, yN + 5.08))
     s3 = pq['3'][:2]
     S.wire(s3, (s3[0], s3[1] + 2.54))

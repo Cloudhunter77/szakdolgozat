@@ -2,7 +2,7 @@
 	(version 20240108)
 	(generator "modularis-gen")
 	(layer "F.Cu")
-	(descr "FerroCore HPI0630 árnyékolt teljesítménytekercs, 7.3 x 6.7 x 2.8 mm – land pattern az adatlap szerint (A 2.3, B 3.7, C 3.5 mm; Hestore 100.428.09 / 100.428.10)")
+	(descr "0630-as árnyékolt teljesítménytekercs (~7 x 6.6 mm: FerroCore HPI0630, Sunlord SLO0630, APS0630) – land pattern a HPI0630 adatlapja szerint (A 2.3, B 3.7, C 3.5 mm)")
 	(tags "inductor HPI0630 FerroCore")
 	(attr smd)
 	(property "Reference" "REF**" (at 0 -4.4 0) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))

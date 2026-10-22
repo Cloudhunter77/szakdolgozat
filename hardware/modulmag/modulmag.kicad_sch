@@ -11656,6 +11656,17 @@
 				)
 			)
 		)
+		(property "Megjegyzés" "D85: 3TJ480000JWLAC (LCSC C3031779) – CL = 10 pF, ESR ≤ 120 Ω (HSE gm-tartalék ~7)"
+			(at 148.59 160.02 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
 		(pin "1"
 			(uuid "70827bf3-7f19-5017-b51c-cd9e68d4cc99")
 		)

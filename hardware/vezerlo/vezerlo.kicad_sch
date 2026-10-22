@@ -29769,7 +29769,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "TerminalBlock_Degson:TerminalBlock_Degson_DG250-3.5-02P_1x02_P3.50mm_45Degree"
+		(property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal"
 			(at 27.94 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -29801,7 +29801,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "D84: Degson DG250-3.5-02P – rugós, nyomógombos, 8 A (UL), 0,2–1,5 mm²; Hestore 100.441.02"
+		(property "Megjegyzés" "D85: Degson DG128-5.0-02P – csavaros, 5,0 mm, 15 A (UL), 2,5 mm² (mint a LED-modul J201-e)"
 			(at 27.94 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -32125,7 +32125,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "D84: Kyocera CX3225FB25000F0FZZH1 – ±20 ppm, CL = 10 pF (Hestore 100.494.61)"
+		(property "Megjegyzés" "D85: SX3B25.000F1010F30 (LCSC C2901684) – CL = 10 pF, ESR ≤ 30 Ω; vagy Kyocera CX3225FB25000F0FZZH1"
 			(at 330.2 237.49 90)
 			(hide yes)
 			(show_name no)
@@ -34663,7 +34663,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "D84: HPI0630-8R2 – árnyékolt, Isat 3,8 A, 59,5 mΩ (2 A-en ~0,24 W)"
+		(property "Megjegyzés" "D85: 0630-as árnyékolt, 8,2 µH, Isat ≥ 3,8 A, ≤ 60 mΩ – APS0630M8R2A (LCSC) vagy HPI0630-8R2 (Hestore)"
 			(at 240.03 48.26 90)
 			(hide yes)
 			(show_name no)
@@ -43798,7 +43798,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "D84: HPI0630-6R8 – árnyékolt, Isat 4,9 A, 53 mΩ"
+		(property "Megjegyzés" "D85: 0630-as árnyékolt, 6,8 µH, Isat ≥ 4,5 A – SLO0630H6R8MTT (LCSC) vagy HPI0630-6R8 (Hestore)"
 			(at 128.27 114.3 90)
 			(hide yes)
 			(show_name no)

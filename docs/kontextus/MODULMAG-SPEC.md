@@ -75,7 +75,8 @@ Lánc: `+5V` (J2/J3) → C2 → U5 AP2112K-3.3 → `+3V3` (C3). A vezérlő TPS2
 szerint a VDDA nem lehet kisebb a VDD-nél, és nem jöhet fel később; egy nagy ellenállású szűrő ezt megsértené.
 
 ### 3.2 Órajel
-- **Y1:** 8 MHz-es kvarc (3225), PH0-OSC_IN (5) – PH1-OSC_OUT (6) (F303-on PF0/PF1).
+- **Y1:** 8 MHz-es kvarc (3225), PH0-OSC_IN (5) – PH1-OSC_OUT (6) (F303-on PF0/PF1). D85: 3TJ480000JWLAC – CL = 10 pF (→ C10/C11
+  12 pF), ESR ≤ 120 Ω; a legolcsóbb 300 Ω-os kvarccal az L4 HSE erősítési tartaléka csak ~3 lenne (ST AN2867: ≥ 5).
 - **C10, C11:** terhelőkondenzátorok = 2 × (CL − 3…5 pF szórt kapacitás) – a kiválasztott kvarc CL értékéből.
   Pl. CL = 10 pF → ~12 pF; CL = 8 pF → ~8 pF.
 - Közvetlenül a lábak mellé, alatta csak GND, más jel ne fusson alatta.

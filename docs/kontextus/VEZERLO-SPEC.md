@@ -14,6 +14,8 @@ közben nézd át.
   dióda nem véd: fordított bekötésnél a busz GND-érén át zárlat lenne · a táp-LED (D5) a `+5V`-ról jár (zöld, 522 nm).
 - 2026-10-22 (D84, legolcsóbb beszerzés): J1 Degson DG250 · L1/L3 FerroCore HPI0630 (saját footprint) · C40/C41 12 pF ·
   D3 SS56C · D9 BAT54HT1G · FB1 BLM18EG221 · C4 10 µF · C9 22 pF · U4 **N8** · SW1/SW2 PTS525 (a TL3342-footprinten).
+- 2026-10-23 (D85, LCSC): J1 Degson DG128 (mint a LED-modul J201-e) · L1/L3 LCSC-s 0630-as tekercs (ugyanaz a footprint) ·
+  Y1 SX3B25.000F1010F30 (CL 10 pF, ESR ≤ 30 Ω).
 - **2026-10-20 (D71, konzultáció után): központi 5 V.** A vezérlő adja az összes modul logikai tápját a buszon:
   **U2 LMR33630ADDA** (5,2 V, 3 A-es buck) → **U12 LM66200** (ideális dióda, az USB-vel VAGY-olva) → **U3 TPS259531**
   eFuse (2 A, 5,7 V-os vágás) → V_BUS. **USB-ről is van V_BUS** (1–2 modul teszteléséhez). Bemenet **12–26 V**.
@@ -76,7 +78,7 @@ VUSB ─────────────────────────
 
 | Ref | Alkatrész | Érték / típus | Megjegyzés |
 |---|---|---|---|
-| J1 | rugós sorkapocs, 2 pólus (Degson DG250-3.5-02P, 8 A – D84) | 24 V be | felső váll |
+| J1 | csavaros sorkapocs, 2 pólus (Degson DG128-5.0-02P, 15 A – D85) | 24 V be | felső váll |
 | F1 | SMD-biztosíték | **2 A** (D71), ≥ 32 V, gyors (1206) | 2 A-es buszterhelésnél 24 V-on ~0,6 A, 12 V-on ~1,2 A (11. fejezet) |
 | Q1, R56, D12 | N-FET + gate-ellenállás + Zener | **IRFR1205** (55 V, ~27 mΩ, DPAK, kézben), 10 kΩ, BZT52C15 – D78 | a J1 GND-pólusa (`GND_IN`) és a lap GND-je között; helyes polaritásnál a gate a `+24V_P`-ről ~15 V-ot kap → vezet (12 V-on ~1,2 A → ~40 mW); fordítva zár, a GND-pólusra kerülő + nem jut a busz GND-jére. A korábbi D1 (B360) kikerült |
 | D2 | TVS | SMBJ28A | `+24V_P` → GND; ~45 V-on fog (az LMR36015 60 V-os) |
@@ -97,7 +99,7 @@ Lábkiosztása azonos az LMR36006 RNX-ével. A modulokon már nincs buck (D56), 
 |---|---|---|---|
 | C4 | kerámia | 10 µF, 50 V, X7R (1210) – D84 | `VIN_BUCK` |
 | C5, C6 | kerámia | 220 nF, 50 V (0603) | egy-egy a 2-es és a 10-es VIN-lábnál |
-| L1 | árnyékolt tekercs | **6,8 µH**, Isat ≥ 2,1 A – D84: FerroCore HPI0630-6R8 (Isat 4,9 A, 53 mΩ, 7,3 × 6,7 mm) | TI 10-1. táblázat, 1 MHz / 3,3 V |
+| L1 | árnyékolt tekercs | **6,8 µH**, Isat ≥ 2,1 A – D85: 0630-as, pl. SLO0630H6R8MTT (Isat 8 A, 45 mΩ) vagy HPI0630-6R8 | TI 10-1. táblázat, 1 MHz / 3,3 V |
 | C7 | kerámia | 100 nF, ≥ 16 V | BOOT (4) – SW (12) |
 | C8 | kerámia | 1 µF, 16 V | VCC (5) – AGND (6); más terhelés nem mehet rá |
 | R3 | ellenállás | 100 kΩ 1 % | RFBT: `3V3` → FB |
@@ -119,7 +121,7 @@ szerint (5 V, 400 kHz), a kimenet 5,2 V-ra hangolva, hogy 24 V mellett biztosan 
 | C53 | 220 nF, 50 V | CHF, közvetlenül a VIN (2) – PGND (1) lábaknál |
 | C54 | 1 µF, 16 V | VCC (6) – csak ez kerülhet rá |
 | C55 | 100 nF | BOOT (7) – SW (8) |
-| L3 | **8,2 µH**, Isat ≥ 3,5 A, árnyékolt – D84: FerroCore HPI0630-8R2 (Isat 3,8 A, 59,5 mΩ; 2 A-en ~0,24 W) | TI: 8 µH |
+| L3 | **8,2 µH**, Isat ≥ 3,5 A, árnyékolt – D85: 0630-as, pl. APS0630M8R2A (Isat 6 A, 59,5 mΩ; 2 A-en ~0,24 W) vagy HPI0630-8R2 | TI: 8 µH |
 | R54 / R55 | 100 kΩ / **23,7 kΩ** 1 % | VOUT = 1,0 V × (1 + 100/23,7) = **5,22 V** |
 | C56–C59 | 4 × 22 µF, 10 V, X7R (1206) | |
 | EN (3) | → VIN | UVLO belső |
@@ -408,10 +410,10 @@ gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UAR
 | `VUSB` (csak USB) | C6-ág ~0,48 A + V_BUS (amennyit a port ad) | a port korlátozza |
 
 ## 12. Darabjegyzék (vezérlő)
-U1 LMR36015BRNXR · U2 LMR33630ADDA · U12 LM66200DRLR · U3 TPS259531DSGR · L3 HPI0630-8R2 · U4 ESP32-C6-WROOM-1-N8 (vagy -1U) · U5 W5500 ·
-U6 TCAN1044AVDRQ1 · U7 ESD2CAN24-Q1 · U8 USBLC6-2SC6 · U9 74HCT14D (kézben) · Y1 25 MHz (CX3225, CL 10 pF) · L1 HPI0630-6R8 ·
+U1 LMR36015BRNXR · U2 LMR33630ADDA · U12 LM66200DRLR · U3 TPS259531DSGR · L3 8,2 µH 0630 (APS0630M8R2A) · U4 ESP32-C6-WROOM-1-N8 (vagy -1U) · U5 W5500 ·
+U6 TCAN1044AVDRQ1 · U7 ESD2CAN24-Q1 · U8 USBLC6-2SC6 · U9 74HCT14D (kézben) · Y1 25 MHz (SX3B25.000F1010F30, CL 10 pF, ESR ≤ 30 Ω) · L1 6,8 µH 0630 (SLO0630H6R8MTT) ·
 FB1 BLM18EG221 · F1 2 A / 32 V · D8 SS16 · Q1 IRFR1205 + R56 10 k + D12 BZT52C15 (D78) · D3 SS56C · D2, D7 SMBJ28A · D4 SMF5.0A ·
-D9 BAT54HT1G · D5 zöld LED · D6 WS2812B-V5 (vagy WS2812C-2020) · J1 Degson DG250-3.5-02P · J2/J3 B4B-XH-A · J4 USB-C
+D9 BAT54HT1G · D5 zöld LED · D6 WS2812B-V5 (vagy WS2812C-2020) · J1 Degson DG128-5.0-02P · J2/J3 B4B-XH-A · J4 USB-C
 (16 tűs) · J5 1 × 6 tüskesor · J6 MagJack (J1B1211CCD / HR911105A) · JP1 2 tűs + jumper · JP2/JP3 3 padas
 forrasztható jumper · SW1/SW2 PTS525S5215A · kondenzátorok: 47 µF 50 V elektrolit (kötelező), 10 µF 50 V (1210, 2),
 220 nF 50 V (2), 22 µF 10 V (4 + 1 a C6-nál), 100 nF (~18), 1 µF (5), 10 µF 16 V (3),
