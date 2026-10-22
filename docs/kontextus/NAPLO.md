@@ -33,7 +33,7 @@ Sablon:
   az ellenőrző ezt is figyeli. Költségbecslés után (~140–220 e Ft/készlet): **D82 – 1 oz + fedetlen, utólag ónozott sávok** a 2 oz helyett.
 - Tanultuk: az L4-es .ioc-ban az ADC-lábak megosztott jelként (ADCx) kellenek, és az ADC-órajel nélkül a CubeMX nem generál;
   a TPD4E05U06 letörése (6,4–8,7 V) az 5 V-tűrő láb határa körül van → D81 javaslat.
-- Nyitott: D81 (TPD4E02B04 a bemeneteken – Balázs dönt); a relé 230 V-os push-in típusa; huzalozás (Balázs, 10-26-ig);
+- Nyitott: huzalozás (Balázs, 10-26-ig); a D81 elvetve (marad a TPD4E05U06, 12/24 V-hoz osztó), a relékimenet 5,08 mm-es THT a készletből (D83);
   firmware-munkamenetnek: CCT_MAX_SUM 1.0-ra (D16 tisztázásáig), status_led.* commit; rendszer/kurzus artifact frissítése L433-ra.
 
 ## 2026-10-14 → 10-19 – Kapcsolási rajzok KiCad-ben (mind az öt lap), TI-kérés

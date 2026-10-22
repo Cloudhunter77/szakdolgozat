@@ -156,5 +156,4 @@ A konzultáció után a táp központi lett (D71) → új alkatrészek, egyik si
 zöld 0603 LED (522 nm, HL-PST-1608U51GC, 150 db).
 
 **LDO (D80):** marad az **AP2112K-3.3** (2 db/modulkészlet: modulmag + bemeneti modul érzékelősín) – kínai kör vagy Hestore;
-a TC2117-nek tantál kellene (ESR 0,2–10 Ω). **Nyitott:** a relé 230 V-os kimenetének push-in sorkapcsa (típus a ház
-vállmagasságától).
+a TC2117-nek tantál kellene (ESR 0,2–10 Ω). A relé 230 V-os kimenetének sorkapcsa: **5,08 mm-es THT a készletből (D83)** – nem kell venni.

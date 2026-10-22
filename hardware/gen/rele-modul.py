@@ -200,7 +200,7 @@ for i in range(4):
     jx = x + 25.4
     pj = S.comp('Connector_Generic:Conn_01x02', f'J{100 + k}', f'RELÉ {k}', jx, CY, {'1': None, '2': None},
                 fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-3-2-5.08_1x02_P5.08mm_Horizontal',
-                props=P('1 = COM, 2 = NO; ≥ 16 A, ≥ 250 V AC; push-in (D79) – a típus és a footprint a DIN-ház vállától függ, ez helyőrző'))
+                props=P('1 = COM, 2 = NO; 5,08 mm-es THT sorkapocs a készletből (D83) – névleges érték ≥ 16 A, ≥ 250 V AC'))
     com, no = pr['11'][:2], pr['14'][:2]
     S.wire(no, (no[0], no[1] - 2.54), (jx - 10.16, no[1] - 2.54), (jx - 10.16, pj['2'][1]), pj['2'][:2])
     S.wire(com, (com[0], com[1] + 2.54), (jx - 7.62, com[1] + 2.54), (jx - 7.62, pj['1'][1]), pj['1'][:2])

@@ -2795,7 +2795,7 @@
 		)
 		(uuid "7424c698-2e56-5486-8810-a9af95d276e2")
 	)
-	(text "Alap: R_fel 10k + R_s 10k + C 10n (D75) – félrekötött 24 V-nál ~2 mA az ESD-tömbbe, a láb ~VBR-en (D81!). 12/24 V-os jel: R_fel ki, R_s 68k, R_le 10k; 5 V: R_s 2k2, R_le 3k9."
+	(text "Alap: R_fel 10k + R_s 10k + C 10n (D75) – félrekötött 24 V-nál ~2 mA az ESD-tömbbe, a láb ~VBR-en → 12/24 V-hoz osztó kell. 12/24 V-os jel: R_fel ki, R_s 68k, R_le 10k; 5 V: R_s 2k2, R_le 3k9."
 		(exclude_from_sim no)
 		(at 80 97.5 0)
 		(effects
@@ -8654,7 +8654,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 292.1 172.72 90)
 			(hide yes)
 			(show_name no)
@@ -8897,7 +8897,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 101.6 201.93 90)
 			(hide yes)
 			(show_name no)
@@ -9561,7 +9561,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 228.6 114.3 90)
 			(hide yes)
 			(show_name no)
@@ -9728,7 +9728,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 292.1 201.93 90)
 			(hide yes)
 			(show_name no)
@@ -11733,7 +11733,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 228.6 143.51 90)
 			(hide yes)
 			(show_name no)
@@ -13674,7 +13674,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 292.1 143.51 90)
 			(hide yes)
 			(show_name no)
@@ -14282,7 +14282,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 101.6 172.72 90)
 			(hide yes)
 			(show_name no)
@@ -15965,7 +15965,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 228.6 172.72 90)
 			(hide yes)
 			(show_name no)
@@ -16720,7 +16720,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 101.6 143.51 90)
 			(hide yes)
 			(show_name no)
@@ -17467,7 +17467,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 292.1 114.3 90)
 			(hide yes)
 			(show_name no)
@@ -17728,7 +17728,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 165.1 172.72 90)
 			(hide yes)
 			(show_name no)
@@ -18173,7 +18173,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 101.6 114.3 90)
 			(hide yes)
 			(show_name no)
@@ -20115,7 +20115,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 165.1 114.3 90)
 			(hide yes)
 			(show_name no)
@@ -21439,7 +21439,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 165.1 143.51 90)
 			(hide yes)
 			(show_name no)
@@ -23020,7 +23020,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 228.6 201.93 90)
 			(hide yes)
 			(show_name no)
@@ -23908,7 +23908,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k"
+		(property "Megjegyzés" "soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)"
 			(at 165.1 201.93 90)
 			(hide yes)
 			(show_name no)

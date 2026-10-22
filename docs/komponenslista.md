@@ -474,7 +474,7 @@ R103–R106 (10 k) + D101–D104 (zöld LED): relé-állapot LED-ek – akkor vi
 
 ## 230 V-os kimenetek
 
-J101–J104 (2 pólusú push-in sorkapocs, COM + NO, ≥ 16 A, ≥ 250 V – a pontos típus a DIN-ház vállmagasságától függ, D79): a relék kimenetei. A 230 V-os rész a NYÁK-on ≥ 8 mm-re van a törpefeszültségű résztől, a belső rétegeken alatta nincs réz (D77).
+J101–J104 (2 pólusú, 5,08 mm-es THT sorkapocs, COM + NO, ≥ 16 A, ≥ 250 V): a relék kimenetei. A 230 V-os rész a NYÁK-on ≥ 8 mm-re van a törpefeszültségű résztől, a belső rétegeken alatta nincs réz (D77).
 
 ## Fogyasztásmérés-előkészítés (DNP)
 
@@ -518,7 +518,7 @@ J301–J316 (JST-PH, 3 tű: táp, GND, jel): bemenetenként egy csatlakozó – 
 
 R330–R345 (10 k): felhúzó ellenállások a csatlakozó oldalán – nyitott kontaktusnál a bemenet 1, zártnál 0 (kontaktus-érzékelőkhöz nem kell külső ellenállás). 12/24 V-os jelnél kivehető.
 
-R310–R325 (10 k, soros): áramkorlát a mikrovezérlő lába előtt – ha valaki tévedésből 24 V-ot köt egy osztó nélküli bemenetre, legfeljebb ~2 mA folyik, és ezt az ESD-védő tömb (U303–U306) veszi fel (D75). A láb feszültsége ekkor az ESD-tömb letörési feszültségére áll be; a mostani TPD4E05U06-nál ez a mikrovezérlő 5 V-tűrő lábának határa (~7,3 V) körül van, ezért 12/24 V-os jelhez az osztót be kell ültetni (D66), és nyitott javaslat egy alacsonyabb letörésű, lábkompatibilis ESD-tömb (D81).
+R310–R325 (10 k, soros): áramkorlát a mikrovezérlő lába előtt – ha valaki tévedésből 24 V-ot köt egy osztó nélküli bemenetre, legfeljebb ~2 mA folyik, és ezt az ESD-védő tömb (U303–U306) veszi fel (D75). A láb feszültsége ekkor az ESD-tömb letörési feszültségére áll be, ami a mikrovezérlő 5 V-tűrő lábának határa (~7,3 V) körül van – ez csak félrekötés elleni tartalék, 12/24 V-os jelhez az osztót be kell ültetni (D66).
 
 R350–R365 (DNP): feszültségosztó alsó tagja – 5/12/24 V-os jelhez beültethető (akkor a soros ellenállás 68 k).
 

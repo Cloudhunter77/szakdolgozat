@@ -138,7 +138,7 @@ S.text('5 V-os csoportban az érzékelő jele is 5 V lehet: az IN8–IN10 (PA8�
 
 # =================== 2. Bemenetek ===================
 S.text('2. BEMENETEK (× 16): PH 1 = táp (SUPk), 2 = GND, 3 = JEL → R_fel a 3,3 V-ra (csatlakozó-oldal) → R_s → csomópont (R_le (DNP), C) → MCU; ESD az MCU-oldalon', 80, 93, 1.5)
-S.text('Alap: R_fel 10k + R_s 10k + C 10n (D75) – félrekötött 24 V-nál ~2 mA az ESD-tömbbe, a láb ~VBR-en (D81!). 12/24 V-os jel: R_fel ki, R_s 68k, R_le 10k; 5 V: R_s 2k2, R_le 3k9.', 80, 97.5)
+S.text('Alap: R_fel 10k + R_s 10k + C 10n (D75) – félrekötött 24 V-nál ~2 mA az ESD-tömbbe, a láb ~VBR-en → 12/24 V-hoz osztó kell. 12/24 V-os jel: R_fel ki, R_s 68k, R_le 10k; 5 V: R_s 2k2, R_le 3k9.', 80, 97.5)
 for n in range(16):
     k = n // 4 + 1
     col, row = n % 4, n // 4
@@ -161,7 +161,7 @@ for n in range(16):
     S.junction((xa, yJ))
     S.ref_pos[f'R{310 + n}'] = ((6.35, -5.08), (6.35, -2.54))   # r=90: jobbra, a felhúzás felirata mellett
     p = series('Device:R', f'R{310 + n}', '10k', (xa + 5.08, yJ), R0603,
-               props=P('soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k'))
+               props=P('soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén (D75) – 12/24 V-os jelhez osztó (68k)'))
     xd, xc, xo = p[0] + 7.62, p[0] + 17.78, p[0] + 27.94
     S.rail(yJ, [p[0], xd, xc, xo])
     shunt('Device:R', f'R{350 + n}', 'DNP', (xd, yJ + 2.54), 'GND', R0603, dnp=True, props=P('osztó 5/12/24 V-os jelhez'))

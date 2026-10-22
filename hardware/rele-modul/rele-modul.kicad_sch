@@ -6434,7 +6434,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "1 = COM, 2 = NO; ≥ 16 A, ≥ 250 V AC; push-in (D79) – a típus és a footprint a DIN-ház vállától függ, ez helyőrző"
+		(property "Megjegyzés" "1 = COM, 2 = NO; 5,08 mm-es THT sorkapocs a készletből (D83) – névleges érték ≥ 16 A, ≥ 250 V AC"
 			(at 360.68 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -7266,7 +7266,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "1 = COM, 2 = NO; ≥ 16 A, ≥ 250 V AC; push-in (D79) – a típus és a footprint a DIN-ház vállától függ, ez helyőrző"
+		(property "Megjegyzés" "1 = COM, 2 = NO; 5,08 mm-es THT sorkapocs a készletből (D83) – névleges érték ≥ 16 A, ≥ 250 V AC"
 			(at 260.35 214.63 0)
 			(hide yes)
 			(show_name no)
@@ -9571,7 +9571,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "1 = COM, 2 = NO; ≥ 16 A, ≥ 250 V AC; push-in (D79) – a típus és a footprint a DIN-ház vállától függ, ez helyőrző"
+		(property "Megjegyzés" "1 = COM, 2 = NO; 5,08 mm-es THT sorkapocs a készletből (D83) – névleges érték ≥ 16 A, ≥ 250 V AC"
 			(at 360.68 214.63 0)
 			(hide yes)
 			(show_name no)
@@ -9987,7 +9987,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "1 = COM, 2 = NO; ≥ 16 A, ≥ 250 V AC; push-in (D79) – a típus és a footprint a DIN-ház vállától függ, ez helyőrző"
+		(property "Megjegyzés" "1 = COM, 2 = NO; 5,08 mm-es THT sorkapocs a készletből (D83) – névleges érték ≥ 16 A, ≥ 250 V AC"
 			(at 260.35 124.46 0)
 			(hide yes)
 			(show_name no)
