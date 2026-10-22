@@ -10,8 +10,15 @@ from sx import Sym
 LIBDIR = __import__('os').path.join(__import__('os').path.dirname(__file__), 'kilib')  # build.sh tölti fel
 _libcache = {}
 
+_seq = {'ns': None, 'n': 0}   # a Sheet állítja be: laponként determinisztikus UUID-sorozat
+
+
 def U():
-    return str(uuid.uuid4())
+    """uuid a vezetékeknek, címkéknek stb. – laponként sorszámból képezve, így az újragenerálás ugyanazt a fájlt adja"""
+    if _seq['ns'] is None:
+        return str(uuid.uuid4())
+    _seq['n'] += 1
+    return str(uuid.uuid5(_seq['ns'], str(_seq['n'])))
 
 NS = uuid.UUID('6f1c2a52-6d6f-4475-9c61-72697361626c')
 
@@ -95,6 +102,7 @@ class Sheet:
     def __init__(self, title, project, paper='A3'):
         self.title, self.project, self.paper = title, project, paper
         self.uuid = root_uuid(project)
+        _seq['ns'], _seq['n'] = uuid.uuid5(NS, project + '/seq'), 0
         self.extra_inst = []  # (project, path) – this sheet used as a sub-sheet elsewhere
         self.libsyms = {}
         self.items = []
@@ -126,7 +134,7 @@ class Sheet:
             el.append([Sym('mirror'), Sym(mirror)])
         el += [[Sym('unit'), unit], [Sym('exclude_from_sim'), Sym('no')], [Sym('in_bom'), Sym('no' if power else 'yes')],
                [Sym('on_board'), Sym('no' if power else 'yes')], [Sym('dnp'), Sym('yes' if dnp else 'no')],
-               [Sym('uuid'), U()]]
+               [Sym('uuid'), U() if power else DU(f'{self.project}/sym/{ref}/{unit}')]]   # a NYÁK a szimbólumot ezzel azonosítja
         def prop(k, v, dx, dy, hide=False, left=False):
             eff = [Sym('effects'), [Sym('font'), [Sym('size'), 1.27, 1.27]]]
             if left:
@@ -164,7 +172,7 @@ class Sheet:
         for k, v in (props or {}).items():
             el.append(prop(k, v, 0, 0, hide=True))
         for num in pins:
-            el.append([Sym('pin'), num, [Sym('uuid'), U()]])
+            el.append([Sym('pin'), num, [Sym('uuid'), U() if power else DU(f'{self.project}/sym/{ref}/{unit}/pin/{num}')]])
         inst = [Sym('instances'), [Sym('project'), self.project,
                 [Sym('path'), '/' + self.uuid, [Sym('reference'), ref], [Sym('unit'), unit]]]]
         for proj, path in self.extra_inst:

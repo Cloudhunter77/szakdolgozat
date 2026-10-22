@@ -291,7 +291,7 @@ def polaritas():
 
 # ---------------------------------------------------------------------------------------------------- 6. NYÁK ↔ rajz, DRC
 def nyak():
-    print('\n== 6. NYÁK ↔ rajz (alkatrészek, padok hálózatai), rétegrend, tiltott területek, DRC')
+    print('\n== 6. NYÁK ↔ rajz (alkatrészek, padok hálózatai, szimbólum-kapcsolat), rétegrend, tiltott területek, DRC')
     for lap in NYAKOK:
         comps, pin, _, _ = netlista(lap)
         t = open(f'{H}/{lap}/{lap}.kicad_pcb').read()
@@ -325,6 +325,13 @@ def nyak():
         for r in comps:
             if r in fps and fps[r][0] != comps[r]['fp']:
                 hiba(f'{lap} NYÁK: {r} footprintje {fps[r][0]}, a rajzon {comps[r]["fp"]}')
+        # „Update PCB from Schematic” (D67): minden footprint a rajz egy szimbólumára mutasson (UUID-útvonal)
+        uu = set(re.findall(r'\(uuid "([0-9a-f-]+)"\)', open(f'{H}/{lap}/{lap}.kicad_sch').read()
+                            + open(f'{H}/modulmag/modulmag.kicad_sch').read()))
+        rossz = [p for p in re.findall(r'\(path "([^"]+)"\)', t) if p.rsplit('/', 1)[-1] not in uu]
+        if rossz:
+            hiba(f'{lap} NYÁK: {len(rossz)} footprint nem a rajz szimbólumára mutat – a NYÁK-ot újra kell generálni (pcbgen --force), '
+                 'vagy KiCad-ben „Update PCB” a hivatkozási jel szerinti újrakapcsolással')
         # rétegrend (D79)
         cu = re.search(r'\(layer "F\.Cu" \(type "copper"\) \(thickness ([\d.]+)\)', t)
         want = 0.07 if lap in ('led-modul', 'rele-modul') else None

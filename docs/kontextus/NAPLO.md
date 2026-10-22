@@ -27,6 +27,10 @@ Sablon:
     a CubeMX-projektek L4-es szintaxisra javítva (ADCx, DAC/COMP-csoport, TIM16 bekapcsolás, ADC-órajel);
   - komponenslista a konzulensnek (`docs/komponenslista.md`, a netlistákkal gépileg összevetve), PDF: `hardware/out/kapcsolasi-rajzok-2026-10-22.pdf`.
 - Eredmény: 0 hiba az ellenőrzésen (csak szitanyomat-figyelmeztetés); a CubeMX mindhárom modulra minden perifériát generál.
+  10-22 reggel, újabb teljes ellenőrzés: a NYÁK-footprintek UUID-útvonala egyik rajzi szimbólumra sem mutatott (a generátor
+  minden futáskor új, véletlen UUID-t adott) → a szimbólum-UUID most a projekt + hivatkozási jel alapján stabil, a többi elemé
+  laponként sorszámból képzett (két generálás bájtra azonos); a NYÁK-ok újragenerálva, mind a 581 footprint a szimbólumára mutat;
+  az ellenőrző ezt is figyeli.
 - Tanultuk: az L4-es .ioc-ban az ADC-lábak megosztott jelként (ADCx) kellenek, és az ADC-órajel nélkül a CubeMX nem generál;
   a TPD4E05U06 letörése (6,4–8,7 V) az 5 V-tűrő láb határa körül van → D81 javaslat.
 - Nyitott: D81 (TPD4E02B04 a bemeneteken – Balázs dönt); a relé 230 V-os push-in típusa; huzalozás (Balázs, 10-26-ig);

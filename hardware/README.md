@@ -53,6 +53,10 @@ DAC1_OUT1 → COMP2 INM, ADC1_IN8 + COMP2_INP a PA3-on) a CubeMX-ben kézzel kel
 Kapcsolók: `--no-build` (a meglévő netlistákból), `--no-cubemx`. „HIBA” = javítandó; a szitanyomat-jelzések a
 layoutnál rendeződnek (figyelmeztetés). Kilépési kód 1, ha van hiba.
 
+**UUID-k (10-22):** a generátor determinisztikus – a szimbólumok UUID-je a projekt + hivatkozási jel alapján képződik, így
+újragenerálás után is egyezik a NYÁK footprintjeinek útvonalával („Update PCB from Schematic” működik); a többi elem UUID-je
+laponként sorszámból képződik (két futás bájtra azonos fájlt ad).
+
 ## Darabjegyzék (`gen/bom.sh`)
 `bash gen/bom.sh` → `bom/<lap>.csv` – laponként, értékenként és footprintenként csoportosítva, a DNP-k nélkül
 (a „Megjegyzés” mezővel). A kézben lévő és a megveendő tételek: `docs/kontextus/SAMPLE-KERESEK.md`.
