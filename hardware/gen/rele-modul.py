@@ -29,11 +29,11 @@ def shunt(lib, ref, val, top, bottom_net, fp, r=0, top_pin='1', bot_pin='2', **k
 
 
 # ---------------- Modulmag + betáp ----------------
-S.text('MODULMAG (../modulmag/modulmag.kicad_sch): táp a buszról, STM32F303RET6, TCAN1044, busz-csatlakozók (J2/J3), lezárás (D71)', 20, 25, 1.5)
-left = [('HW_ID', 'HW_ID')]
+S.text('MODULMAG (../modulmag/modulmag.kicad_sch): táp a buszról, STM32L433RCT3, SN65HVD230, busz-csatlakozók (J2/J3), lezárás (D71, D78)', 20, 25, 1.5)
+left = [('HW_ID', 'HW_ID'), ('GND_BUS', 'GND_BUS')]
 right = [('PB12', 'REL1'), ('PB13', 'REL2'), ('PB14', 'REL3'), ('PB15', 'REL4')]
-right += [('PB11', 'VIN_SENSE')]
-right += [(n, None) for n in ['PB8', 'PB9', 'PC2', 'PC3', 'PC6', 'PC7', 'PC8'] + [f'PA{i}' for i in range(11)]]
+right += [('PB1', 'VIN_SENSE')]   # D78: a PB11 az L433-on nem ADC-s
+right += [(n, None) for n in ['PB8', 'PB9', 'PB11', 'PC2', 'PC3'] + [f'PA{i}' for i in range(11)]]
 right = [(n, 'CT_SENSE' if n == 'PA0' else net) for n, net in right]   # D69: SCT-013 előkészítés
 S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 50, 40, 40, 2.54 * (len(right) + 1), left=left, right=right)
 
@@ -44,7 +44,7 @@ a1, a2 = pp['1'][:2], pp['2'][:2]
 S.wire(a1, (a1[0] - 5.08, a1[1]))
 S.label('+24V_IN', (a1[0] - 5.08, a1[1]), 180)
 S.wire(a2, (a2[0] - 2.54, a2[1]), (a2[0] - 2.54, a2[1] + 2.54))
-S.label('GND', (a2[0] - 2.54, a2[1] + 2.54), 270)
+S.label('GND_IN', (a2[0] - 2.54, a2[1] + 2.54), 270)
 S.flag('+24V_IN', 33, 85)
 S.text('24 V betáp (J100)', 22, 62)
 
@@ -64,9 +64,40 @@ S.label('HW_ID', (43.18, nh[1]), 0)
 S.junction(nh)
 S.junction((38.1, nh[1]))
 
-# ---------------- Tekercs-táp (D71): +24V_IN → F100 → D100 → +24V_P; TVS, puffer, VIN_SENSE → PB11 ----------------
+
+# busz-GND (D74): a GND_BUS (XH 2-es tű) a modul GND-jére 0R-on át – a nagyáramú modul hurokárama ne a buszon folyjon
+S.label('GND_BUS', (100, 130), 180)
+S.wire((100, 130), (100 + 2.54, 130))
+_pg = S.place('Device:R', 'R113', '0R', {'1': None, '2': None}, '1', (100 + 2.54, 130), r=90, fp='Resistor_SMD:R_1206_3216Metric',
+              props=P('D74: 0 Ω (a tekercsek kis árama miatt); ha a busz GND-jén hurokáram mérhető: 1 Ω'))
+_q = _pg['2'][:2]
+S.wire(_q, (_q[0] + 2.54, _q[1]), (_q[0] + 2.54, _q[1] + 2.54))
+S.label('GND', (_q[0] + 2.54, _q[1] + 2.54), 270)
+
+# GND-ági polaritásvédelem (D78): Q100 – D = J100 GND-pólusa (GND_IN), S = a lap GND-je, G a +24V_P-ről 10 k + 15 V Zener.
+# A közös föld miatt (D71) a + ági D100 egymagában nem elég: fordított bekötésnél a busz GND-érén át zárlat lenne.
+S.text('POLARITÁSVÉDELEM a GND-ágban (D78)', 100, 91)
+S.ref_pos['Q100'] = ((6.35, -1.27), (6.35, 1.27))
+pq = S.place('Transistor_FET:Q_NMOS_GDS', 'Q100', 'IRFR120N', {'1': None, '2': None, '3': None}, '1', (114.3, 111.76),
+             fp='Package_TO_SOT_SMD:TO-252-2', props=P('kézben; 100 V, ~0,21 Ω – a tekercsek ~70 mA-jén ~15 mV'))
+qg, qd, qs = pq['1'][:2], pq['2'][:2], pq['3'][:2]
+S.wire(qd, (qd[0], qd[1] - 2.54))
+S.label('GND_IN', (qd[0], qd[1] - 2.54), 90)
+S.wire(qs, (qs[0], qs[1] + 2.54))
+S.label('GND', (qs[0], qs[1] + 2.54), 270)
+gn = (qg[0] - 7.62, qg[1])
+S.wire(qg, gn)
+S.wire((gn[0], gn[1] - 2.54), gn)
+shunt('Device:R', 'R114', '10k', (gn[0], gn[1] - 10.16), None, R0603)
+S.label('+24V_P', (gn[0], gn[1] - 10.16), 90)
+shunt('Device:D_Zener', 'D106', 'BZT52C15', (gn[0], gn[1] + 2.54), 'GND', 'Diode_SMD:D_SOD-123', r=270,
+      props=P('15 V – a gate–source-feszültség határa (±20 V) alatt'))
+S.wire(gn, (gn[0], gn[1] + 2.54))
+S.junction(gn)
+
+# ---------------- Tekercs-táp (D71): +24V_IN → F100 → D100 → +24V_P; TVS, puffer, VIN_SENSE → PB1 ----------------
 S.text('TEKERCS-TÁP (D71): J100 → F100 → D100 → +24V_P (12 V-os tápnál 12 V-os relé!)', 12, 137)
-S.text('VIN_SENSE (PB11): 150k / 10k – a firmware összeveti a HW-ID-vel', 12, 141)
+S.text('VIN_SENSE (PB1): 150k / 10k – a firmware összeveti a HW-ID-vel', 12, 141)
 Yt = 152.4
 S.label('+24V_IN', (17.78, Yt), 180)
 S.wire((17.78, Yt), (20.32, Yt))
@@ -169,7 +200,7 @@ for i in range(4):
     jx = x + 25.4
     pj = S.comp('Connector_Generic:Conn_01x02', f'J{100 + k}', f'RELÉ {k}', jx, CY, {'1': None, '2': None},
                 fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-3-2-5.08_1x02_P5.08mm_Horizontal',
-                props=P('1 = COM, 2 = NO; ≥ 16 A, ≥ 250 V AC; helyőrző – push-in, a DIN-ház szerint'))
+                props=P('1 = COM, 2 = NO; ≥ 16 A, ≥ 250 V AC; push-in (D79) – a típus és a footprint a DIN-ház vállától függ, ez helyőrző'))
     com, no = pr['11'][:2], pr['14'][:2]
     S.wire(no, (no[0], no[1] - 2.54), (jx - 10.16, no[1] - 2.54), (jx - 10.16, pj['2'][1]), pj['2'][:2])
     S.wire(com, (com[0], com[1] + 2.54), (jx - 7.62, com[1] + 2.54), (jx - 7.62, pj['1'][1]), pj['1'][:2])
@@ -180,7 +211,7 @@ S.text('FOGYASZTÁSMÉRÉS (D37, D69) – minden DNP: SCT-013 lakatfogós áramv
 S.text('SCT-013-030 (1 V kimenet): R109 nincs; áramkimenetes típushoz R109 = terhelő-ellenállás', 20, 188.5)
 S.ref_pos['J105'] = ((-7.62, -7.62), (-7.62, -5.08))
 pjk = S.comp('Connector_Audio:AudioJack3', 'J105', 'SCT-013', 30.48, 228.6, {'S': None, 'T': None}, nc=['R'],
-             fp='Connector_Audio:Jack_3.5mm_CUI_SJ1-3523N_Horizontal', dnp=True, props=P('a lakatfogó leválaszt – a 230 V-os oldalt nem érinti'))
+             fp='Connector_Audio:Jack_3.5mm_CUI_SJ1-3513N_Horizontal', dnp=True, props=P('a lakatfogó leválaszt – a 230 V-os oldalt nem érinti'))
 sl, tp = pjk['S'][:2], pjk['T'][:2]
 ym = 213.36
 S.wire(sl, (sl[0] + 5.08, sl[1]), (sl[0] + 5.08, ym), (76.2, ym))
@@ -204,5 +235,5 @@ S.junction((93.98, tp[1]))
 S.label('CT_SENSE', (99.06, tp[1]), 0)
 
 S.text('Generálva (hardware/gen/rele-modul.py) – a MODULMAG-SPEC + D62 alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 281, 1.3)
-S.write(OUT, date='2026-10-20')
+S.write(OUT, date='2026-10-22')
 print('ok', OUT)

@@ -1,7 +1,7 @@
 """Modulmag – a MODULMAG-SPEC.md szerint, elrendezett (vezetékes) változat.
 
 Elrendezés: balra fent a táp (a busz +5V-ja → 3,3 V, D71), középen az STM32, tőle balra a reset/boot,
-kvarc, debug és állapot-LED, alatta a hidegítés; jobbra a CAN (TCAN1044AV, közös föld – D71) és a busz-oldal.
+kvarc, debug és állapot-LED, alatta a hidegítés; jobbra a CAN (SN65HVD230, közös föld – D71, D79) és a busz-oldal.
 Blokkon belül vezeték, blokkok között / MCU-lábakon címke.
 """
 import sys, os
@@ -11,24 +11,23 @@ kigen.POWER_UP = {'+3V3', '+5V'}
 kigen.POWER_DOWN = {'GND'}
 
 OUT = sys.argv[1]
-S = kigen.Sheet('Modulmag – STM32F303RET6, CAN, táp a buszról (+5V → 3,3 V)', 'modulmag')
+S = kigen.Sheet('Modulmag – STM32L433RCT3, CAN, táp a buszról (+5V → 3,3 V)', 'modulmag')
 # a modulmag a három modul hierarchikus lapja is → ott is legyenek hivatkozásai
 S.extra_inst = [(p, f'/{kigen.root_uuid(p)}/{kigen.sheet_uuid(p, "modulmag")}')
                 for p in ('rele-modul', 'led-modul', 'bemeneti-modul')]
 
-S.hier = {'HW_ID', 'PC2', 'PC3', 'PB8', 'PB9', 'PB11', 'PB12', 'PB13', 'PB14', 'PB15',
-          'PC6', 'PC7', 'PC8'} | {f'PA{i}' for i in range(11)}
+S.hier = {'HW_ID', 'GND_BUS', 'PC2', 'PC3', 'PB1', 'PB8', 'PB9', 'PB11', 'PB12', 'PB13', 'PB14', 'PB15'} | {f'PA{i}' for i in range(11)}
 
 R0603 = 'Resistor_SMD:R_0603_1608Metric'
 C0603 = 'Capacitor_SMD:C_0603_1608Metric'
-S.label_dx.update({'MCU_ST_STM32F3:STM32F303RETx': 20.32,
+S.label_dx.update({'MCU_ST_STM32L4:STM32L433RCTx': 20.32,
                    'Connector_Generic:Conn_01x04': 5.08, 'Connector_Generic:Conn_01x07': 5.08,
                    'Device:Crystal_GND24': 5.08, 'Power_Protection:NUP2105L': 5.08, 'Device:LED': 8.89})
 
 
 S.label_pos.update({
-    'MCU_ST_STM32F3:STM32F303RETx': ((-15.24, -47.0), (5.08, 50.8)),
-    'Interface_CAN_LIN:MCP2562-E-SN': ((3.81, 11.43), (3.81, 13.97)),
+    'MCU_ST_STM32L4:STM32L433RCTx': ((-15.24, -47.0), (5.08, 50.8)),
+    'Interface_CAN_LIN:SN65HVD230': ((3.81, 11.43), (3.81, 13.97)),
     'Regulator_Linear:AP2112K-3.3': ((-5.08, -10.16), (-5.08, -7.62)),
 })
 
@@ -105,11 +104,11 @@ up('+3V3', (t3[1], Y - 5.08))
 # Állapot-LED-ek (3.4) – a táp mellett jobbra
 xl = 300
 S.text('ÁLLAPOT-LED-ek (előlap, fényvezető)', xl - 5, 30)
-up('+3V3', (xl, 37))
+up('+5V', (xl, 37))
 S.wire((xl, 37), (xl, 40))
-shunt('Device:R', 'R8', '2k2', (xl, 40), None, R0603)
+shunt('Device:R', 'R8', '2k2', (xl, 40), None, R0603, props=P('D78: a +5V-ról – a kézben lévő zöld LED (522 nm) nyitófeszültsége ~3 V, a 3,3 V-ról alig világítana'))
 pp = S.place('Device:LED', 'D3', 'zöld', {'2': None, '1': 'GND'}, '2', (xl, 52.7), r=90, fp='LED_SMD:LED_0603_1608Metric',
-             props=P('táp-LED'))
+             props=P('táp-LED: a busz 5 V-ja (HL-PST-1608U51GC, 522 nm)'))
 S.wire((xl, 47.62), (xl, 52.7))
 xl2 = xl + 20
 up('+3V3', (xl2, 37))
@@ -122,25 +121,27 @@ S.wire((xl2, 60.32), (xl2, 64))
 S.label('STATUS_LED', (xl2, 64), 270)
 
 # =====================================================================================================
-# 2. STM32F303RET6
+# 2. STM32L433RCT3 (D78; az F303RET6 lábra kompatibilis – a relé- és a bemeneti modulon az is beültethető)
 # =====================================================================================================
-S.text('2. STM32F303RET6 – a modulspecifikus lábak hierarchikus címkék (a modul lapja köti be vagy hagyja üresen)', 120, 88, 1.6)
+S.text('2. STM32L433RCT3 (D78) – a modulspecifikus lábak hierarchikus címkék (a modul lapja köti be vagy hagyja üresen)', 120, 88, 1.6)
+S.text('F303RET6-tal is beültethető (relé, bemeneti modul): azonos táplábak; 48 = VDDUSB (L433) / VDD (F303), 60 = PH3-BOOT0 / BOOT0', 120, 92.5)
 MX, MY = 215, 160
 nets = {'1': None, '19': None, '32': None, '48': None, '64': None, '13': None, '12': None,
         '18': None, '31': None, '47': None, '63': None,
         '2': 'STATUS_LED', '5': 'OSC_IN', '6': 'OSC_OUT', '7': 'NRST', '8': 'HW_ID', '9': 'VBUS_SENSE',
         '10': 'PC2', '11': 'PC3', '14': 'PA0', '15': 'PA1', '16': 'PA2', '17': 'PA3',
-        '20': 'PA4', '21': 'PA5', '22': 'PA6', '23': 'PA7', '24': 'UART_TX', '25': 'UART_RX', '30': 'PB11',
-        '33': 'PB12', '34': 'PB13', '35': 'PB14', '36': 'PB15', '37': 'PC6', '38': 'PC7', '39': 'PC8',
+        '20': 'PA4', '21': 'PA5', '22': 'PA6', '23': 'PA7', '24': 'UART_TX', '25': 'UART_RX', '27': 'PB1', '30': 'PB11',
+        '33': 'PB12', '34': 'PB13', '35': 'PB14', '36': 'PB15',
         '41': 'PA8', '42': 'PA9', '43': 'PA10', '44': 'CAN_RX', '45': 'CAN_TX', '46': 'SWDIO', '49': 'SWCLK',
         '60': 'BOOT0', '61': 'PB8', '62': 'PB9',
         # D69: revízió-azonosító + DNP bővítő-tüskesor
         '26': 'HW_REV', '29': 'EXP_PB10', '50': 'EXP_PA15', '55': 'EXP_PB3', '56': 'EXP_PB4', '57': 'EXP_PB5',
         '58': 'EXP_PB6', '59': 'EXP_PB7'}
-nc = ['3', '4', '27', '28', '40', '51', '52', '53', '54']
-pp = S.comp('MCU_ST_STM32F3:STM32F303RETx', 'U6', 'STM32F303RET6', MX, MY, nets, nc=nc,
-            fp='Package_QFP:LQFP-64_10x10mm_P0.5mm')
-# VDD-lábak (1 VBAT, 19, 32, 48, 64) egy sínre, VDDA (13) külön
+nc = ['3', '4', '28', '37', '38', '39', '40', '51', '52', '53', '54']
+pp = S.comp('MCU_ST_STM32L4:STM32L433RCTx', 'U6', 'STM32L433RCT3', MX, MY, nets, nc=nc,
+            fp='Package_QFP:LQFP-64_10x10mm_P0.5mm',
+            props=P('D78: 75 db kézben, −40…125 °C, MSL3 – reflow előtt kisütni; tartalék: STM32F303RET6 (a LED-modulon nem)'))
+# VDD-lábak (1 VBAT, 19, 32, 48 = VDDUSB, 64) egy sínre, VDDA (13) külön
 yt = pp['1'][1] - 5.08
 for n in ('1', '19', '32', '48', '64'):
     S.wire(pp[n][:2], (pp[n][0], yt))
@@ -171,7 +172,7 @@ S.wire((xr - 10, 128), (xr - 10, 130.54))
 S.wire((xr - 10, 128), (xr - 20, 128))
 S.junction((xr - 10, 128))
 S.place('Connector:TestPoint', 'TP1', 'BOOT0', {'1': None}, '1', (xr - 20, 128), r=90, fp='TestPoint:TestPoint_Pad_D1.5mm',
-        props=P('3V3-ra húzva: ROM-bootloader (USART1)'))
+        props=P('3V3-ra húzva: ROM-bootloader – a USART-jai nem a J1-en vannak (AN2606; a PC4/PC5 a USART3, F303-on USART1); a programozás SWD-n'))
 S.place('Connector:TestPoint', 'TP2', '3V3', {'1': None}, '1', (xr - 25, 145), r=90, fp='TestPoint:TestPoint_Pad_D1.5mm')
 S.wire((xr - 25, 145), (xr - 20, 145), (xr - 20, 142.46))
 up('+3V3', (xr - 20, 142.46))
@@ -252,15 +253,16 @@ S.wire((p[0] + 22.7, yh), (p[0] + 30, yh))
 S.label('+3V3A', (p[0] + 30, yh), 0)
 
 # =====================================================================================================
-# 3. CAN – TCAN1044AV (közös föld, D71); MCP2562 szimbólum, lábról lábra azonos
+# 3. CAN – SN65HVD230 (közös föld, D71; kézben 86 db – D79)
 # =====================================================================================================
 IX, IY = 320, 125
-S.text('3. CAN – U2 TCAN1044AVDRQ1 (MCP2562 szimbólum, lábról lábra azonos): VCC = +5V (busz), VIO = +3V3', 280, 88, 1.6)
+S.text('3. CAN – U2 SN65HVD230D (D79, kézben): VCC = +3V3, Vref (5) nyitva, Rs (8) → GND = nagy sebesség', 280, 88, 1.6)
 S.text('D71: közös föld – izoláció nincs; a vezérlő és minden modul egy tápról, csillagpontosan', 280, 93)
-pp = S.comp('Interface_CAN_LIN:MCP2562-E-SN', 'U2', 'TCAN1044AVDRQ1', IX, IY,
-            {'1': 'CAN_TX', '4': 'CAN_RX', '2': 'GND', '3': None, '5': None, '8': None, '7': 'CAN_H', '6': 'CAN_L'},
-            fp='Package_SO:SOIC-8_3.9x4.9mm_P1.27mm', props=P('VCC 4,5–5,5 V; buszlábak ±58 V'))
-# VDD (3) ← +5V + C18 / C19
+pp = S.comp('Interface_CAN_LIN:SN65HVD230', 'U2', 'SN65HVD230D', IX, IY,
+            {'1': 'CAN_TX', '4': 'CAN_RX', '2': 'GND', '3': None, '8': None, '7': 'CAN_H_T', '6': 'CAN_L_T'}, nc=['5'],
+            fp='Package_SO:SOIC-8_3.9x4.9mm_P1.27mm',
+            props=P('3,3 V, 1 Mbit/s; buszlábak −4…16 V, közös módus −2…7 V (a TCAN1044AV ±58 V-ja helyett – Balázs vállalja, D79)'))
+# VCC (3) ← +3V3 + C18 / C19
 vd = pp['3'][:2]
 yv = vd[1] - 12.7
 S.wire(vd, (vd[0], yv))
@@ -268,28 +270,36 @@ S.rail(yv, [vd[0], vd[0] + 7.62, vd[0] + 15.24, vd[0] + 22.86])
 for x, ref, val in ((vd[0] + 7.62, 'C18', '100n'), (vd[0] + 15.24, 'C19', '4µ7')):
     shunt('Device:C', ref, val, (x, yv + 2.54), 'GND', C0603)
     S.wire((x, yv), (x, yv + 2.54))
-S.label('+5V', (vd[0] + 22.86, yv), 0)
-# VIO (5) ← +3V3 + C17
-vi = pp['5'][:2]
-xa = vi[0] - 20.32
-S.rail(vi[1], [vi[0], xa, xa - 7.62])
-shunt('Device:C', 'C17', '100n', (xa, vi[1] + 2.54), 'GND', C0603)
-S.wire((xa, vi[1]), (xa, vi[1] + 2.54))
-S.wire((xa - 7.62, vi[1]), (xa - 7.62, vi[1] - 5.08))
-up('+3V3', (xa - 7.62, vi[1] - 5.08))
-# STB (8) → R12 0R → GND (normál mód)
+S.label('+3V3', (vd[0] + 22.86, yv), 0)
+# Rs (8) → R12 0R → GND (nagy sebességű mód; 10–100 k-val meredekség-szabályozás)
 sb = pp['8'][:2]
 S.wire(sb, (sb[0] - 5.08, sb[1]), (sb[0] - 5.08, sb[1] + 2.54))
-shunt('Device:R', 'R12', '0R', (sb[0] - 5.08, sb[1] + 2.54), 'GND', R0603, props=P('STB → normál mód (nyitva: készenlét)'))
+shunt('Device:R', 'R12', '0R', (sb[0] - 5.08, sb[1] + 2.54), 'GND', R0603,
+      props=P('Rs → GND: nagy sebesség; 10–100 k: meredekség-szabályozás (EMC); nyitva/3V3: készenlét'))
 S.text('TXD felhúzás (bootkor recesszív busz):', IX - 62, IY + 18)
 up('+3V3', (IX - 50, IY + 23))
 S.wire((IX - 50, IY + 23), (IX - 50, IY + 25.54))
 shunt('Device:R', 'R1', '10k', (IX - 50, IY + 25.54), 'CAN_TX', R0603)
 
+# közös módusú CAN-fojtó (DNP) a transceiver és a busz között – mint a vezérlőn (D24, D74): izoláció nélkül olcsó EMC-tartalék
+xf, yf = 368.3, 118.11
+S.text('CAN-fojtó (D74): L1 DNP + JP2/JP3 zárva; fojtóval JP2/JP3 átvágva', 345.44, yf - 9)
+pl1 = S.comp('Device:Filter_EMI_CommonMode', 'L1', 'DNP', xf, yf, {k: None for k in '1234'}, dnp=True,
+             fp='Inductor_SMD:L_CommonModeChoke_Coilank_ACM3225', props=P('pl. TDK ACT45B-510 / ACM3225 – csak ha a mérés indokolja'))
+for a, b, n_t, n in (('1', '2', 'CAN_H_T', 'CAN_H'), ('3', '4', 'CAN_L_T', 'CAN_L')):
+    q = pl1[a][:2]; S.wire(q, (q[0] - 5.08, q[1])); S.label(n_t, (q[0] - 5.08, q[1]), 180)
+    q = pl1[b][:2]; S.wire(q, (q[0] + 5.08, q[1])); S.label(n, (q[0] + 5.08, q[1]), 0)
+for i, (n_t, n) in enumerate((('CAN_H_T', 'CAN_H'), ('CAN_L_T', 'CAN_L'))):
+    pj = S.comp('Jumper:SolderJumper_2_Bridged', f'JP{2 + i}', 'áthidaló', xf, yf + 12.7 + i * 7.62, {'1': None, '2': None},
+                fp='Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm', props=P('alapból zárt; fojtó beültetésekor átvágni'))
+    q = pj['1'][:2]; S.wire(q, (q[0] - 5.08, q[1])); S.label(n_t, (q[0] - 5.08, q[1]), 180)
+    q = pj['2'][:2]; S.wire(q, (q[0] + 5.08, q[1])); S.label(n, (q[0] + 5.08, q[1]), 0)
+
 # =====================================================================================================
 # 4. BUSZ-OLDAL: J2 BE / J3 KI átmenő, ESD, lezárás, TVS
 # =====================================================================================================
-S.text('4. BUSZ: J2 és J3 azonos tűi átmenők (1 +5V · 2 GND · 3 CAN_L · 4 CAN_H); ESD és TVS a csatlakozók mellé', 280, 160, 1.6)
+S.text('4. BUSZ: J2 és J3 azonos tűi átmenők (1 +5V · 2 GND_BUS · 3 CAN_L · 4 CAN_H); ESD és TVS a csatlakozók mellé', 280, 160, 1.6)
+S.text('GND_BUS: a modul lapján R-en át a GND-re (LED-modul 1 Ω, a többi 0 Ω) – a nagyáramú modul hurokárama ne a buszon folyjon (D74)', 280, 164.5)
 JX = 395
 pj2 = S.comp('Connector_Generic:Conn_01x04', 'J2', 'BUS_IN', JX, 180, {'1': None, '2': None, '3': None, '4': None},
              fp='Connector_JST:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical')
@@ -304,11 +314,8 @@ for i, n in enumerate(['4', '3', '1', '2']):        # CAN_H, CAN_L, +5V, GND
     yt = pj3['4'][1] + 5.08 + i * 3.81
     S.junction((lx, pj3[n][1]))
     S.wire((lx, pj3[n][1]), (lx, yt), (JX - 40, yt))
-    net = {'4': 'CAN_H', '3': 'CAN_L', '2': 'GND', '1': '+5V'}[n]
-    if net == 'GND':
-        S.wire((JX - 40, yt), (JX - 40, yt + 2.54))
-        down('GND', (JX - 40, yt + 2.54))
-    elif net == '+5V':
+    net = {'4': 'CAN_H', '3': 'CAN_L', '2': 'GND_BUS', '1': '+5V'}[n]
+    if net == '+5V':
         S.wire((JX - 40, yt), (JX - 53.34, yt), (JX - 53.34, yt - 10.16))
         up('+5V', (JX - 53.34, yt - 10.16))
     else:

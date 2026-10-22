@@ -1,4 +1,4 @@
-# Modulmag – kapcsolási specifikáció (v1) – 2026-10-13, frissítve 2026-10-20 (D71)
+# Modulmag – kapcsolási specifikáció (v1) – 2026-10-13, frissítve 2026-10-20 (D71), 2026-10-22 (D78, D79)
 
 A KiCad-rajz alapja. A modulmag egy **hierarchikus lap**, amit a LED-, a relé- és a bemeneti modul ugyanabból a
 fájlból használ. Lábszámok: ST hivatalos pin-adatai (STM32_open_pin_data, `STM32F303R(D-E)Tx.xml`); értékek: TI
@@ -10,16 +10,24 @@ HAL COMP-leírás. Független ellenőrzés után javítva (2026-10-13). **2026-1
 > **2026-10-20 – D71 (konzultáció után): központi 5 V, közös föld.** A modulmagon **nincs 24 V és nincs izoláció**: a
 > logika a busz +5V-járól jár (AP2112K → 3,3 V), a CAN-transceiver **TCAN1044AV** (mint a vezérlőn), a busz GND-je
 > a modul GND-je. A 2., 4., 5. és 6. fejezet ennek megfelelően átírva; a HW-ID 16 sávos (3.5). A 24 V-ot csak a
-> LED- és a relémodul használja, a saját lapján (VIN_SENSE a PB11-en). Bekötési szabály: **a vezérlő és minden
+> LED- és a relémodul használja, a saját lapján (VIN_SENSE – D78 óta a PB1-en). Bekötési szabály: **a vezérlő és minden
 > modul ugyanarról a (12–26 V-os) tápról jár, csillagpontosan**; busz-kábel AWG22.
+
+> **2026-10-22 – D78, D79: MCU = STM32L433RCT3, transceiver = SN65HVD230 (mindkettő kézben).** Az L433 lábra kompatibilis
+> az F303RET6-tal (azonos táp- és földlábak; 48 = VDDUSB → 3V3, 60 = PH3-BOOT0 a 10 k-s lehúzással), ugyanaz a bxCAN a
+> PA11/PA12-n. Eltérések: **egy ADC** (a PB11–PB15 nem ADC-s → VIN_SENSE a **PB1**-re), **nincs TIM8** (a LED-modul CH4–CH6
+> TIM15/TIM16-ra), a COMP2 nem invertáló bemenete a PA3 (I_SENSE oda), a debug-UART a PC4/PC5-ön **USART3**, 256 KB flash.
+> A relé- és a bemeneti lap F303-mal is beültethető, a LED-lap csak L433-mal. A CAN-transceiver **SN65HVD230** (3,3 V,
+> buszlábak −4…16 V – a TCAN1044AV ±58 V-jánál gyengébb, Balázs vállalja). A táp-LED (D3) a +5V-ról jár. A 3., 4. és
+> 7. fejezet ennek megfelelően frissítve; a régi F303-as lábszámok azonosak.
 
 ## 0. Tartalom és változatok
 
 | Blokk | Fő alkatrész | Fejezet |
 |---|---|---|
 | +5V (busz) → 3,3 V | AP2112K-3.3 | 2 |
-| MCU + körítés | STM32F303RET6 (LQFP64), 8 MHz-es kvarc | 3 |
-| CAN | TCAN1044AVDRQ1 | 4 |
+| MCU + körítés | STM32L433RCT3 (LQFP64; tartalék: F303RET6), 8 MHz-es kvarc | 3 |
+| CAN | SN65HVD230D (D79) | 4 |
 | Busz | 2 × JST-XH, ESD2CAN24-Q1, 120 Ω + jumper, TVS | 5 |
 | Debug | 1 × 7-es tüskesor (SWD + UART) | 3.6 |
 
@@ -32,8 +40,8 @@ HAL COMP-leírás. Független ellenőrzés után javítva (2026-10-13). **2026-1
 
 | Net | Honnan | Megjegyzés |
 |---|---|---|
-| `+5V` | J2/J3 1-es tű (a vezérlő V_BUS-a) | 4,5–5,2 V (a lánc végén kevesebb); a TCAN1044 VCC-je és az LDO bemenete |
-| `+3V3`, `+3V3A` | U5 | MCU, VIO; VDDA ferriten át |
+| `+5V` | J2/J3 1-es tű (a vezérlő V_BUS-a) | 4,5–5,2 V (a lánc végén kevesebb); az LDO bemenete, a táp-LED |
+| `+3V3`, `+3V3A` | U5 | MCU, CAN-transceiver; VDDA ferriten át |
 | `GND` | J2/J3 2-es tű + a modul saját GND-je | **közös föld** – a LED- és a relémodulon a 24 V-os GND is |
 | `CAN_H`, `CAN_L` | J2/J3 4-es / 3-as tű | |
 
@@ -49,16 +57,16 @@ Lánc: `+5V` (J2/J3) → C2 → U5 AP2112K-3.3 → `+3V3` (C3). A vezérlő TPS2
 | C3 | kerámia | 10 µF, 10 V, X7R (0805) | az AP2112 kerámiával stabil (nem kell tantál) |
 | R3, R4, C9 | osztó | 10 kΩ / 10 kΩ 1 %, 100 nF | `+5V` → **PC1** (VBUS_SENSE): 5 V → 2,5 V – a modul jelenti, mennyi busz-feszültség jut el hozzá |
 
-- Áramszükséglet: STM32 ~40 mA + TCAN1044 (VCC: recesszív ~5 mA, domináns ~50–70 mA, csak adáskor) + LED-ek.
-- A 3,3 V a lánc végén ~4,6 V-ig tart (0,25 V ejtés + tartalék); a TCAN1044-nek ≥ 4,5 V kell – ez a szűkebb.
+- Áramszükséglet a 3,3 V-on: STM32 ~20–30 mA + SN65HVD230 (~10 mA, adáskor ~17 mA) + LED-ek.
+- A 3,3 V a lánc végén ~3,6 V-ig tart (0,25 V ejtés + tartalék); a D79 óta nincs 5 V-os fogyasztó, ami ennél szűkebb lenne.
 
-## 3. STM32F303RET6 és körítése
+## 3. STM32L433RCT3 és körítése (D78; az F303RET6 lábra azonos)
 
 ### 3.1 Táplálás (ST AN4206)
 | Láb | Név | Bekötés |
 |---|---|---|
 | 1 | VBAT | `3V3` + 100 nF (nincs elem) |
-| 19, 32, 48, 64 | VDD | `3V3`, lábanként 100 nF + összesen 1 × 4,7 µF |
+| 19, 32, 48, 64 | VDD (L433-on a 48 = VDDUSB) | `3V3`, lábanként 100 nF + összesen 1 × 4,7 µF |
 | 18, 31, 47, 63 | VSS | `GND` |
 | 13 | VDDA (= VREF+ ezen a tokon) | `3V3`-ról **FB1**-en át, + 1 µF + 10 nF |
 | 12 | VSSA | `GND` |
@@ -67,14 +75,15 @@ Lánc: `+5V` (J2/J3) → C2 → U5 AP2112K-3.3 → `+3V3` (C3). A vezérlő TPS2
 szerint a VDDA nem lehet kisebb a VDD-nél, és nem jöhet fel később; egy nagy ellenállású szűrő ezt megsértené.
 
 ### 3.2 Órajel
-- **Y1:** 8 MHz-es kvarc (3225), PF0-OSC_IN (5) – PF1-OSC_OUT (6).
+- **Y1:** 8 MHz-es kvarc (3225), PH0-OSC_IN (5) – PH1-OSC_OUT (6) (F303-on PF0/PF1).
 - **C10, C11:** terhelőkondenzátorok = 2 × (CL − 3…5 pF szórt kapacitás) – a kiválasztott kvarc CL értékéből.
   Pl. CL = 10 pF → ~12 pF; CL = 8 pF → ~8 pF.
 - Közvetlenül a lábak mellé, alatta csak GND, más jel ne fusson alatta.
 
 ### 3.3 Reset és boot
 - **NRST (7):** 100 nF a GND-re (belső felhúzás van); reset-gomb footprintje opcionális.
-- **BOOT0 (60):** 10 kΩ a GND-re + egy tesztpad a `3V3`-hoz (tartalék; a programozás SWD-n megy).
+- **BOOT0 (60):** 10 kΩ a GND-re + egy tesztpad a `3V3`-hoz (tartalék; a programozás SWD-n megy). **A ROM-bootloader USART1-e az
+  AN2606 szerint a PA9/PA10-en van, nem a J1 UART-ján (PC4/PC5)** – a J1-ről tehát csak SWD-vel programozható (D77).
 
 ### 3.4 Állapot-LED-ek
 - **D3 (táp):** `3V3` → 2,2 kΩ → LED → GND.
@@ -127,22 +136,23 @@ ST-Link V2 klónhoz dupont-vezetékkel bekötve; a lap szélén, hozzáférhető
 - **Relémodul (a modul saját lapján):** J105 3,5 mm-es jack az SCT-013 lakatfogónak, R107/R108 10 k + C102 10 µF
   középfeszültség (1,65 V), R109 terhelő-ellenállás (csak áramkimenetes típushoz), R110 1 k + C103 10 nF → PA0. Minden DNP.
 
-## 4. CAN – TCAN1044AVDRQ1 (U2) – közös föld (D71)
-A vezérlővel azonos transceiver (`VEZERLO-SPEC.md` 5.), a KiCad-rajzon az MCP2562 szimbólumával (lábról lábra azonos).
+## 4. CAN – SN65HVD230D (U2) – közös föld (D71, D79)
+A kézben lévő 86 db-ból (D79); 3,3 V-ról jár, 1 Mbit/s. A vezérlőn a TCAN1044AV marad (a JP2/JP3-mal ott is beültethető a HVD230).
 
 | Láb | Név | Bekötés |
 |---|---|---|
 | 1 | TXD | **PA12** (45, CAN_TX) + **R1 10 kΩ felhúzás `3V3`-ra** (reset alatt recesszív busz) |
 | 2 | GND | `GND` |
-| 3 | VCC | `+5V` + C18 100 nF + C19 4,7 µF |
+| 3 | VCC | `3V3` + C18 100 nF + C19 4,7 µF |
 | 4 | RXD | **PA11** (44, CAN_RX) |
-| 5 | VIO | `3V3` + C17 100 nF |
-| 6 | CANL | `CAN_L` |
-| 7 | CANH | `CAN_H` |
-| 8 | STB | **R12 0 Ω** → GND (normál mód) |
+| 5 | Vref | nyitva (referenciakimenet, nem kell) |
+| 6 | CANL | `CAN_L_T` → JP3 (zárt) / L1 → `CAN_L` |
+| 7 | CANH | `CAN_H_T` → JP2 (zárt) / L1 → `CAN_H` |
+| 8 | Rs | **R12 0 Ω** → GND (nagy sebesség; 10–100 k-val meredekség-szabályozás, 3V3-ra: készenlét) |
 
-- VCC 4,5–5,5 V; buszlábak ±58 V; a földkülönbséget a CAN közös módusú tartománya fedezi (néhány tized V a
-  bekötési szabály mellett).
+- VCC 3,0–3,6 V; **buszlábak −4…16 V**, közös módus −2…7 V – a földkülönbség (néhány tized V a bekötési szabály
+  mellett) belefér, de egy rákötött 24 V tönkreteszi (a TCAN1044AV ±58 V-ot bírt) – D79, Balázs vállalja. A 3,3 V-os és
+  az 5 V-os transceiverek egy buszon együtt működnek (ISO 11898-2).
 - **Miért nincs izoláció (D71):** a logika a buszról jár, így a modul GND-je eleve a busz GND-je – az ISO1042-nek
   nem lenne mit leválasztania. A LED-modul 20 A-es visszatérő árama a saját vastag tápvezetékén megy vissza, ha
   a bekötési szabályt (egy táp, csillagpont) betartjuk.
@@ -153,11 +163,21 @@ A vezérlővel azonos transceiver (`VEZERLO-SPEC.md` 5.), a KiCad-rajzon az MCP2
 | Tű | Jel |
 |---|---|
 | 1 | `+5V` (a vezérlő V_BUS-a) |
-| 2 | `GND` |
+| 2 | `GND_BUS` → a modul lapján R-en át a `GND`-re (D74) |
 | 3 | `CAN_L` |
 | 4 | `CAN_H` |
 
 J2 és J3 azonos tűi közvetlenül összekötve (átmenő busz). Az XH tűnként 3 A-t bír; a vezérlő 2 A-nél korlátoz.
+
+**Busz-GND (D74):** a `GND_BUS` (XH 2-es tű) a modul saját lapján egy 1206-os ellenálláson át csatlakozik a `GND`-hez:
+**LED-modul R293 = 1 Ω**, relémodul R113 = 0 Ω, bemeneti modul R390 = 0 Ω (ott minden a buszról jár, ellenállás nem lehet).
+Miért: a LED-modul 20 A-es visszatérő árama két úton jut a tápra – a saját vastag vezetékén és a busz GND-ján a
+vezérlőn át. 1,5 m 2,5 mm²-es vezetéknél (~10 mΩ) és ~100 mΩ-os busz-útnál 0 Ω-mal **1–2 A** folyna a buszon,
+1 Ω-mal ~0,2 A. A modul így ~0,1–0,3 V-tal „feljebb” ül a busz GND-jénél – az SN65HVD230 közös módusú tartománya
+−2…7 V (D79), ez bőven belefér. Az SN65HVD230, az ESD2CAN24 és a D5 a modul GND-jére megy (a védőelemek a transceiver földjéhez képest fogjanak).
+
+**CAN-fojtó (D74):** a transceiver (SN65HVD230) és a busz között **L1** közös módusú fojtó (DNP, pl. TDK ACT45B / ACM3225) és két zárt
+forrasztható áthidaló (**JP2, JP3**) – mint a vezérlőn. Fojtó beültetésekor a JP2/JP3 átvágandó.
 
 ### 5.2 Védelem a modulon
 - **D5:** TVS, 5 V standoff (SMF5.0A): `+5V` → `GND`, a J2/J3 mellett – ESD és hot-plug tüskék ellen.
@@ -176,7 +196,11 @@ Jumper bedugva = lezárva – **csak a lánc két végén** (a vezérlőn és az
   PTC 0,2 A). A vezérlő 2 A-t ad (`VEZERLO-SPEC.md` 2.4).
 - Feszültség: a vezérlő 5,2 V-ot ad (USB-ről ~5,0 V). 1 m AWG24 oda-vissza ~0,17 Ω → 2 A-en ~0,34 V esés.
   **Busz-kábel: AWG22**, a nagy fogyasztású modulok a vezérlő közelében; a PC1 (VBUS_SENSE) mutatja, ha a lánc
-  végén kevés marad (a TCAN1044-nek ≥ 4,5 V kell).
+  végén kevés marad (D79 óta csak az AP2112K-nak kell ≥ ~3,6 V; a modul 4 V alatt jelezzen).
+- **Bővítés áramtalanítva (D77):** egy feszültség alatt bedugott modul bemeneti kondenzátorai rövid V_BUS-letörést
+  okoznak – a többi modul újraindulhat. A lánc bővítése előtt a vezérlőt áramtalanítani (vagy a GPIO20-szal a V_BUS-t KI).
+- **Több táp (D77):** a D71-es „egy táp” szabály lazítható: több SELV-táp is mehet, ha a kimenetük lebegő (nincs a PE-re
+  kötve), és a 0 V-ok egy ponton – a csillagpontban – vannak összekötve.
 
 ## 6. ~~A/B változat~~ – megszűnt (D71)
 A korábbi A változat (saját 24 V → P78E05 → NCP1117, izolált ISO1042) és B változat (TLV75533 a V_BUS-ról) helyett
@@ -186,41 +210,47 @@ egyetlen kiépítés van: a 2. fejezet.
 
 A modulmag lábai minden modulon azonosak; a modulspecifikus lábak nem ütköznek velük. A bemeneti modul 16
 bemenete 16 különböző lábszámon van → mindegyik saját EXTI-megszakítást kap. (Minden lábfunkciót az ST pin-adatai
-alapján ellenőriztünk.)
+alapján ellenőriztünk.) **D78 óta az ADC-csatornák az L433 szerint** (egy ADC: PC0–PC3 = IN1–4, PA0–PA7 = IN5–12,
+PC4/PC5 = IN13/14, PB0/PB1 = IN15/16); a PB11–PB15 L433-on nem ADC-s.
 
 | Láb | Port | Modulmag | LED-modul | Relémodul | Bemeneti modul |
 |---|---|---|---|---|---|
 | 2 | PC13 | STATUS-LED (nyelő) | | | |
-| 5, 6 | PF0, PF1 | HSE 8 MHz | | | |
-| 8 | PC0 | HW-ID (ADC1/2_IN6) | | | |
-| 9 | PC1 | **VBUS_SENSE** (ADC1/2_IN7, D71) | | | |
-| 10 | PC2 | | V_RAIL_SENSE (a főbiztosíték utáni 24 V, ADC1/2_IN8) | | |
-| 11 | PC3 | | NTC (ADC1/2_IN9) | | |
-| 14–17 | PA0–PA3 | | DS1–DS4 (drain-mérés, ADC1_IN1–4, D65) | | IN0–IN3 (ADC1_IN1–4) |
-| 20 | PA4 | | **DAC1_OUT1 – foglalt** (a komparátor küszöbe; kívül nem bekötve, csak tesztpont) | | IN4 (ADC2_IN1) |
-| 21, 22 | PA5, PA6 | | DS5, DS6 (drain-mérés, ADC2_IN2–3, D65) | | IN5, IN6 (ADC2_IN2–3) |
-| 23 | PA7 | | **I_SENSE** (INA181 kimenet → ADC2_IN4 + COMP2_INP) | | IN7 (ADC2_IN4) |
-| 24, 25 | PC4, PC5 | UART_TX/RX (USART1) | | | |
-| 30 | PB11 | | **VIN_SENSE** (24 V az F201 előtt, ADC1_IN14 – D71) | **VIN_SENSE** (tekercs-táp, ADC1_IN14 – D71) | IN11 (ADC1/2_IN14) |
-| 33 | PB12 | | DRV_EN (3 × UCC27524 EN) | REL1 | IN12 (ADC4_IN3) |
-| 34–36 | PB13–PB15 | | | REL2–REL4 | IN13–IN15 (ADC3_IN5, ADC4_IN4, ADC4_IN5) |
-| 37–39 | PC6–PC8 | | CH4–CH6 (TIM8_CH1–3) | | |
+| 5, 6 | PH0, PH1 (F303: PF0, PF1) | HSE 8 MHz | | | |
+| 8 | PC0 | HW-ID (ADC1_IN1) | | | |
+| 9 | PC1 | **VBUS_SENSE** (ADC1_IN2, D71) | | | |
+| 10 | PC2 | | V_RAIL_SENSE (a főbiztosíték utáni 24 V, ADC1_IN3) | | HDC_ALERT |
+| 11 | PC3 | | **T_SENSE** (MCP9701A, ADC1_IN4 – D78) | | |
+| 14–16 | PA0–PA2 | | DS1–DS3 (drain-mérés, ADC1_IN5–7, D65) | | IN0–IN2 (ADC1_IN5–7) |
+| 17 | PA3 | | **I_SENSE** (INA181 kimenet → ADC1_IN8 + COMP2_INP – D78) | | IN3 (ADC1_IN8) |
+| 20 | PA4 | | **DAC1_OUT1 – foglalt** (a komparátor küszöbe; kívül nem bekötve, csak tesztpont) | | IN4 (ADC1_IN9) |
+| 21, 22 | PA5, PA6 | | DS5, DS6 (drain-mérés, ADC1_IN10–11, D65) | | IN5, IN6 (ADC1_IN10–11) |
+| 23 | PA7 | | **DS4** (drain-mérés, ADC1_IN12 – D78) | | IN7 (ADC1_IN12) |
+| 24, 25 | PC4, PC5 | UART_TX/RX (L433: USART3, F303: USART1) | | | |
+| 27 | PB1 | | **VIN_SENSE** (24 V az F201 előtt, ADC1_IN16 – D78) | **VIN_SENSE** (tekercs-táp, ADC1_IN16 – D78) | |
+| 30 | PB11 | | | | IN11 (digitális) |
+| 33 | PB12 | | DRV_EN (3 × UCC27524 EN) | REL1 | IN12 (digitális) |
+| 34 | PB13 | | | REL2 | IN13 (digitális) |
+| 35, 36 | PB14, PB15 | | **CH4, CH5 (TIM15_CH1/CH2 – D78)** | REL3, REL4 | IN14, IN15 (digitális) |
+| 61 | PB8 | | **CH6 (TIM16_CH1 – D78)** | | I²C1 SCL (HDC3020) |
+| 37–39 | PC6–PC8 | szabad (L433-on nincs rajtuk időzítő) | | | |
 | 41–43 | PA8–PA10 | | CH1–CH3 (TIM1_CH1–3) | | IN8–IN10 |
 | 44, 45 | PA11, PA12 | CAN_RX / CAN_TX | | | |
 | 46, 49 | PA13, PA14 | SWDIO / SWCLK | | | |
-| 60 | BOOT0 | 10 kΩ GND-re | | | |
-| 61, 62 | PB8, PB9 | | | | I²C1 SCL/SDA (HDC3020) |
+| 60 | PH3-BOOT0 (F303: BOOT0) | 10 kΩ GND-re | | | |
+| 62 | PB9 | | | | I²C1 SDA (HDC3020) |
 | 26 | PB0 | **HW_REV** (NYÁK-revízió, ADC – D69) | | | |
 | 29, 50, 55–59 | PB10, PA15, PB3–PB7 | **J4 bővítő** (DNP, D69) | | | |
 | 14 | PA0 | | | **CT_SENSE** (SCT-013, DNP – D69) | |
 | egyéb | | szabad → firmware-ben analóg mód | | | |
 
 Megjegyzések:
-- **LED-modul túláramvédelem (D53):** I_SENSE a PA7-en a COMP2 nem invertáló bemenete. Az invertáló bemenet a
+- **LED-modul túláramvédelem (D53, D78):** I_SENSE a PA3-on a COMP2 nem invertáló bemenete. Az invertáló bemenet a
   **DAC1_OUT1** (PA4) – így a küszöb telepítésenként állítható (pl. a beállított max. áram 1,2-szerese, alapból
   ~22 A). Tartalék fix küszöbök: VREFINT ≈ 24 A, ¾ VREFINT ≈ 18 A, ½ VREFINT ≈ 12 A. A COMP2 kimenete belül a
-  **TIM1 BKIN2 + TIM8 BKIN2** bemenetre (a HAL kombinált kimenet-választása). A PB12-n lévő TIM1_BKIN
-  lábfunkciót **nem szabad** bekapcsolni (ott a DRV_EN van). Áramerősítő: **INA181A2 (×50)**, alacsony oldali sönt
+  **TIM1, TIM15 és TIM16 break-bemenetére** (L433: a TIMx_OR2 BKCMP2E bitje; a CubeMX-adatbázis szerint mindhárom
+  időzítőn elérhető – D78). A PB12-n lévő TIM1_BKIN / TIM15_BKIN lábfunkciót **nem szabad** bekapcsolni (ott a DRV_EN van).
+  A TIM16-nak nincs slave-módja: a fázistolást (D24) az indítási sorrend adja (közös órajel, nem csúszik el). Áramerősítő: **INA181A2 (×50)**, alacsony oldali sönt
   (1 mΩ, a közös GND-visszatérőben – a közös módusú feszültség ~0 V, az INA181 26 V-os határa nem gond):
   20 A → 1,0 V az ADC-n, kb. 66 A-ig mér. A firmware a COMP2-t és a DAC-ot a DRV_EN bekapcsolása **előtt**
   állítja be.
@@ -229,8 +259,8 @@ Megjegyzések:
   ~1,5 V lett volna, D65) → boot alatt a driverek tiltva. A driverek
   IN-lábain belső lehúzás van, a lebegő PWM-láb is KI-t jelent.
 - **Relék:** a ULN2803A bemenetein opcionális 100 kΩ lehúzás (boot alatti lebegés ellen).
-- A bemeneti modulon 12 bemenet ADC-képes (IN0–IN7, IN11–IN15), az IN8–IN10 csak digitális – de ezek (PA8–PA10)
-  5 V-tűrők (FT); az ADC-s lábak TTa típusúak (≤ 3,6 V) → 5 V-os jelhez osztó (D66). A HDC3020 ALERT-je a PC2-n.
+- A bemeneti modulon L433-mal **8 bemenet ADC-képes (IN0–IN7)**, a többi csak digitális (F303-mal 13 volt) – a
+  PA8–PA10 és a PB11–PB15 5 V-tűrő (FT); az ADC-s lábak ≤ 3,6 V-ot bírnak → 5 V-os jelhez osztó (D66). A HDC3020 ALERT-je a PC2-n.
 - **EXTI-ütközés (CubeMX-adatbázis, 2026-10-20):** a PC2 az EXTI2 vonalon osztozna az IN2-vel (PA2) – egy EXTI-vonal
   egyszerre csak egy porté. Ezért a HDC3020 ALERT-je **sima bemenet, a firmware lekérdezi** (a riasztás úgyis lassú
   esemény). Más lábra tenni sem segítene: az IN0–IN15 mind a 16 EXTI-vonalat lefoglalja.
@@ -238,7 +268,7 @@ Megjegyzések:
 ## 8. Layout-irányelvek
 - A modulmag **mindhárom lapon ugyanott**, a felső vállnál (D50). KiCad-ben a layoutot is újrahasználható
   blokként kezelni.
-- **Busz** a felső él mentén: J2, J3, JP1, R5, U3, D5, a TCAN1044 és a VCC-kondenzátorai; izolációs rés nincs (D71).
+- **Busz** a felső él mentén: J2, J3, JP1, R5, U3, D5, az SN65HVD230 és a VCC-kondenzátorai; izolációs rés nincs (D71).
   A busz GND-je és a modul GND-je egy sík – a LED-modulon a 20 A-es visszatérő út **ne** a busz-csatlakozók
   alatt menjen (a nagy áram a saját sorkapcsán lépjen ki).
 - **U5 (AP2112K):** C2 és C3 közvetlenül a lábainál; SOT-23-5, kis disszipáció.
@@ -246,9 +276,9 @@ Megjegyzések:
 - **Hidegítés:** minden 100 nF a saját lábánál, a via a kondenzátor GND-oldalán.
 - Debug-tüskesor a lap szélén; az állapot-LED-ek az előlap felőli szélen (fényvezető).
 
-## 9. Darabjegyzék (egy modulmag, D71)
-U5 AP2112K-3.3TRG1 · U2 TCAN1044AVDRQ1 · U3 ESD2CAN24-Q1 · STM32F303RET6 · Y1 8 MHz · D5 SMF5.0A ·
-D3/D4 zöld/piros LED · J1 1 × 7 tüskesor · J2/J3 B4B-XH-A · JP1 2 tűs + jumper · FB1 ferrit (≤ 0,1 Ω) vagy 0 Ω ·
+## 9. Darabjegyzék (egy modulmag, D71, D78, D79)
+U5 AP2112K-3.3TRG1 (D80) · U2 SN65HVD230D · U3 ESD2CAN24-Q1 · STM32L433RCT3 · Y1 8 MHz · D5 SMF5.0A ·
+D3/D4 zöld (522 nm, a +5V-ról)/piros LED · J1 1 × 7 tüskesor · J2/J3 B4B-XH-A · JP1 2 tűs + jumper · FB1 ferrit (≤ 0,1 Ω) vagy 0 Ω ·
 kondenzátorok: 10 µF 16 V (0805, 2 db), 100 nF (≈ 9 db), 1 µF, 4,7 µF (2), 10 nF, 2 × C_kvarc · ellenállások:
 10 k (több, ebből R3/R4/R10 1 %), 715 Ω 1 % (R11), 0 Ω (R12), 1 k, 2,2 k, 120 Ω. (A HW-ID osztó a modul saját lapján van, 3.5.)
 
@@ -267,10 +297,14 @@ kondenzátorok: 10 µF 16 V (0805, 2 db), 100 nF (≈ 9 db), 1 µF, 4,7 µF (2),
   382/425/476 mA → D59, D61.
 - **Központi 5 V (2026-10-20) → D71:** a fenti tápblokk, izoláció (ISO1042, `GND_BUS`) és buszos táp-opció (D66) helyett
   a modul a buszról jár (AP2112K), TCAN1044AV, közös föld; PC1 = VBUS_SENSE; HW-ID és HW_REV 16 sávos.
+- **MCU és transceiver (2026-10-22) → D78, D79:** STM32L433RCT3 (kézben 75 db) az F303RET6 helyett, VIN_SENSE a PB1-en,
+  LED-modul: CH4–CH6 TIM15/TIM16, I_SENSE a PA3-on; SN65HVD230 (kézben) a TCAN1044AV helyett; a táp-LED a +5V-ról.
 
 ## 11. Rajz előtt / közben ellenőrizni
-- [x] **STM32CubeMX-projekt** (2026-10-20, `hardware/cubemx/`): lábütközés nincs (CubeMX 6.18, mindhárom .ioc);
-      a CubeMX-adatbázis szerint a COMP2 invertáló bemenete lehet a DAC1_CH1, a kimenete a TIM1 BKIN2 + TIM8 BKIN2.
+- [ ] **STM32CubeMX-projekt L433-ra (D78, 2026-10-22):** a `gen/cubemx.py` újragenerálta – CubeMX-ben betölteni és
+      megnézni (lábütközés; COMP2 → TIM1/TIM15/TIM16 break; DAC1 → COMP2 INM).
+- [x] **STM32CubeMX-projekt** (F303, 2026-10-20, `hardware/cubemx/`): lábütközés nincs (CubeMX 6.18, mindhárom .ioc);
+      a CubeMX-adatbázis szerint a COMP2 invertáló bemenete lehet a DAC1_CH1, a kimenete a TIM1 BKIN2 + TIM8 BKIN2 (régi, F303-ra).
       Egyetlen megkötés: a HDC3020 ALERT (PC2) nem kaphat EXTI-t (7. fejezet).
 - [ ] A kvarc kiválasztása (CL) → a terhelőkondenzátorok értéke.
 - [x] Az LM66200 (SOT-583-8) és a TPS2595 (DSG, ThermalVias) KiCad-footprintje a TI-rajzzal összevetve (2026-10-20) – egyezik.

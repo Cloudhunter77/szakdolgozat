@@ -1,4 +1,4 @@
-# Vezérlő (központi egység) – kapcsolási specifikáció (v1) – 2026-10-14, frissítve 2026-10-20 (D71)
+# Vezérlő (központi egység) – kapcsolási specifikáció (v1) – 2026-10-14, frissítve 2026-10-20 (D71), 2026-10-22 (D78)
 
 A KiCad-rajz alapja, a `MODULMAG-SPEC.md` párja. Források: Espressif ESP32-C6-WROOM-1/1U adatlap v1.4, ESP32-C6
 adatlap v1.5, hardvertervezési útmutató és KiCad-könyvtár; WIZnet W5500 adatlap v1.1.0 + referencia-kapcsolás;
@@ -10,6 +10,8 @@ közben nézd át.
 - 2026-10-13 (D58): USB-C-ről is jár (busz nélkül) · 2 átmenő XH (a vezérlő a lánc végén vagy közepén is lehet) ·
   RGB LED + táp-LED · bővítő tüskesor nincs, csak debug.
 - 2026-10-14: a V_BUS-t a kézben lévő **P78E05** adja (D59) · CAN transceiver: **TCAN1044AV** (D60).
+- 2026-10-22 (D78): fordított polaritás ellen **Q1 N-FET a GND-ágban** a D1 (B360) helyett – a közös föld miatt (D71) a + ági
+  dióda nem véd: fordított bekötésnél a busz GND-érén át zárlat lenne · a táp-LED (D5) a `+5V`-ról jár (zöld, 522 nm).
 - **2026-10-20 (D71, konzultáció után): központi 5 V.** A vezérlő adja az összes modul logikai tápját a buszon:
   **U2 LMR33630ADDA** (5,2 V, 3 A-es buck) → **U12 LM66200** (ideális dióda, az USB-vel VAGY-olva) → **U3 TPS259531**
   eFuse (2 A, 5,7 V-os vágás) → V_BUS. **USB-ről is van V_BUS** (1–2 modul teszteléséhez). Bemenet **12–26 V**.
@@ -19,10 +21,10 @@ közben nézd át.
 
 | Blokk | Fő alkatrész | Fejezet |
 |---|---|---|
-| 24 V-os bemenet, USB-táp külön ágon | F1, SS16, B360, SMBJ28A | 2.1 |
+| 12–26 V-os bemenet, USB-táp külön ágon | F1 2 A, Q1 IRFR1205 a GND-ágban (D78), B360 (D3), SMBJ28A | 2.1 |
 | 24 V (vagy USB) → 3,3 V (C6 + W5500) | LMR36015BRNXR (1 MHz, 1,5 A) | 2.2 |
-| 24 V → 5 V (busz-táp, CAN, RGB LED) | P78E05-1000 (kézben) | 2.3 |
-| V_BUS-kapcsoló, áramkorlát | TPS2553DBV | 2.4 |
+| 12–26 V → 5,2 V (busz-táp, CAN, RGB LED) + USB-VAGY | LMR33630ADDA + LM66200 (D71) | 2.3 |
+| V_BUS-eFuse, 2 A, 5,7 V-os vágás | TPS259531DSGR (D71) | 2.4 |
 | MCU + rádió | ESP32-C6-WROOM-1-N16 (fém szekrénybe: -1U, ugyanarra a footprintre) | 3 |
 | Ethernet (opcionálisan beültetve) | W5500 + RJ45 MagJack + 25 MHz | 4 |
 | CAN | TCAN1044AVDRQ1 (±58 V; tartalék: MCP2562FD, TCAN330, SN65HVD230) | 5 |
@@ -35,30 +37,31 @@ közben nézd át.
 | Net | Mi | Megjegyzés |
 |---|---|---|
 | `+24V_IN` | a 24 V-os sorkapocs | |
-| `+24V_P` | F1 + D1 után | csak 24 V-ról él; ezt méri a VIN_SENSE, ebből kapja az EN-t a V_BUS-kapcsoló |
-| `+24V_F` | R7 után, a P78E05 bemenete | szűrt, a TVS áramkorlátozva |
+| `+24V_P` | F1 után | csak 24 V-ról él; ezt méri a VIN_SENSE, ebből kapja az EN-t a V_BUS-kapcsoló |
+| `+24V_F` | R7 után, az LMR33630 bemenete | szűrt, a TVS-sel |
 | `VUSB` | az USB-C VBUS-a | |
 | `VIN_BUCK` | az LMR36015 bemenete | `+24V_P` (D8-on át) VAGY `VUSB` (D3-on át) |
-| `3V3` | C6, W5500 digitális, VIO, táp-LED | U1 |
+| `3V3` | C6, W5500 digitális, VIO | U1 |
 | `3V3A` | a W5500 analóg tápja | `3V3`-ból FB1 ferriten át |
-| `5V` | a CAN transceiver VCC-je, a TPS2553 bemenete, RGB LED + 74HCT14 | U2 (P78E05), csak 24 V-ról |
+| `+5V_BUCK` | az LMR33630 kimenete (5,22 V) | az U12 VIN1-e |
+| `+5V` | a CAN transceiver VCC-je, a TPS2595 bemenete, RGB LED + 74HCT14 | U12 (LM66200): a buckból **vagy USB-ről** (D71) |
 | `V_BUS` | a lánc tápja (XH 1-es tű) | U3 kimenete |
-| `GND` | közös föld = a busz `GND_BUS`-a (XH 2-es tű) | **a vezérlőn nincs leválasztás** – ő a busz referenciája |
+| `GND` | közös föld = a busz GND-je (XH 2-es tű) | **közös föld minden modullal (D71)** |
 
-A vezérlő földje így a 24 V-os tápjának és (USB-n) a laptopnak a földje is – ez rendben van, mert a modulok
-(ISO1042) és az Ethernet (trafó) le vannak választva.
+A vezérlő földje így a tápjának, (USB-n) a laptopnak és – a D71 óta – minden modulnak a földje is. Az Ethernet a
+trafón át leválasztott. Bekötési szabály: egy táp, csillagpontosan (D71).
 
 ## 2. Táp
 
 ### 2.1 Bemenet, USB-ág (D61)
 
 ```
-+24V_IN → F1 → D1 → +24V_P ─┬─ D2 SMBJ28A → GND
++24V_IN → F1 → +24V_P ──────┬─ D2 SMBJ28A → GND        (J1 GND-pólusa → GND_IN → Q1 → GND, D78)
                              ├─ R1/R2 → VIN_SENSE (GPIO0)
-                             ├─ R10/R11 → TPS2553 EN (2.4)
                              ├─ D8 → VIN_BUCK → U1 (LMR36015) → 3V3
-                             └─ R7 10 Ω → +24V_F ─ D7 SMBJ28A, C1 47 µF elkó, C2 10 µF → U2 (P78E05) → 5V
-VUSB → D3 → VIN_BUCK
+                             └─ R7 0 Ω → +24V_F ─ D7 SMBJ28A, C1 47 µF elkó, C2 10 µF → U2 (LMR33630) → +5V_BUCK ─┐
+VUSB → D3 → VIN_BUCK                                                                           U12 LM66200 → +5V → U3 TPS2595 → V_BUS
+VUSB ──────────────────────────────────────────────────────────────────────────────────────────┘   (D71)
 ```
 
 - **Csak USB-ről** (24 V nélkül, D71): az USB a D3-on át az LMR36015-öt, az U12 VIN2-jén át a `+5V`-ot táplálja →
@@ -73,17 +76,17 @@ VUSB → D3 → VIN_BUCK
 |---|---|---|---|
 | J1 | push-in sorkapocs, 2 pólus | 24 V be | felső váll |
 | F1 | SMD-biztosíték | **2 A** (D71), ≥ 32 V, gyors (1206) | 2 A-es buszterhelésnél 24 V-on ~0,6 A, 12 V-on ~1,2 A (11. fejezet) |
-| D1 | Schottky | **B360** (60 V, 3 A, SMC) – D71 | fordított polaritás ellen; 12 V-on és 2 A-es buszterhelésnél ~1,2 A folyik rajta |
+| Q1, R56, D12 | N-FET + gate-ellenállás + Zener | **IRFR1205** (55 V, ~27 mΩ, DPAK, kézben), 10 kΩ, BZT52C15 – D78 | a J1 GND-pólusa (`GND_IN`) és a lap GND-je között; helyes polaritásnál a gate a `+24V_P`-ről ~15 V-ot kap → vezet (12 V-on ~1,2 A → ~40 mW); fordítva zár, a GND-pólusra kerülő + nem jut a busz GND-jére. A korábbi D1 (B360) kikerült |
 | D2 | TVS | SMBJ28A | `+24V_P` → GND; ~45 V-on fog (az LMR36015 60 V-os) |
 | D8 | Schottky | SS16 (60 V, 1 A) | `+24V_P` → `VIN_BUCK`; az USB ne táplálja vissza a 24 V-os oldalt |
 | D3 | Schottky | **B360 / SS36** (60 V, 3 A) | `VUSB` → `VIN_BUCK`. **60 V-os kell**: túlfeszültségnél a `VIN_BUCK` ~45 V is lehet, miközben a `VUSB` ~0 V. A 3 A-es dióda 0,5 A-en kisebbet ejt (~0,4 V) → USB-ről is meglegyen az LMR36015 4,2 V-ja |
-| R7 | ellenállás | **0 Ω (D70)**; a 2512-es footprint marad, szükség esetén 10 Ω impulzusbíró | a C1-gyel RC-szűrő a P78E05 elé, korlátozza a D7 áramát (D57 mintájára). Legrosszabb esetben ~0,16 A → 1,6 V, 0,26 W – ezért 2512 |
-| D7 | TVS | SMBJ28A | `+24V_F` → GND – az R7 miatt kis áramon, ~31–35 V-on fog (a P78E05 max. 36 V) |
+| R7 | ellenállás | **0 Ω (D70)**; a 2512-es footprint marad, szükség esetén 10 Ω impulzusbíró | a C1-gyel RC-szűrő az U2 (LMR33630) elé, korlátozza a D7 áramát (D57 mintájára). Legrosszabb esetben ~0,16 A → 1,6 V, 0,26 W – ezért 2512 |
+| D7 | TVS | SMBJ28A | `+24V_F` → GND – az LMR33630 max. 36 V-ja előtt |
 | C1 | elektrolit – **kötelező** | 47 µF, 50 V, low-ESR, 105 °C | az R7-tel soros R-C a bemeneten → a betápkábel LC-lengését is csillapítja (D57) |
-| C2 | kerámia | 10 µF, 50 V, X7R (1210) | a P78E05 1-es és 2-es lába mellett |
+| C2 | kerámia | 10 µF, 50 V, X7R (1210) | az U2 VIN–PGND lábai mellett (+ C53 220 nF) |
 | R1, R2, C3 | osztó | 150 kΩ / 10 kΩ, 100 nF | `+24V_P` → **GPIO0** (VIN_SENSE, ADC1_CH0): 24 V → 1,47 V; csak USB-ről 0 V |
 
-**A 24 V-os tápot ne állítsd 26 V fölé** (D57 – a P78E05 bemenete max. 36 V).
+**A tápot ne állítsd 26 V fölé** (D57 – az LMR33630 bemenete max. 36 V; D71).
 
 ### 2.2 3,3 V – U1: LMR36015BRNXR (1 MHz)
 Lábkiosztása azonos az LMR36006 RNX-ével. A modulokon már nincs buck (D56), ez az egyetlen VQFN-HR a projektben.
@@ -119,6 +122,10 @@ szerint (5 V, 400 kHz), a kimenet 5,2 V-ra hangolva, hogy 24 V mellett biztosan 
 | C56–C59 | 4 × 22 µF, 10 V, X7R (1206) | |
 | EN (3) | → VIN | UVLO belső |
 | PG (4) | nem bekötve | (szabad GPIO nincs) |
+
+**D10 SMBJ6.0A** a `+5V_BUCK`-on (D75): ha az U2 felső FET-je átüt, a 12–26 V a kimenetére kerülne – az LM66200 abs. max.
+6 V, a TPS2595 abs. max. 20 V. A TVS ilyenkor rövidre zár, és az **F1 (2 A) kiolvad**; közben a TPS2595 a kimenetét 5,7 V-ra
+vágja, így a buszra nem jut 24 V. Normál üzemben (5,22 V) a szivárgása < 1 mA.
 
 **U12 LM66200DRLR** (TI kettős ideális dióda, SOT-583-8, 2 × 2,5 A, 40 mΩ, VIN max. 5,5 V, abs. 6 V):
 3 VIN1 ← `+5V_BUCK` · 6 VIN2 ← `VUSB` · 4 ~ON → GND (mindig BE) · 2, 7 VOUT → `+5V` (+ C13 22 µF) · 1, 5 GND · 8 ST nem
@@ -329,6 +336,9 @@ Közös módusú CAN-fojtó footprintje a transceiver és a csatlakozók közöt
 
 ## 7. USB-C (J4) – csak eszköz, csak táp-fogyasztó
 
+**D11 SMF5.0A** a `VUSB`-n, az aljzat mellett (D75): USB-bedugáskor a kábel induktivitása és a kerámia-kondenzátorok miatt a
+VBUS rövid ideig túllőhet – az LM66200 VIN2-je abs. max. 6 V.
+
 | Jel | Bekötés |
 |---|---|
 | A6, B6 (D+) | összekötve → U8 → R26 **22 Ω** → GPIO13 |
@@ -351,7 +361,7 @@ Közös módusú CAN-fojtó footprintje a transceiver és a csatlakozók közöt
 ## 8. Kezelőszervek, LED-ek, debug
 - **SW1 RESET, SW2 BOOT:** SMD nyomógomb (pl. 4 × 4 mm), az előlap felőli szélen – a házon tűvel/tolórúddal
   elérhetően.
-- **D5 (táp):** `3V3` → 2,2 kΩ → zöld LED → GND (USB-ről is világít).
+- **D5 (táp):** `+5V` → 2,2 kΩ → zöld LED (522 nm, Vf ~3 V) → GND (USB-ről is világít) – D78: a 3,3 V-ról alig világítana.
 - **D6 (RGB):** **WS2812B-V5** (vagy a kézben lévő WS2812C-2020): VDD ← **`5V`** + 100 nF; DOUT nyitva. A WS2812B
   3,7 V alatt nincs specifikálva, ezért nem a 3,3 V-ról jár. Fényvezető alá, az előlap felőli szélen. Csak 24 V-ról
   világít.
@@ -376,8 +386,7 @@ gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UAR
   kényelmesen: 24 V ~10 mm + 2 × XH ~20 mm + jumper ~5 mm + USB-C ~9 mm + RJ45 ~16 mm ≈ 60 mm.)
 - **Előlap felőli szél:** D5, D6 (fényvezető), SW1, SW2.
 - **Antenna:** a WROOM-1 antennája egy sarokban, a lap szélén, minden fémtől (RJ45, sorkapocs) távol (3.3).
-- **P78E05 + C1:** furatszerelt, 10,4 mm magas – a C1 elkóval együtt a ház vállmagassága alá kell férnie
-  (szükség esetén fekvő elkó); a reflow után kézzel forrasztva.
+- **C1 (47 µF elkó):** 7,7 mm magas – a ház vállmagassága alá kell férnie. Az LMR33630 hűtőpadja alatt viák a GND-síkra.
 - **Ethernet:** a W5500 a MagJack mellett; a TX/RX párok rövidek, 100 Ω-osak (JLC impedancia-kalkulátor, a
   választott rétegrendre), folytonos GND-sík fölött, via nélkül. A 25 MHz-es kvarc a W5500 lábainál.
 - **USB:** D+/D− 90 Ω-os pár, az U8 az aljzatnál, az R26/R27 a C6-nál.
@@ -392,13 +401,13 @@ gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UAR
 |---|---|---|
 | `3V3` | C6 (Wi-Fi adás 382 mA; Thread 302 mA) + W5500 132 mA + LED-ek ~20 mA | **≈ 0,54 A** → LMR36015 (1,5 A) |
 | `+5V` | V_BUS ≤ 2 A (korlát) + transceiver ≤ 70 mA + RGB LED ≤ 60 mA | **≤ 2,1 A** → LMR33630 (3 A) |
-| `+24V_IN` (24 V) | (0,54 × 3,3 / 0,85 + 2,1 × 5,2 / 0,9) / ~23 V | **≈ 0,62 A**; 12 V-on **≈ 1,2 A** → F1 2 A, D1 B360 (3 A) |
+| `+24V_IN` (24 V) | (0,54 × 3,3 / 0,85 + 2,1 × 5,2 / 0,9) / ~23 V | **≈ 0,62 A**; 12 V-on **≈ 1,2 A** → F1 2 A, Q1 IRFR1205 (D78) |
 | `VUSB` (csak USB) | C6-ág ~0,48 A + V_BUS (amennyit a port ad) | a port korlátozza |
 
 ## 12. Darabjegyzék (vezérlő)
 U1 LMR36015BRNXR · U2 LMR33630ADDA · U12 LM66200DRLR · U3 TPS259531DSGR · L3 8,2 µH (≥ 3,5 A) · U4 ESP32-C6-WROOM-1-N16 (vagy -1U) · U5 W5500 ·
 U6 TCAN1044AVDRQ1 · U7 ESD2CAN24-Q1 · U8 USBLC6-2SC6 · U9 74HCT14D (kézben) · Y1 25 MHz · L1 6,8 µH (≥ 2,1 A) ·
-FB1 ferrit 120 Ω @ 100 MHz · F1 2 A / 32 V · D8 SS16 · D1, D3 B360 / SS36 · D2, D7 SMBJ28A · D4 SMF5.0A ·
+FB1 ferrit 120 Ω @ 100 MHz · F1 2 A / 32 V · D8 SS16 · Q1 IRFR1205 + R56 10 k + D12 BZT52C15 (D78) · D3 B360 / SS36 · D2, D7 SMBJ28A · D4 SMF5.0A ·
 D9 BAT54 · D5 zöld LED · D6 WS2812B-V5 (vagy WS2812C-2020) · J1 2 pólusú push-in · J2/J3 B4B-XH-A · J4 USB-C
 (16 tűs) · J5 1 × 6 tüskesor · J6 MagJack (J1B1211CCD / HR911105A) · JP1 2 tűs + jumper · JP2/JP3 3 padas
 forrasztható jumper · SW1/SW2 nyomógomb · kondenzátorok: 47 µF 50 V elektrolit (kötelező), 10 µF 50 V (1210),
@@ -408,16 +417,16 @@ forrasztható jumper · SW1/SW2 nyomógomb · kondenzátorok: 47 µF 50 V elektr
 22 (2), 10 Ω (2512, impulzusbíró), 10 Ω (0603, 1 %), 0 Ω (4–5).
 
 ## 13. Rajz előtt / közben ellenőrizni
-- [ ] **W5500 MDI-hálózat** (4.2) a WIZnet-referencia képén vagy a kézben lévő W5500-modulon.
+- [x] **W5500 MDI-hálózat** (4.2) a WIZnet-referencia szerint (D72).
 - [ ] **MagJack** kiválasztása és a lábkiosztása (TCT és RCT külön lábon legyen).
 - [ ] **RGB LED:** WS2812B-V5 közvetlenül (R32) vagy a kézben lévő WS2812C-2020 a 74HCT14-gyel (U9) – a választott
       LED adatlapja szerint.
 - [ ] A 25 MHz-es kvarc CL-értéke → terhelőkondenzátorok.
-- [ ] F1 (1 A, ≥ 32 V), R7 (10 Ω, 2512, impulzusbíró), D3 (60 V-os, kis esésű Schottky), USB-C aljzat és
+- [ ] F1 (**2 A**, ≥ 32 V, D71), R7 (0 Ω, D70), D3 (60 V-os, kis esésű Schottky), USB-C aljzat és
       nyomógombok konkrét típusa → footprint.
 - [ ] Footprintek: LMR36015 RNX (VQFN-HR), W5500 LQFP48 (7 × 7 mm), ESP32-C6-WROOM-1 (Espressif KiCad-könyvtár),
-      P78E05 SIP-3, BAT54 (a választott tok lábkiosztása).
-- [ ] A P78E05 + C1 magassága a DIN-ház vállához (D50).
+      BAT54 (a választott tok lábkiosztása). ✅ LMR36015, LM66200, TPS2595, E22 – a gyártói rajzokkal összevetve (10-20).
+- [ ] A C1 és a többi magas alkatrész a Gainta D4MG vállmagassága alá (D73).
 - [ ] A TCAN1044AVDRQ1 a TI-sample-listára (a TCAN330 helyett).
 
 ## 14. Változások a korábbi tervhez
@@ -436,6 +445,9 @@ forrasztható jumper · SW1/SW2 nyomógomb · kondenzátorok: 47 µF 50 V elektr
 ## 15. Kiegészítések a rajz átnézése után (2026-10-19, D68–D70)
 
 ### 15.1 LoRa – U10 Ebyte E22-900M22S (minden DNP, D68)
+**EU-s adóteljesítmény (D77):** a 868 MHz-es sáv nagy részén 25 mW ERP (14 dBm) és 1 % kitöltés a határ; 22 dBm csak a
+869,4–869,65 MHz-es alsávban (≤ 500 mW ERP, 10 %) szabályos – a firmware ezt korlátozza.
+
 SX1262, 850–930 MHz (itt 868 MHz), 22 dBm, 14 × 20 mm, bélyeglyukas (saját footprint: `modularis:Ebyte_E22-900M22S`,
 az Ebyte-kézikönyv méretrajzából; a padméret 1,8 × 0,9 mm saját választás).
 

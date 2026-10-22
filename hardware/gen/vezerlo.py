@@ -105,7 +105,7 @@ def divider(x, y, rt, rtv, rb, rbv, cref, net):
 # =====================================================================================================
 # 1. TÁP
 # =====================================================================================================
-S.text('1. TÁP (12–26 V): +24V_IN → F1 → D1 → +24V_P → D8 → VIN_BUCK (U1 LMR36015 → 3,3 V); +24V_P → R7 → +24V_F → U2 LMR33630 (5,2 V) → U12 LM66200 → +5V', 20, 22, 2)
+S.text('1. TÁP (12–26 V): +24V_IN → F1 → +24V_P (Q1 a GND-ágban, D78) → D8 → VIN_BUCK (U1 LMR36015 → 3,3 V); +24V_P → R7 → +24V_F → U2 LMR33630 (5,2 V) → U12 LM66200 → +5V', 20, 22, 2)
 S.text('D71: központi 5 V a buszra (2 A); USB-ről is: az U12 a nagyobbat választja (buck 5,2 V > USB). D57: a C1 elkó kötelező; a tápot ≤ 26 V-ra (az U2 max. 36 V)', 20, 27, 1.4)
 Y = 45.72
 pj = S.comp('Connector_Generic:Conn_01x02', 'J1', '24V IN', 27.94, 55.88, {'1': None, '2': None},
@@ -115,14 +115,30 @@ a1, a2 = pj['1'][:2], pj['2'][:2]
 x0 = a1[0] - 5.08
 S.wire(a1, (x0, a1[1]), (x0, Y))
 S.wire(a2, (a2[0] - 2.54, a2[1]), (a2[0] - 2.54, a2[1] + 2.54))
-down('GND', (a2[0] - 2.54, a2[1] + 2.54))
+S.label('GND_IN', (a2[0] - 2.54, a2[1] + 2.54), 270)
 S.rail(Y, [x0, x0 + 5.08, x0 + 10.16])
 S.wire((x0 + 5.08, Y), (x0 + 5.08, Y - 5.08))
 S.label('+24V_IN', (x0 + 5.08, Y - 5.08), 90)
 p = series('Device:Fuse', 'F1', '2A', (x0 + 10.16, Y), 'Fuse:Fuse_1206_3216Metric', props=P('≥ 32 V, gyors; D71: 12 V-on és 2 A-es buszterhelésnél ~1,2 A'))
-S.wire(p, (p[0] + 5.08, Y))
-p = series('Device:D_Schottky', 'D1', 'B360', (p[0] + 5.08, Y), 'Diode_SMD:D_SMC', r=180, lpin='2', rpin='1',
-           props=P('60 V, 3 A – D71: a bemeneti áram 12 V-on ~1,2 A'))
+# D78: a D1 (B360) helyett Q1 a GND-ágban – közös földnél a + ági dióda nem véd (a busz GND-érén át zárlat lenne)
+S.wire(p, (p[0] + 12.7, Y))
+p = (p[0] + 12.7, Y)
+S.ref_pos['Q1'] = ((6.35, -1.27), (6.35, 1.27))
+pq = S.place('Transistor_FET:Q_NMOS_GDS', 'Q1', 'IRFR1205', {'1': None, '2': None, '3': None}, '1', (50.8, 71.12),
+             fp='Package_TO_SOT_SMD:TO-252-2', props=P('D78: polaritásvédelem a GND-ágban; kézben; 55 V, ~27 mΩ (12 V-on ~1,2 A → ~40 mW)'))
+qg, qd, qs = pq['1'][:2], pq['2'][:2], pq['3'][:2]
+S.wire(qd, (qd[0], qd[1] - 2.54))
+S.label('GND_IN', (qd[0], qd[1] - 2.54), 90)
+S.wire(qs, (qs[0], qs[1] + 2.54))
+down('GND', (qs[0], qs[1] + 2.54))
+gn = (qg[0] - 7.62, qg[1])
+S.wire(qg, gn)
+shunt('Device:R', 'R56', '10k', (gn[0], gn[1] - 10.16), None, R0603, props=P('gate a +24V_P-ről'))
+S.wire((gn[0], gn[1] - 10.16), (gn[0], Y))
+S.junction((gn[0], Y))
+S.wire((gn[0], gn[1] - 2.54), gn)
+shunt('Device:D_Zener', 'D12', 'BZT52C15', gn, 'GND', 'Diode_SMD:D_SOD-123', r=270, props=P('15 V – a gate–source ±20 V-os határa alatt'))
+S.junction(gn)
 # +24V_P sín
 t = [p[0] + 5.08, p[0] + 15.24, p[0] + 30.48, p[0] + 60.96, p[0] + 71.12]
 S.rail(Y, [p[0]] + t)
@@ -172,6 +188,9 @@ ys5 = Y + 2.54
 c5 = [xo5 + 7.62, xo5 + 17.78, xo5 + 27.94, xo5 + 38.1, xo5 + 48.26]
 XL = xo5 + 76.2
 S.rail(ys5, [xo5, xo5 + 2.54] + c5 + [XL - 10.16])
+S.label('+5V_BUCK', (xo5 + 33.02, ys5 - 12.7), 90)
+shunt('Device:D_Zener', 'D10', 'SMBJ6.0A', (xo5 + 33.02, ys5 - 12.7), 'GND', 'Diode_SMD:D_SMB', r=270,
+     props=P('D75: ha az U2 átüt (24 V a kimenetén), rövidre zár és kiolvasztja az F1-et – az LM66200 (6 V) és a TPS2595 (20 V) védelme'))
 hang(c5[0], ys5, 'R54', '100k 1%', bottom_net=None, lib='Device:R', fp=R0603)
 nf5 = (c5[0], ys5 + 12.7)
 S.wire((c5[0], ys5 + 10.16), nf5)
@@ -545,6 +564,9 @@ yu = vu[1] - 7.62
 S.wire(vu, (vu[0] + 5.08, vu[1]), (vu[0] + 5.08, yu))
 vx = [vu[0] + 5.08, vu[0] + 25.4, vu[0] + 33.02, vu[0] + 43.18, vu[0] + 50.8]
 S.rail(yu, vx)
+S.label('VUSB', (vx[4] + 15.24, yu + 5.08), 90)
+shunt('Device:D_Zener', 'D11', 'SMF5.0A', (vx[4] + 15.24, yu + 5.08), 'GND', 'Diode_SMD:D_SOD-123F', r=270,
+     props=P('D75: USB-bedugáskor a kábel induktivitása miatt túllövés – az LM66200 VIN2-je abs. max. 6 V'))
 hang(vx[1], yu, 'R30', '2,2k', lib='Device:R', fp=R0603, props=P('levezető: a D3 szivárgása ne húzza fel a kihúzott aljzat VBUS-át'))
 hang(vx[2], yu, 'C21', '1µ')
 S.wire((vx[3], yu), (vx[3], yu - 5.08))
@@ -678,8 +700,8 @@ for i, (ref, val, net) in enumerate((('SW1', 'RESET', 'CHIP_EN'), ('SW2', 'BOOT'
     q = ps['2'][:2]
     S.wire(q, (q[0] + 2.54, q[1]), (q[0] + 2.54, q[1] + 2.54))
     down('GND', (q[0] + 2.54, q[1] + 2.54))
-up('+3V3', (439.42, 332.74))
-shunt('Device:R', 'R44', '2,2k', (439.42, 332.74), None, R0603)
+up('+5V', (439.42, 332.74))
+shunt('Device:R', 'R44', '2,2k', (439.42, 332.74), None, R0603, props=P('D78: a +5V-ról – a zöld LED (522 nm) nyitófeszültsége ~3 V'))
 S.place('Device:LED', 'D5', 'zöld', {'2': None, '1': 'GND'}, '2', (439.42, 345.44), r=90, fp='LED_SMD:LED_0603_1608Metric',
         props=P('táp-LED'))
 S.wire((439.42, 340.36), (439.42, 345.44))
@@ -756,7 +778,7 @@ S.text('8. LoRa (D68) – U10 Ebyte E22-900M22S (SX1262, 868 MHz) + J7 u.FL – 
 S.text('SPI a W5500-zal közös; NRST = W5500_RST (közös reset); TXEN = DIO2, RXEN = ¬DIO2 (U11) → firmware: setDio2AsRfSwitch', 455, 29.5)
 pk = S.comp('modularis:E22-900M22S', 'U10', 'E22-900M22S', 530.86, 69.85,
             {k: None for k in ('9', '19', '18', '17', '16', '15', '14', '13', '8', '7', '6', '21', '1', '2', '3', '4', '5', '10', '11', '12', '20', '22')},
-            fp='modularis:Ebyte_E22-900M22S', dnp=True, props=P('Ebyte E22-900M22S, 14 × 20 mm; az antennarész alatt réz-tiltás'))
+            fp='modularis:Ebyte_E22-900M22S', dnp=True, props=P('Ebyte E22-900M22S, 14 × 20 mm; az antennarész alatt réz-tiltás. EU 868 MHz (ERC/REC 70-03): 25 mW ERP / 14 dBm, kitöltés 1 %; a 22 dBm csak a 869,4–869,65 MHz-es sávban (≤ 500 mW, 10 %) – a firmware korlátozza (D77)'))
 for n, net in (('19', 'LORA_CS'), ('18', 'SPI_SCLK'), ('17', 'SPI_MOSI'), ('16', 'SPI_MISO'),
                ('15', 'W5500_RST'), ('14', 'LORA_BUSY'), ('13', 'LORA_DIO1'), ('8', 'LORA_DIO2'), ('7', 'LORA_DIO2'), ('6', 'LORA_RXEN')):
     stub(pk[n][:2], net, 180, 7.62)
@@ -841,5 +863,5 @@ for i, net in enumerate(tps):
 for i, n in enumerate(['GND', '+3V3', '+24V_P', '+24V_F', 'VIN_BUCK', '+3V3A', 'CAN_VCC', 'CAN_VIO', 'VUSB', '+3V3_LORA', '+5V_BUCK', 'ETH_CGND']):
     S.flag(n, 20 + i * 20.32, 405)
 S.text('Generálva (hardware/gen/vezerlo.py) – a VEZERLO-SPEC.md alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 414, 1.4)
-S.write(OUT, date='2026-10-19')
+S.write(OUT, date='2026-10-22')
 print('ok', OUT)

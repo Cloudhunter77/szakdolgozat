@@ -36,9 +36,26 @@ ERC, netlista-export és összevetés a specifikációval, később DRC és gerb
 
 ## STM32CubeMX-projektek (`cubemx/`)
 `python3 gen/cubemx.py` → `cubemx/<modul>/<modul>.ioc` a MODULMAG-SPEC 7. fejezetének lábkiosztásából (a jel- és
-üzemmódnevek a CubeMX 6.18 adatbázisából). Indítás: `flatpak run com.st.STM32CubeMX` → File → Load Project.
-A pinout nézet a lábhozzárendelést ellenőrzi; a belső kapcsolatokat (COMP2 → TIM1/TIM8 BKIN2, DAC1_OUT1 → COMP2 INM,
-ADC2_IN4 + COMP2_INP a PA7-en) a CubeMX-ben kézzel kell beállítani és megnézni.
+üzemmódnevek a CubeMX 6.18 adatbázisából). MCU: **STM32L433RCT3** (D78). Indítás: `flatpak run com.st.STM32CubeMX` →
+File → Load Project. A pinout nézet a lábhozzárendelést ellenőrzi; a belső kapcsolatokat (COMP2 → TIM1/TIM15/TIM16 BKIN,
+DAC1_OUT1 → COMP2 INM, ADC1_IN8 + COMP2_INP a PA3-on) a CubeMX-ben kézzel kell beállítani és megnézni.
+
+## Teljes ellenőrzés (`gen/ellenorzes.py`, 2026-10-22)
+`python3 gen/ellenorzes.py` (a `hardware/` mappából) – minden lapot újragenerál és ellenőriz:
+1. ERC (elfogadott: a modulmag önálló hierarchikus jelzései, a relén a 4 lib-jelzés);
+2. minden bekötött szimbólumláb létezik-e a footprinten (láb ↔ pad);
+3. a modulmag bekötése mindhárom modulban (L433 táplábak, SN65HVD230, AP2112K, táp-LED, BOOT0, busz-GND);
+4. a CubeMX-projekt címkéi ↔ a rajz hálózatai ↔ az L433-adatbázis (rendelhető-e a jel a lábhoz); 4b. a CubeMX
+   fejsorból betölti az .ioc-kat és kódot generál (`out/cubemx-test/`) – minden periféria inicializálódik-e;
+5. a GND-ági polaritásvédő FET-ek (D78) bekötése;
+6. NYÁK ↔ rajz (alkatrészek, padok hálózatai, footprintek), 2 oz-os rétegrend, tiltott területek, DRC;
+7. elavult kifejezések a generátorokban és a dokumentációban (csak figyelmeztetés).
+Kapcsolók: `--no-build` (a meglévő netlistákból), `--no-cubemx`. „HIBA” = javítandó; a szitanyomat-jelzések a
+layoutnál rendeződnek (figyelmeztetés). Kilépési kód 1, ha van hiba.
+
+## Darabjegyzék (`gen/bom.sh`)
+`bash gen/bom.sh` → `bom/<lap>.csv` – laponként, értékenként és footprintenként csoportosítva, a DNP-k nélkül
+(a „Megjegyzés” mezővel). A kézben lévő és a megveendő tételek: `docs/kontextus/SAMPLE-KERESEK.md`.
 
 ## NYÁK-előkészítés (2026-10-21, D73)
 `gen/pcbgen.py` a netlistából (`out/<lap>.net`) elkészíti a `<lap>/<lap>.kicad_pcb`-t: 4 réteg, körvonal (86,5 × 68 mm;

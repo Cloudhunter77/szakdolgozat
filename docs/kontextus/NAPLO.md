@@ -14,6 +14,24 @@ Sablon:
 
 ---
 
+## 2026-10-20 → 10-22 – Konzultáció utáni átdolgozás, NYÁK-előkészítés, L433-váltás, éjszakai ellenőrzés
+- Csináltuk:
+  - D71 (központi 5 V, közös föld, 12–26 V, HW-ID 16 sáv) mind az öt lapon;
+  - D72 (W5500 a WIZnet-referencia szerint), D73 (Gainta D4MG, 86,5 × 68 mm), NYÁK-előkészítés (`gen/pcbgen.py`);
+  - szakértői átnézés → D74–D77 (busz-GND R, CAN-fojtó, TVS-ek, bemenetvédelem, 230 V és antenna tiltott területei);
+  - alkatrészkészlet-patch (claude.ai) → **D78–D80**: modul-MCU **STM32L433RCT3** (lábkiosztás: VIN_SENSE PB1, LED: TIM15/TIM16,
+    I_SENSE PA3), modul-transceiver **SN65HVD230**, **N-FET a GND-ágban** mindhárom 24 V-os lapon, MCP9701A, zöld táp-LED a +5V-ról,
+    2 oz a LED-/relémodulon, csavaros sorkapocs a LED 20 A-es útján, marad az AP2112K (a TC2117-nek tantál kellene);
+  - éjszakai ellenőrzés: új `gen/ellenorzes.py` (ERC, láb ↔ pad, modulmag, CubeMX ↔ rajz ↔ L433-adatbázis, CubeMX fejsoros
+    kódgenerálás, polaritásvédelem, NYÁK ↔ rajz, DRC, elavult szövegek), `gen/bom.sh` (darabjegyzék laponként);
+    a CubeMX-projektek L4-es szintaxisra javítva (ADCx, DAC/COMP-csoport, TIM16 bekapcsolás, ADC-órajel);
+  - komponenslista a konzulensnek (`docs/komponenslista.md`, a netlistákkal gépileg összevetve), PDF: `hardware/out/kapcsolasi-rajzok-2026-10-22.pdf`.
+- Eredmény: 0 hiba az ellenőrzésen (csak szitanyomat-figyelmeztetés); a CubeMX mindhárom modulra minden perifériát generál.
+- Tanultuk: az L4-es .ioc-ban az ADC-lábak megosztott jelként (ADCx) kellenek, és az ADC-órajel nélkül a CubeMX nem generál;
+  a TPD4E05U06 letörése (6,4–8,7 V) az 5 V-tűrő láb határa körül van → D81 javaslat.
+- Nyitott: D81 (TPD4E02B04 a bemeneteken – Balázs dönt); a relé 230 V-os push-in típusa; huzalozás (Balázs, 10-26-ig);
+  firmware-munkamenetnek: CCT_MAX_SUM 1.0-ra (D16 tisztázásáig), status_led.* commit; rendszer/kurzus artifact frissítése L433-ra.
+
 ## 2026-10-14 → 10-19 – Kapcsolási rajzok KiCad-ben (mind az öt lap), TI-kérés
 - Csináltuk: grill-döntések D62–D67; Python-generátor (`hardware/gen/`) → relé-, LED-, bemeneti modul, vezérlő,
   modulmag hierarchikus lapként; mind az öt lap vezetékes, blokkos elrendezése; netlista-összevető (`gen/netcmp.py`,

@@ -1,5 +1,15 @@
 # NYÁK-rajzolás előtt eldöntendő – 2026-10-13, frissítve 2026-10-14
 
+> **2026-10-20/21 – D71–D73 felülírja:** a modulokon nincs P78E05/NCP1117/ISO1042/GND_BUS (központi 5 V, közös föld,
+> TCAN1044AV, AP2112K); a vezérlőn LMR33630 + LM66200 + TPS2595; 12–26 V; a ház Gainta D4MG, NYÁK 86,5 × 68 mm
+> (bemeneti 86,5 × 103 mm). Az alábbi régi pontok ennek fényében olvasandók; a friss állapot a két specben van.
+>
+> **2026-10-22 – D78–D80:** modul-MCU **STM32L433RCT3** (a LED-modulon a CH4–CH6 TIM15/TIM16 a PB14/PB15/PB8-on, az I_SENSE a
+> PA3-on, a VIN_SENSE a PB1-en; a COMP2 a TIM1/TIM15/TIM16 break-jét állítja le), modul-transceiver **SN65HVD230**,
+> polaritásvédelem **N-FET a GND-ágban** (vezérlő Q1, LED Q201, relé Q100 – az LM74700 és a vezérlő D1-e kikerült),
+> hőmérő **MCP9701A** (az NTC helyett), LDO **AP2112K** marad, **2 oz** a LED- és a relémodulon, csavaros sorkapocs a LED-modul
+> 20 A-es útján. A lent áthúzás nélkül maradt régi részletek (TIM8, PA7, F303, 4,7 kΩ, NTC) ennek fényében olvasandók.
+
 Ütemterv (D25): kapcsolási rajzok 10-13 – 10-19, layout 10-20 – 10-26, átnézés + rendelés 10-27 – 10-31.
 Ami az A részben van, az nélkül nem lehet elkezdeni a rajzot; a B rész a kapcsolási rajz közben, a C rész a
 layout előtt kell. A v2-re halasztott dolgok: `V2-OTLETEK.md`.
@@ -56,7 +66,7 @@ innen indul:**
       kikerült, az 5 V-os TVS marad (ESD); a V_BUS-mérleg pontosítva (D64).
 - [x] **Schrack relé (D62, 2026-10-14):** RTD14024 (16 A, 5 mm-es lábtáv) – KiCad-footprint:
       `Relay_THT:Relay_SPDT_Schrack-RT1-16A-FormC_RM5mm`; kimenet COM + NO (4 × 2 pólus); 230 V-ra tervezve.
-- [x] **Buszcsatlakozó: JST-XH** (D38). Tűsorrend minden lapon: 1 V_BUS, 2 GND_BUS, 3 CAN_L, 4 CAN_H (a CAN-érpár
+- [x] **Buszcsatlakozó: JST-XH** (D38). Tűsorrend minden lapon: 1 V_BUS, 2 GND (D71: közös föld), 3 CAN_L, 4 CAN_H (a CAN-érpár
       egymás mellett, sodorva). Laponként 2 db, egyenesen átkötve – a vezérlőn is (D58).
 - [x] **Lezárás: jumper** minden modulon és a vezérlőn (D49, D52) – **sima 120 Ω** a CAN_H és a CAN_L között, a
       jumperrel sorban; csak a lánc két végén bedugva. A jumper a felső vállon, a buszcsatlakozók mellett.
@@ -89,7 +99,7 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
   PH-val kényelmes (D51).
 - **A NYÁK-ot egy kereskedelmi DIN-ház belső méretére tervezni** (pl. Camdenboss CNMB, 6 M: 106 × 58 × 90 mm), és
   a 3D-nyomtatott ház ugyanezt a formát követi → mindkettő jó. A ház adatlapjából: NYÁK-méret, rögzítőfuratok,
-  a vállak alatti magasság (a csatlakozók magassága ehhez – **és a P78E05 10,4 mm-e + az elkó**, D56, D59).
+  a vállak alatti magasság (a csatlakozók magassága ehhez – **és az elkók, relék magassága**, D73).
 - A LED-modul 3 M-be (~53 mm) is beférne, de 6 FET kb. 6 W-ja zárt dobozban → a 4 M több rézfelületet ad hűtésre.
 - **Vezérlő-antenna:** az ESP32-C6 modul antennája az előlap felőli, felső sarokban, alatta réz nélkül. **Fém
   elosztószekrényben a rádió nem működik jól** → ESP32-C6-WROOM-1U (U.FL, külső antenna) – a padjai (az EPAD is) az Espressif
@@ -101,29 +111,31 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 - Ár: a tényleges méretekkel a JLC-ajánlatkérőben ellenőrizni (2026 augusztusában árkorrekció volt). A 4 réteges
   lap gyártási ideje 2–5 nap (a 2 rétegesé ~24 óra) – a határidőbe belefér.
 - Rétegrend: jel / GND / táp / jel. A belső rétegek réze a JLC-nél alapból 0,5 oz → **a nagyáramú utak a külső
-  rétegeken** (1 vagy 2 oz), belül csak sík és jel.
-- **Az ISO1042 alatt az izolációs rés minden rétegen meglegyen:** a GND1- és a GND2-sík (és minden más réz) a
-  tok két oldalán marad, a rés alatt semmi nem fut át egyik rétegen sem.
+  rétegeken** (1 vagy 2 oz), belül csak sík és jel. **D79: a LED- és a relémodul 2 oz-os külső rézzel** (a NYÁK-fájlban
+  a rétegrend már így áll: 70 µm kívül, 35 µm belül) – a JLC-rendelésnél ezt kell kiválasztani; a vezérlő és a bemeneti modul 1 oz.
+- ~~Az ISO1042 alatti izolációs rés~~ – D71 óta nincs izoláció; helyette: a LED-modul 20 A-es visszatérő útja ne a
+  busz-csatlakozók alatt menjen (csillagpont, közös föld).
 - **Ethernet:** a két differenciális érpár 100 Ω-os, az USB D+/D− 90 Ω-os – a sávszélességet/rést a JLC
   impedancia-kalkulátorával, a választott rétegrendre számolni; rövid, folytonos GND-sík fölött, via nélkül.
 - **C6-antenna:** a panel szélén, alatta egyik rétegen se legyen réz; az RJ45 és a fém alkatrészek távol tőle.
 - Kisebb lap ugyanabból: SMD alkatrészek csak a felső oldalon (otthoni reflow, egy menet), debug 2,54 mm-es
   tüskesoron, passzívok 0603-ban. **Stencilt is rendelni** a NYÁK mellé (a vezérlő VQFN-HR buckja és a W5500
-  miatt). A P78E05 furatszerelt (modulokon és a vezérlőn is) – a reflow után kézzel.
+  miatt). Furatszerelt: a relék, a sorkapcsok, az XH/PH és a nagy elkók – a reflow után kézzel.
 
 ## B – A kapcsolási rajz közben rögzítendő
-- [ ] **STM32 lábkiosztás ellenőrzése STM32CubeMX-ben** (D54 – a javaslat a `MODULMAG-SPEC.md` 7. fejezetében):
-      CAN PA11/PA12, USART1 PC4/PC5, SWD, HSE, HW-ID PC0, VIN_SENSE PC1; LED-modulon TIM1 + TIM8, PA7 → ADC2 +
-      COMP2, DAC1 → COMP2 INM, COMP2 → TIM1/TIM8 BKIN2; relé PB12–PB15; bemeneti modul 16 bemenet + I²C1 PB8/PB9.
-      Ha a CubeMX ütközést jelez: a spec 7. fejezetének tartalékai.
+- [ ] **STM32 lábkiosztás ellenőrzése STM32CubeMX-ben – L433 (D78, D79; `hardware/cubemx/`):** CAN PA11/PA12,
+      USART3 PC4/PC5, SWD, HSE, HW-ID PC0, VBUS_SENSE PC1, HW_REV PB0, VIN_SENSE PB1; LED-modulon TIM1 (PA8–PA10) +
+      TIM15 (PB14/PB15) + TIM16 (PB8), PA3 → ADC1_IN8 + COMP2, DAC1 → COMP2 INM, COMP2 → TIM1/TIM15/TIM16 break;
+      relé PB12–PB15; bemeneti modul 16 bemenet + I²C1 PB8/PB9. A `gen/ellenorzes.py` a lábakat az L433-adatbázisból
+      már ellenőrzi (10-22) – a CubeMX-ben a belső kapcsolatokat kell megnézni.
 - [x] **Kvarc az STM32-re (HSE, 8 MHz)** – a CAN pontos órajelet kér. Rajz közben: a választott kvarc CL értékéből a
       két terhelőkondenzátor (`MODULMAG-SPEC.md` 3.2); a W5500 25 MHz-ese ugyanígy (`VEZERLO-SPEC.md` 4.3).
 - [x] **Teljesítménymérleg:** modulonként < 100 mA a 3,3 V-on (P78E05 1 A, az NCP1117-en ~0,17 W); vezérlő: 3,3 V
       ≈ 0,54 A (LMR36015, 1,5 A), 5 V ≤ 0,61 A (P78E05, 1 A), 24 V-on ≈ 0,25 A (`VEZERLO-SPEC.md` 11.); V_BUS worst
       case ≈ 0,3 A < TPS2553 min. 382 mA; 12 V a gate drivereknek (MC78L12).
-- [ ] **A 20 A-es út (LED-modul):** külső rétegen, rézvastagság (1 vagy 2 oz), sávszélesség (IPC-2221 kalkulátor),
+- [ ] **A 20 A-es út (LED-modul):** külső rétegen, **2 oz (D79)**, sávszélesség ~6 mm (IPC-2221, 10 °C),
       sorkapocs- és biztosítékértékek, a sönt helye. A nagyáramú út legyen rövid: sorkapocs → FET → sönt → sorkapocs.
-- [ ] **Védelem helye:** a modulmag logikai tápján Schottky (SS16) a fordított polaritás ellen + SMBJ28A +
+- [x] ~~**Védelem helye:**~~ → D71 (a modulmag a buszról jár) és D78 (N-FET a GND-ágban). Régi szöveg: a modulmag logikai tápján Schottky (SS16) a fordított polaritás ellen + SMBJ28A +
       **kötelező 47 µF-os elkó** + opcionális 10 Ω soros ellenállás (spec 2. fejezet, D57; a P78E05 bemenete max.
       36 V, a 24 V-os tápot ≤ 26 V-ra állítani); a 20 A-es úton is legyen-e (nagy P-FET, pl. a kézben lévő
       SUM110P08) – nyitott.
@@ -131,8 +143,8 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
       a pontos értéket a relé adatlapjából / a szabványból venni.
 - [ ] **Olcsó, de utólag már nem pótolható extrák:** tesztpontok (CAN_TX/RX, V_BUS, 3V3, 5V, 24 V, GND, INA-kimenet,
       DAC1 a PA4-en; a vezérlőn GPIO4/5/22/23), UART debug, **HW-típus-azonosító** (osztó a PC0-n – LED / relé /
-      bemeneti modul más-más sávban, spec 3.5), 24 V-os bemeneti feszültségmérés minden modulon és a vezérlőn, NTC a
-      FET-ek mellett (D30), állapot-LED, EMC-footprintek (D24).
+      bemeneti modul más-más sávban, spec 3.5), 24 V-os bemeneti feszültségmérés minden modulon és a vezérlőn, hőmérő (MCP9701A, D78) a
+      FET-ek között (D30), állapot-LED, EMC-footprintek (D24).
 - [x] **Vezérlőpanel** (`VEZERLO-SPEC.md`): C6-lábak (3.2), W5500 SPI + INT + RST, USB-C (GPIO12/13, 22 Ω), BOOT/RESET
       gomb, TCAN1044AV + sima 120 Ω-os lezárás jumperrel, V_BUS: P78E05 + TPS2553 (EN a 24 V-os ágról).
 - [ ] **Minden alkatrésznél legyen B-terv ugyanarra a footprintre** (a sample-ök bizonytalansága miatt) – ahol

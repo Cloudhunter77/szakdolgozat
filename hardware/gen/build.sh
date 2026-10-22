@@ -10,7 +10,7 @@ FP="flatpak run --command=sh org.kicad.KiCad"
 K="timeout 180 flatpak run --command=kicad-cli org.kicad.KiCad"
 mkdir -p "$G/kilib" "$H/out"
 for l in 74xx 74xGxx Connector_Audio Connector_Generic Connector Converter_DCDC Device Diode Interface_CAN_LIN Interface_Ethernet Jumper LED Regulator_Switching \
-         MCU_ST_STM32F3 power Power_Protection Regulator_Linear Relay RF_Module Switch Transistor_Array \
+         MCU_ST_STM32F3 MCU_ST_STM32L4 Sensor_Temperature power Power_Protection Regulator_Linear Relay RF_Module Switch Transistor_Array \
          Transistor_FET Driver_FET Amplifier_Current Power_Management; do
   [ -s "$G/kilib/$l.kicad_sym" ] || timeout 90 flatpak run --command=cat org.kicad.KiCad \
       /app/extensions/Library/symbols/$l.kicad_sym > "$G/kilib/$l.kicad_sym"

@@ -65,9 +65,9 @@ def stub(p, net, d, length=5.08):
 # =================== Modulmag, betáp, HW-ID ===================
 S.text('MODULMAG – táp a buszról (D71)', 15, 24, 1.5)
 S.text('24 V nincs a modulon; +5V a buszról', 15, 28.5)
-left = [('HW_ID', 'HW_ID')]
+left = [('HW_ID', 'HW_ID'), ('GND_BUS', 'GND_BUS')]
 right = [(p, f'IN{i}') for i, p in enumerate(PINS)]
-right += [('PB8', 'I2C_SCL'), ('PB9', 'I2C_SDA'), ('PC2', 'HDC_ALERT'), ('PC3', None), ('PC6', None), ('PC7', None), ('PC8', None)]
+right += [('PB8', 'I2C_SCL'), ('PB9', 'I2C_SDA'), ('PC2', 'HDC_ALERT'), ('PC3', None), ('PB1', None)]
 S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 25, 35, 35, 2.54 * (len(right) + 1), left=left, right=right)
 
 S.text('HW-ID: bemeneti modul = 3. sáv (0,66 V)', 12, 112)
@@ -83,6 +83,16 @@ S.wire((38.1, nh[1]), (43.18, nh[1]))
 S.label('HW_ID', (43.18, nh[1]), 0)
 S.junction(nh)
 S.junction((38.1, nh[1]))
+
+
+# busz-GND (D74): a GND_BUS (XH 2-es tű) a modul GND-jére 0R-on át – a nagyáramú modul hurokárama ne a buszon folyjon
+S.label('GND_BUS', (20, 150), 180)
+S.wire((20, 150), (20 + 2.54, 150))
+_pg = S.place('Device:R', 'R390', '0R', {'1': None, '2': None}, '1', (20 + 2.54, 150), r=90, fp='Resistor_SMD:R_1206_3216Metric',
+              props=P('D74: 0 Ω – a bemeneti modul teljesen a buszról jár, itt ellenállás nem lehet'))
+_q = _pg['2'][:2]
+S.wire(_q, (_q[0] + 2.54, _q[1]), (_q[0] + 2.54, _q[1] + 2.54))
+S.label('GND', (_q[0] + 2.54, _q[1] + 2.54), 270)
 
 # =================== 1. Érzékelő-táp ===================
 S.text('1. ÉRZÉKELŐ-TÁP: külön 3,3 V-os sín (U301, AP2112K) a busz 5 V-járól – egy zárlatos érzékelő nem indítja újra az MCU-t;', 80, 22, 1.5)
@@ -127,8 +137,8 @@ for k, gx in enumerate(groups, 1):
 S.text('5 V-os csoportban az érzékelő jele is 5 V lehet: az IN8–IN10 (PA8–PA10) 5 V-tűrő, a többi bemeneten az osztó-hely kell (R_s 2k2, R_le 3k9, R_fel ki)', 80, 84)
 
 # =================== 2. Bemenetek ===================
-S.text('2. BEMENETEK (× 16): PH 1 = táp (SUPk), 2 = GND, 3 = JEL → R_s → csomópont (R_fel a 3,3 V-ra, R_le (DNP) és C a GND-re) → MCU; ESD az MCU-oldalon (lent)', 80, 93, 1.5)
-S.text('Alap: R_s 1k + R_fel 10k + C 10n → érintkező, reed, gomb, open-drain (pl. AH1911), 3,3 V-os kimenet. 12/24 V-os jel: R_s 68k, R_le 10k, R_fel ki.', 80, 97.5)
+S.text('2. BEMENETEK (× 16): PH 1 = táp (SUPk), 2 = GND, 3 = JEL → R_fel a 3,3 V-ra (csatlakozó-oldal) → R_s → csomópont (R_le (DNP), C) → MCU; ESD az MCU-oldalon', 80, 93, 1.5)
+S.text('Alap: R_fel 10k + R_s 10k + C 10n (D75) – félrekötött 24 V-nál ~2 mA az ESD-tömbbe, a láb ~VBR-en (D81!). 12/24 V-os jel: R_fel ki, R_s 68k, R_le 10k; 5 V: R_s 2k2, R_le 3k9.', 80, 97.5)
 for n in range(16):
     k = n // 4 + 1
     col, row = n % 4, n // 4
@@ -143,19 +153,22 @@ for n in range(16):
     s1 = pj['1'][:2]
     S.wire(s1, (s1[0] + 2.54, s1[1]), (s1[0] + 2.54, s1[1] + 2.54))
     S.label(f'SUP{k}', (s1[0] + 2.54, s1[1] + 2.54), 270)
-    # JEL → R_s → csomópont → IN címke
-    S.wire((x0 + 7.62, yJ), (x0 + 12.7, yJ))
-    S.ref_pos[f'R{310 + n}'] = ((3.81, -5.08), (3.81, -2.54))   # r=90: jobbra igazítva, a GND-vezeték fölött
-    p = series('Device:R', f'R{310 + n}', '1k', (x0 + 12.7, yJ), R0603)
-    xp, xd, xc, xo = p[0] + 5.08, p[0] + 12.7, p[0] + 22.86, p[0] + 33.02
-    S.rail(yJ, [p[0], xp, xd, xc, xo])
-    S.place('Device:R', f'R{330 + n}', '10k', {'1': '+3V3', '2': None}, '2', (xp, yJ), fp=R0603)
+    # JEL → csomópont A (R_fel a 3,3 V-ra) → R_s 10k → csomópont B (R_le DNP, C) → IN címke (D75)
+    xa = x0 + 12.7
+    S.wire((x0 + 7.62, yJ), (xa, yJ), (xa + 5.08, yJ))
+    S.place('Device:R', f'R{330 + n}', '10k', {'1': '+3V3', '2': None}, '2', (xa, yJ), fp=R0603,
+            props=P('felhúzás a csatlakozó oldalán (D75); 12/24 V-os jelnél kivenni'))
+    S.junction((xa, yJ))
+    S.ref_pos[f'R{310 + n}'] = ((6.35, -5.08), (6.35, -2.54))   # r=90: jobbra, a felhúzás felirata mellett
+    p = series('Device:R', f'R{310 + n}', '10k', (xa + 5.08, yJ), R0603,
+               props=P('soros: 24 V-os félrekötésnél ~2 mA az ESD-tömbbe (U303–U306), a láb a letörési feszültségén – D75, D81; 12/24 V-os osztóhoz 68k'))
+    xd, xc, xo = p[0] + 7.62, p[0] + 17.78, p[0] + 27.94
+    S.rail(yJ, [p[0], xd, xc, xo])
     shunt('Device:R', f'R{350 + n}', 'DNP', (xd, yJ + 2.54), 'GND', R0603, dnp=True, props=P('osztó 5/12/24 V-os jelhez'))
     S.wire((xd, yJ), (xd, yJ + 2.54))
     shunt('Device:C', f'C{310 + n}', '10n', (xc, yJ + 2.54), 'GND', C0603)
     S.wire((xc, yJ), (xc, yJ + 2.54))
     S.label(f'IN{n}', (xo, yJ), 0)
-    S.junction((xp, yJ))
 
 # ESD: 4 × TPD4E05U06 (4 csatorna / IC), az MCU-oldalon
 ye = 248.92
@@ -178,7 +191,8 @@ S.text('külső érzékelőhöz (D66). Cím 0x44 (ADDR = ADDR1', 330, 109.5)
 S.text('= GND); a külső más címen. Az EP lebegve.', 330, 113)
 hx, hy = 350.52, 137.16
 ph = S.comp('modularis:HDC3020', 'U302', 'HDC3020DEFR', hx, hy, {'5': None, '6': None, '2': None, '7': None, '1': None, '4': None,
-            '3': None, '8': None}, nc=['9'])
+            '3': None, '8': None}, nc=['9'],
+            props=P('a ház belsejének klímáját méri (elosztószekrény), nem a szobáét – szobához a külső I²C-érzékelő (D77); cím 0x44, a külső ne legyen 0x44'))
 # táp: VDD (5) + RESET (6) → +3V3, ADDR (2) + ADDR1 (7) → GND
 v5, r6 = ph['5'][:2], ph['6'][:2]
 xv = v5[0] - 5.08
@@ -239,5 +253,5 @@ p = series('Device:Polyfuse', 'F305', 'PTC 0,2A', (347.98, 236.22), 'Fuse:Fuse_1
 stub(p, 'SUP_I2C', 0, 5.08)
 
 S.text('Generálva (hardware/gen/bemeneti-modul.py) – D44/D48/D51/D66 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 281, 1.3)
-S.write(OUT, date='2026-10-20')
+S.write(OUT, date='2026-10-22')
 print('ok', OUT)

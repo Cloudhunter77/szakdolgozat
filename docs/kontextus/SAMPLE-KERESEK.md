@@ -32,7 +32,7 @@ adnak mintát – ha elutasítják, 10-22-én megrendelni (TI-boltból vagy TME/
 | **ULN2803A** | relémeghajtó (kimaradt az AliExpress-rendelésből) | relémodul | 1 | 2 | megvenni (olcsó) |
 | **HDC3020** | hőmérséklet + páratartalom, I²C (WSON 2,5 × 2,5 mm) | bemeneti modul | 1 | 2 | bármilyen I²C-s T/RH szenzor |
 | ~~**TLV75533PDBVR**~~ (D66: már nem kell, a TI-kérelemben benne maradt) (TLV755P, 3,3 V, SOT-23-5) | 500 mA-es LDO – a bemeneti modul a V_BUS-ról jár (B változat) | bemeneti modul | 1 | 2 | bármilyen 3,3 V-os LDO SOT-23-5-ben; végszükségben a kézben lévő NCP1117ST33 (SOT-223 – más footprint, ejtés ≤ 1,1 V, a V_BUS-ról még elég) |
-| **LM74700QDBVRQ1** (LM74700-Q1, SOT-23-6) | ideális dióda-vezérlő – fordított polaritás elleni védelem a 20 A-es ágon (D65) | LED-modul | 1 | 2 | áthidalás dróttal (a Q201 S–D padjei között) |
+| **LM74700QDBVRQ1** (LM74700-Q1, SOT-23-6) | ideális dióda-vezérlő – fordított polaritás elleni védelem a 20 A-es ágon (D65) | LED-modul | 1 | 2 | áthidalás dróttal (a Q201 S–D padjei között) **– D78 óta nem kell** (N-FET a GND-ágban) |
 
 A **TPS2660** (eFuse) nem kell: a V_BUS-on nincs 24 V elleni védelem (D55, 2026-10-14).
 
@@ -96,6 +96,13 @@ A konzultáció után a táp központi lett (D71) → új alkatrészek, egyik si
 ## D73 (2026-10-21) – DIN-ház
 - **TME:** Gainta **D4MG** × 3 (vezérlő, LED-, relémodul) + 1 tartalék, ~4,4 €/db; a bemeneti modulhoz a **6 modulos** Gainta (86,5 × 103 mm-es NYÁK) – a pontos típust a TME-n kikeresni
 
+## D74–D77 (2026-10-21) – szakértői átnézés után
+- Vezérlő: **SMBJ6.0A** (SMB) × 1 a +5V_BUCK-ra, **SMF5.0A** (SOD-123F) × 1 a VUSB-re
+- Modulok: **1 Ω, 1206** × 1 (LED-modul, busz-GND), **0 Ω, 1206** × 2 (relé, bemeneti); a CAN-fojtó (pl. TDK ACT45B-510) csak
+  akkor, ha a mérés indokolja (DNP)
+- Bemeneti modul: a soros ellenállások 10 k-sak lettek → 0603 10 k bővebben (+16 db)
+- Relémodul: SCT-013-jack, ha később kell: CUI **SJ1-3513N** (a 3523N helyett)
+
 ## Már nem kell
 - **ISO1042BDWVR** a v1-hez (D71: közös föld) · a modulokon a **P78E05** és az **NCP1117** (D71) · TPS2553 (D71)
 - THVD1450, ADM2587E, LTC2862 – RS-485-höz kellettek, a CAN-busz kiváltotta.
@@ -127,8 +134,27 @@ A konzultáció után a táp központi lett (D71) → új alkatrészek, egyik si
 - **8 MHz-es kvarc** az STM32-khöz (HSE) – a terhelő kapacitást (CL) a kiválasztott kvarc adatlapjából, ehhez
   igazodik a két kondenzátor
 - Ferritgyöngy a VDDA-ra (kis DCR, ≤ 0,1 Ω) vagy 0 Ω
-- Passzívok, állapot-LED-ek (piros/zöld) + fényvezetők, NTC (a FET-ek mellé, D30)
+- Passzívok, állapot-LED-ek (piros/zöld) + fényvezetők; ~~NTC~~ → a kézben lévő MCP9701A (D78)
 - Iker érvéghüvelyek (két egyszínű szalag egy +24 V-os pólusán)
 - DIN-ház: gyári (pl. Camdenboss CNMB) vagy 3D-nyomtatott (D50); a relémodulhoz lángálló anyag
 - Stencil a NYÁK mellé (a gyártótól)
 - Tartalék, ha a TI elutasít: 3,3 V-os SN65HVD230-as CAN-breakout (a 120 Ω-os ellenállást levenni, D36)
+
+## D78–D79 (2026-10-22) – L433, SN65HVD230, polaritásvédelem
+**Kikerül a vásárlásból:**
+- 3 × TCAN1044AVDRQ1 a modulokra → a kézben lévő **SN65HVD230D** (86 db); a vezérlőé marad (TI-rendelés)
+- B360 (SMC) a vezérlő D1-ére (a D1 kikerült; a D3 B360-a marad)
+- NTC 10 k B3435 (LED-modul) → a kézben lévő **MCP9701A**
+- STM32F303RET6 – a modulokon **STM32L433RCT3** (75 db kézben); a 8 F303 tartalék
+
+**Új tétel:**
+- **NUCLEO-L433RC-P** (ST fejlesztőpanel, ~15 €) – Mouser/DigiKey, a TI-alkatrészekkel együtt
+- **BZT52C15** (15 V-os Zener, SOD-123) – 3 db + tartalék (a három GND-ági FET gate-je)
+- **25 MHz-es kvarc** a W5500-hoz – Hestore (Balázs döntése: kvarc, nem a kézben lévő oszcillátor)
+
+**Kézből (nem kell venni):** IRFR1205 (vezérlő Q1), IRFR120N (relé Q100), NTMFS5C604NL (LED Q201 – eddig is a BOM-ban),
+zöld 0603 LED (522 nm, HL-PST-1608U51GC, 150 db).
+
+**LDO (D80):** marad az **AP2112K-3.3** (2 db/modulkészlet: modulmag + bemeneti modul érzékelősín) – kínai kör vagy Hestore;
+a TC2117-nek tantál kellene (ESR 0,2–10 Ω). **Nyitott:** a relé 230 V-os kimenetének push-in sorkapcsa (típus a ház
+vállmagasságától).
