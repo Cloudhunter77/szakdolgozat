@@ -38,8 +38,8 @@ right = [(n, 'CT_SENSE' if n == 'PA0' else net) for n, net in right]   # D69: SC
 S.subsheet('modulmag', '../modulmag/modulmag.kicad_sch', 50, 40, 40, 2.54 * (len(right) + 1), left=left, right=right)
 
 pp = S.comp('Connector_Generic:Conn_01x02', 'J100', '24V IN', 33, 70, {'1': None, '2': None},
-            fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-5.0-H_1x02_P5.00mm_Horizontal',
-            props=P('push-in, a típus a DIN-ház vállától függ (D50)'))
+            fp='TerminalBlock_Degson:TerminalBlock_Degson_DG250-3.5-02P_1x02_P3.50mm_45Degree',
+            props=P('D84: Degson DG250-3.5-02P – rugós, nyomógombos, 8 A (UL), 0,2–1,5 mm²'))
 a1, a2 = pp['1'][:2], pp['2'][:2]
 S.wire(a1, (a1[0] - 5.08, a1[1]))
 S.label('+24V_IN', (a1[0] - 5.08, a1[1]), 180)

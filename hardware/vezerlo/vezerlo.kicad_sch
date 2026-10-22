@@ -12447,7 +12447,7 @@
 		)
 		(uuid "a8665190-fd6e-5d9a-9b21-1ff8194b0b96")
 	)
-	(text "W5500 hidegítés: AVDD-lábanként 100 nF; FB1 = HH-1M1608-121JT, ≥ 300 mA"
+	(text "W5500 hidegítés: AVDD-lábanként 100 nF; FB1 = BLM18EG221TN1D, 1 A (D84)"
 		(exclude_from_sim no)
 		(at 300 287.18 0)
 		(effects
@@ -12480,7 +12480,7 @@
 		)
 		(uuid "d6b1321b-ec4c-528b-8bf4-caf2d46c4260")
 	)
-	(text "3. ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U ugyanerre a footprintre, D63) – strapping: GPIO8 = 1, GPIO9 = 1 (BOOT gomb → 0), GPIO15"
+	(text "3. ESP32-C6-WROOM-1-N8 (D84; fém szekrénybe -1U ugyanerre a footprintre, D63) – strapping: GPIO8 = 1, GPIO9 = 1 (BOOT gomb → 0), GPIO15"
 		(exclude_from_sim no)
 		(at 20 166 0)
 		(effects
@@ -20083,7 +20083,7 @@
 				)
 			)
 		)
-		(property "Value" "120R@100MHz"
+		(property "Value" "BLM18EG221"
 			(at 330.2 299.72 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -20125,7 +20125,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "HH-1M1608-121JT, ≥ 300 mA"
+		(property "Megjegyzés" "D84: Murata BLM18EG221TN1D – 220 Ω @ 100 MHz, 1 A, 0,15 Ω"
 			(at 330.2 297.18 90)
 			(hide yes)
 			(show_name no)
@@ -26083,7 +26083,7 @@
 				)
 			)
 		)
-		(property "Value" "B360"
+		(property "Value" "SS56C"
 			(at 110.49 345.44 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -26125,7 +26125,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "60 V-os kell (túlfeszültségnél VIN_BUCK ~45 V, VUSB ~0 V)"
+		(property "Megjegyzés" "60 V-os kell (túlfeszültségnél VIN_BUCK ~45 V, VUSB ~0 V); SS56C: 60 V, 5 A, SMC (D84)"
 			(at 110.49 342.9 0)
 			(hide yes)
 			(show_name no)
@@ -27388,7 +27388,7 @@
 				)
 			)
 		)
-		(property "Value" "18p"
+		(property "Value" "12p"
 			(at 318.77 243.84 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -29769,7 +29769,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-3.5-H_1x02_P3.50mm_Horizontal"
+		(property "Footprint" "TerminalBlock_Degson:TerminalBlock_Degson_DG250-3.5-02P_1x02_P3.50mm_45Degree"
 			(at 27.94 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -29801,7 +29801,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "push-in sorkapocs – a típus a DIN-ház vállához (D50)"
+		(property "Megjegyzés" "D84: Degson DG250-3.5-02P – rugós, nyomógombos, 8 A (UL), 0,2–1,5 mm²; Hestore 100.441.02"
 			(at 27.94 55.88 0)
 			(hide yes)
 			(show_name no)
@@ -30987,7 +30987,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "ESP32-C6-WROOM-1-N16"
+		(property "Value" "ESP32-C6-WROOM-1-N8"
 			(at 106.68 198.12 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -32117,6 +32117,17 @@
 		)
 		(property "Description" ""
 			(at 330.2 237.49 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Megjegyzés" "D84: Kyocera CX3225FB25000F0FZZH1 – ±20 ppm, CL = 10 pF (Hestore 100.494.61)"
+			(at 330.2 237.49 90)
+			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -34620,7 +34631,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_Bourns_SRN6045TA"
+		(property "Footprint" "modularis:L_FerroCore_HPI0630"
 			(at 240.03 48.26 90)
 			(hide yes)
 			(show_name no)
@@ -34652,7 +34663,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "árnyékolt, Isat ≥ 3,5 A, ~14 mΩ (pl. SRN6045TA-8R2M) – 3 A-ig"
+		(property "Megjegyzés" "D84: HPI0630-8R2 – árnyékolt, Isat 3,8 A, 59,5 mΩ (2 A-en ~0,24 W)"
 			(at 240.03 48.26 90)
 			(hide yes)
 			(show_name no)
@@ -37959,7 +37970,7 @@
 				)
 			)
 		)
-		(property "Value" "18p"
+		(property "Value" "12p"
 			(at 318.77 236.22 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -38001,7 +38012,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "C = 2 × (CL − 3…5 pF) a megvett kvarcból"
+		(property "Megjegyzés" "C = 2 × (CL − 3…5 pF); a CX3225 CL-je 10 pF → 12 pF (D84)"
 			(at 318.77 233.68 90)
 			(hide yes)
 			(show_name no)
@@ -39865,7 +39876,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "4µ7/50V"
+		(property "Value" "10µ/50V"
 			(at 60.96 109.22 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -41371,7 +41382,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "BAT54WS"
+		(property "Value" "BAT54HT1G"
 			(at 361.95 147.32 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -43755,7 +43766,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_Coilcraft_XAL5030-XXX"
+		(property "Footprint" "modularis:L_FerroCore_HPI0630"
 			(at 128.27 114.3 90)
 			(hide yes)
 			(show_name no)
@@ -43787,7 +43798,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "árnyékolt, Isat ≥ 2,1 A (ideálisan ≥ 2,8 A), ~5 × 5 mm"
+		(property "Megjegyzés" "D84: HPI0630-6R8 – árnyékolt, Isat 4,9 A, 53 mΩ"
 			(at 128.27 114.3 90)
 			(hide yes)
 			(show_name no)
@@ -45133,7 +45144,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "20p"
+		(property "Value" "22p"
 			(at 149.86 121.92 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -45176,7 +45187,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "CFF, R3-mal párhuzamosan"
+		(property "Megjegyzés" "CFF, R3-mal párhuzamosan (20 pF helyett a kapható 22 pF – D84)"
 			(at 147.32 120.65 0)
 			(hide yes)
 			(show_name no)

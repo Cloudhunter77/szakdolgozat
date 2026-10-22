@@ -10228,7 +10228,7 @@
 				)
 			)
 		)
-		(property "Value" "ferrit ≤0,1Ω"
+		(property "Value" "BLM18EG221"
 			(at 107.95 227.33 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10270,7 +10270,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "vagy 0 Ω"
+		(property "Megjegyzés" "D84: Murata BLM18EG221TN1D (0,15 Ω – a VDDA pár mA-jén elhanyagolható); vagy 0 Ω"
 			(at 107.95 224.79 90)
 			(hide yes)
 			(show_name no)

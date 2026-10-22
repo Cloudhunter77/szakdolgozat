@@ -12,6 +12,8 @@ közben nézd át.
 - 2026-10-14: a V_BUS-t a kézben lévő **P78E05** adja (D59) · CAN transceiver: **TCAN1044AV** (D60).
 - 2026-10-22 (D78): fordított polaritás ellen **Q1 N-FET a GND-ágban** a D1 (B360) helyett – a közös föld miatt (D71) a + ági
   dióda nem véd: fordított bekötésnél a busz GND-érén át zárlat lenne · a táp-LED (D5) a `+5V`-ról jár (zöld, 522 nm).
+- 2026-10-22 (D84, legolcsóbb beszerzés): J1 Degson DG250 · L1/L3 FerroCore HPI0630 (saját footprint) · C40/C41 12 pF ·
+  D3 SS56C · D9 BAT54HT1G · FB1 BLM18EG221 · C4 10 µF · C9 22 pF · U4 **N8** · SW1/SW2 PTS525 (a TL3342-footprinten).
 - **2026-10-20 (D71, konzultáció után): központi 5 V.** A vezérlő adja az összes modul logikai tápját a buszon:
   **U2 LMR33630ADDA** (5,2 V, 3 A-es buck) → **U12 LM66200** (ideális dióda, az USB-vel VAGY-olva) → **U3 TPS259531**
   eFuse (2 A, 5,7 V-os vágás) → V_BUS. **USB-ről is van V_BUS** (1–2 modul teszteléséhez). Bemenet **12–26 V**.
@@ -21,11 +23,11 @@ közben nézd át.
 
 | Blokk | Fő alkatrész | Fejezet |
 |---|---|---|
-| 12–26 V-os bemenet, USB-táp külön ágon | F1 2 A, Q1 IRFR1205 a GND-ágban (D78), B360 (D3), SMBJ28A | 2.1 |
+| 12–26 V-os bemenet, USB-táp külön ágon | F1 2 A, Q1 IRFR1205 a GND-ágban (D78), SS56C (D3, D84), SMBJ28A | 2.1 |
 | 24 V (vagy USB) → 3,3 V (C6 + W5500) | LMR36015BRNXR (1 MHz, 1,5 A) | 2.2 |
 | 12–26 V → 5,2 V (busz-táp, CAN, RGB LED) + USB-VAGY | LMR33630ADDA + LM66200 (D71) | 2.3 |
 | V_BUS-eFuse, 2 A, 5,7 V-os vágás | TPS259531DSGR (D71) | 2.4 |
-| MCU + rádió | ESP32-C6-WROOM-1-N16 (fém szekrénybe: -1U, ugyanarra a footprintre) | 3 |
+| MCU + rádió | ESP32-C6-WROOM-1-N8 (D84; fém szekrénybe: -1U, ugyanarra a footprintre) | 3 |
 | Ethernet (opcionálisan beültetve) | W5500 + RJ45 MagJack + 25 MHz | 4 |
 | CAN | TCAN1044AVDRQ1 (±58 V; tartalék: MCP2562FD, TCAN330, SN65HVD230) | 5 |
 | Busz-oldal | 2 × JST-XH, ESD2CAN24-Q1, 120 Ω + jumper | 6 |
@@ -74,12 +76,12 @@ VUSB ─────────────────────────
 
 | Ref | Alkatrész | Érték / típus | Megjegyzés |
 |---|---|---|---|
-| J1 | push-in sorkapocs, 2 pólus | 24 V be | felső váll |
+| J1 | rugós sorkapocs, 2 pólus (Degson DG250-3.5-02P, 8 A – D84) | 24 V be | felső váll |
 | F1 | SMD-biztosíték | **2 A** (D71), ≥ 32 V, gyors (1206) | 2 A-es buszterhelésnél 24 V-on ~0,6 A, 12 V-on ~1,2 A (11. fejezet) |
 | Q1, R56, D12 | N-FET + gate-ellenállás + Zener | **IRFR1205** (55 V, ~27 mΩ, DPAK, kézben), 10 kΩ, BZT52C15 – D78 | a J1 GND-pólusa (`GND_IN`) és a lap GND-je között; helyes polaritásnál a gate a `+24V_P`-ről ~15 V-ot kap → vezet (12 V-on ~1,2 A → ~40 mW); fordítva zár, a GND-pólusra kerülő + nem jut a busz GND-jére. A korábbi D1 (B360) kikerült |
 | D2 | TVS | SMBJ28A | `+24V_P` → GND; ~45 V-on fog (az LMR36015 60 V-os) |
 | D8 | Schottky | SS16 (60 V, 1 A) | `+24V_P` → `VIN_BUCK`; az USB ne táplálja vissza a 24 V-os oldalt |
-| D3 | Schottky | **B360 / SS36** (60 V, 3 A) | `VUSB` → `VIN_BUCK`. **60 V-os kell**: túlfeszültségnél a `VIN_BUCK` ~45 V is lehet, miközben a `VUSB` ~0 V. A 3 A-es dióda 0,5 A-en kisebbet ejt (~0,4 V) → USB-ről is meglegyen az LMR36015 4,2 V-ja |
+| D3 | Schottky | **SS56C** (60 V, 5 A, SMC – D84) | `VUSB` → `VIN_BUCK`. **60 V-os kell**: túlfeszültségnél a `VIN_BUCK` ~45 V is lehet, miközben a `VUSB` ~0 V. A 3 A-es dióda 0,5 A-en kisebbet ejt (~0,4 V) → USB-ről is meglegyen az LMR36015 4,2 V-ja |
 | R7 | ellenállás | **0 Ω (D70)**; a 2512-es footprint marad, szükség esetén 10 Ω impulzusbíró | a C1-gyel RC-szűrő az U2 (LMR33630) elé, korlátozza a D7 áramát (D57 mintájára). Legrosszabb esetben ~0,16 A → 1,6 V, 0,26 W – ezért 2512 |
 | D7 | TVS | SMBJ28A | `+24V_F` → GND – az LMR33630 max. 36 V-ja előtt |
 | C1 | elektrolit – **kötelező** | 47 µF, 50 V, low-ESR, 105 °C | az R7-tel soros R-C a bemeneten → a betápkábel LC-lengését is csillapítja (D57) |
@@ -93,14 +95,14 @@ Lábkiosztása azonos az LMR36006 RNX-ével. A modulokon már nincs buck (D56), 
 
 | Ref | Alkatrész | Érték | Megjegyzés |
 |---|---|---|---|
-| C4 | kerámia | 4,7 µF, 50 V, X7R (1210) | `VIN_BUCK` |
+| C4 | kerámia | 10 µF, 50 V, X7R (1210) – D84 | `VIN_BUCK` |
 | C5, C6 | kerámia | 220 nF, 50 V (0603) | egy-egy a 2-es és a 10-es VIN-lábnál |
-| L1 | árnyékolt tekercs | **6,8 µH**, Isat ≥ 2,1 A (ideálisan ≥ 2,8 A), pl. 5 × 5 mm | TI 10-1. táblázat, 1 MHz / 3,3 V |
+| L1 | árnyékolt tekercs | **6,8 µH**, Isat ≥ 2,1 A – D84: FerroCore HPI0630-6R8 (Isat 4,9 A, 53 mΩ, 7,3 × 6,7 mm) | TI 10-1. táblázat, 1 MHz / 3,3 V |
 | C7 | kerámia | 100 nF, ≥ 16 V | BOOT (4) – SW (12) |
 | C8 | kerámia | 1 µF, 16 V | VCC (5) – AGND (6); más terhelés nem mehet rá |
 | R3 | ellenállás | 100 kΩ 1 % | RFBT: `3V3` → FB |
 | R4 | ellenállás | 43,2 kΩ 1 % | RFBB → 3,31 V (VFB = 1,0 V) |
-| C9 | kerámia | 20 pF | CFF, R3-mal párhuzamosan |
+| C9 | kerámia | 22 pF (D84) | CFF, R3-mal párhuzamosan |
 | C10–C12 | kerámia | 3 × 22 µF, 10 V, X7R (1206) | az adatlap 3 × 15 µF-ot ad névlegesnek; DC-előfeszítés után ~3 × 15 µF |
 
 Lábak (RNX): 1 PGND · 2 VIN · 3 NC → SW · 4 BOOT · 5 VCC · 6 AGND · 7 FB · 8 PG → **GND** · 9 EN → VIN ·
@@ -117,7 +119,7 @@ szerint (5 V, 400 kHz), a kimenet 5,2 V-ra hangolva, hogy 24 V mellett biztosan 
 | C53 | 220 nF, 50 V | CHF, közvetlenül a VIN (2) – PGND (1) lábaknál |
 | C54 | 1 µF, 16 V | VCC (6) – csak ez kerülhet rá |
 | C55 | 100 nF | BOOT (7) – SW (8) |
-| L3 | **8,2 µH**, Isat ≥ 3,5 A, ~14 mΩ, árnyékolt (pl. Bourns SRN6045TA-8R2M, 6 × 6 mm) | TI: 8 µH |
+| L3 | **8,2 µH**, Isat ≥ 3,5 A, árnyékolt – D84: FerroCore HPI0630-8R2 (Isat 3,8 A, 59,5 mΩ; 2 A-en ~0,24 W) | TI: 8 µH |
 | R54 / R55 | 100 kΩ / **23,7 kΩ** 1 % | VOUT = 1,0 V × (1 + 100/23,7) = **5,22 V** |
 | C56–C59 | 4 × 22 µF, 10 V, X7R (1206) | |
 | EN (3) | → VIN | UVLO belső |
@@ -156,7 +158,7 @@ TI eFuse, 2,7–18 V (abs. 20 V), 0,5–4 A, **5,7 V-os túlfeszültség-vágás
 - **D4:** TVS, 5 V standoff (SMF5.0A): `V_BUS` → GND, a csatlakozók közelében.
 - **R13, R14, C14:** 100 kΩ / 22 kΩ, 100 nF: `V_BUS` → **GPIO1** (VBUS_SENSE, ADC1_CH1): 5,2 V → 0,94 V.
 
-## 3. ESP32-C6-WROOM-1-N16 (U4)
+## 3. ESP32-C6-WROOM-1-N8 (U4; D84 – a firmware 4 MB-os flashre van állítva)
 
 ### 3.1 Táp, EN, strapping-lábak
 - **3V3 (2):** 22 µF + 100 nF közvetlenül a lábnál (Espressif periféria-kapcsolás).
@@ -249,7 +251,7 @@ TI eFuse, 2,7–18 V (abs. 20 V), 0,5–4 A, **5,7 V-os túlfeszültség-vágás
 | 38–42 | RSVD | **nyitva** (az adatlap v1.0.2 óta nem GND!) |
 | 43, 44, 45 | PMODE2/1/0 | nyitva (belső felhúzás → 111 = minden mód, auto-negotiation); opcionális lehúzó-footprintek |
 
-- **FB1:** ferritgyöngy `3V3` → `3V3A` (WIZnet: HH-1M1608-121JT, 120 Ω @ 100 MHz; ≥ 300 mA, kis DCR).
+- **FB1:** ferritgyöngy `3V3` → `3V3A` (WIZnet: HH-1M1608-121JT, 120 Ω @ 100 MHz; D84: BLM18EG221TN1D, 220 Ω, 1 A).
 - Hidegítés: 7 × 100 nF (AVDD-k + VDD) + 10 µF a `3V3`-on + 10 µF a `3V3A`-n.
 - Áramfelvétel ~132 mA (100 Mbit adás). Nincs auto-MDIX – ma már szinte minden switch elintézi.
 
@@ -280,7 +282,8 @@ lábszám a választott alkatrészből jön.
 
 ### 4.3 Kvarc
 - **Y1:** 25 MHz, ±30 ppm (3225). A W5500 adatlapja CL = 18 pF-os kvarcot ír; a WIZnet-referencia 2 × 18 pF-ot
-  használ. Általános szabály: C = 2 × (CL − 3…5 pF) – a megvett kvarc CL-jéből számold.
+  használ. Általános szabály: C = 2 × (CL − 3…5 pF) – a megvett kvarc CL-jéből számold. **D84:** Kyocera CX3225FB25000F0FZZH1
+  (CL = 10 pF, ESR ≤ 30 Ω, max. 100 µW) → C40/C41 = **12 pF**.
 - Opcionális: 1 MΩ a kvarccal párhuzamosan (a WIZnet-referencián szerepel) – footprint, alapból nem beültetve.
 - A W5500 lábai mellett, alatta csak GND.
 
@@ -405,14 +408,14 @@ gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UAR
 | `VUSB` (csak USB) | C6-ág ~0,48 A + V_BUS (amennyit a port ad) | a port korlátozza |
 
 ## 12. Darabjegyzék (vezérlő)
-U1 LMR36015BRNXR · U2 LMR33630ADDA · U12 LM66200DRLR · U3 TPS259531DSGR · L3 8,2 µH (≥ 3,5 A) · U4 ESP32-C6-WROOM-1-N16 (vagy -1U) · U5 W5500 ·
-U6 TCAN1044AVDRQ1 · U7 ESD2CAN24-Q1 · U8 USBLC6-2SC6 · U9 74HCT14D (kézben) · Y1 25 MHz · L1 6,8 µH (≥ 2,1 A) ·
-FB1 ferrit 120 Ω @ 100 MHz · F1 2 A / 32 V · D8 SS16 · Q1 IRFR1205 + R56 10 k + D12 BZT52C15 (D78) · D3 B360 / SS36 · D2, D7 SMBJ28A · D4 SMF5.0A ·
-D9 BAT54 · D5 zöld LED · D6 WS2812B-V5 (vagy WS2812C-2020) · J1 2 pólusú push-in · J2/J3 B4B-XH-A · J4 USB-C
+U1 LMR36015BRNXR · U2 LMR33630ADDA · U12 LM66200DRLR · U3 TPS259531DSGR · L3 HPI0630-8R2 · U4 ESP32-C6-WROOM-1-N8 (vagy -1U) · U5 W5500 ·
+U6 TCAN1044AVDRQ1 · U7 ESD2CAN24-Q1 · U8 USBLC6-2SC6 · U9 74HCT14D (kézben) · Y1 25 MHz (CX3225, CL 10 pF) · L1 HPI0630-6R8 ·
+FB1 BLM18EG221 · F1 2 A / 32 V · D8 SS16 · Q1 IRFR1205 + R56 10 k + D12 BZT52C15 (D78) · D3 SS56C · D2, D7 SMBJ28A · D4 SMF5.0A ·
+D9 BAT54HT1G · D5 zöld LED · D6 WS2812B-V5 (vagy WS2812C-2020) · J1 Degson DG250-3.5-02P · J2/J3 B4B-XH-A · J4 USB-C
 (16 tűs) · J5 1 × 6 tüskesor · J6 MagJack (J1B1211CCD / HR911105A) · JP1 2 tűs + jumper · JP2/JP3 3 padas
-forrasztható jumper · SW1/SW2 nyomógomb · kondenzátorok: 47 µF 50 V elektrolit (kötelező), 10 µF 50 V (1210),
-4,7 µF 50 V (1210), 220 nF 50 V (2), 22 µF 10 V (4 + 1 a C6-nál), 100 nF (~18), 1 µF (5), 10 µF 16 V (3),
-4,7 µF (TOCAP), 10 nF (2), 6,8 nF (2), 22 nF, 20 pF, 2 × C_kvarc, 1 nF / 2 kV · ellenállások: 470 k, 150 k,
+forrasztható jumper · SW1/SW2 PTS525S5215A · kondenzátorok: 47 µF 50 V elektrolit (kötelező), 10 µF 50 V (1210, 2),
+220 nF 50 V (2), 22 µF 10 V (4 + 1 a C6-nál), 100 nF (~18), 1 µF (5), 10 µF 16 V (3),
+4,7 µF (TOCAP), 10 nF (2), 6,8 nF (2), 22 nF, 22 pF, 2 × 12 pF (kvarc), 1 nF / 2 kV · ellenállások: 470 k, 150 k,
 100 k (2), 61,9 k, 47 k, 43,2 k, 22 k, 12,4 k, 10 k (~11), 5,1 k (2), 2,2 k (2), 499, 330 (2), 120, 49,9 (4), 33,
 22 (2), 10 Ω (2512, impulzusbíró), 10 Ω (0603, 1 %), 0 Ω (4–5).
 

@@ -109,8 +109,8 @@ S.text('1. TÁP (12–26 V): +24V_IN → F1 → +24V_P (Q1 a GND-ágban, D78) �
 S.text('D71: központi 5 V a buszra (2 A); USB-ről is: az U12 a nagyobbat választja (buck 5,2 V > USB). D57: a C1 elkó kötelező; a tápot ≤ 26 V-ra (az U2 max. 36 V)', 20, 27, 1.4)
 Y = 45.72
 pj = S.comp('Connector_Generic:Conn_01x02', 'J1', '24V IN', 27.94, 55.88, {'1': None, '2': None},
-            fp='TerminalBlock_Phoenix:TerminalBlock_Phoenix_PT-1,5-2-3.5-H_1x02_P3.50mm_Horizontal',
-            props=P('push-in sorkapocs – a típus a DIN-ház vállához (D50)'))
+            fp='TerminalBlock_Degson:TerminalBlock_Degson_DG250-3.5-02P_1x02_P3.50mm_45Degree',
+            props=P('D84: Degson DG250-3.5-02P – rugós, nyomógombos, 8 A (UL), 0,2–1,5 mm²; Hestore 100.441.02'))
 a1, a2 = pj['1'][:2], pj['2'][:2]
 x0 = a1[0] - 5.08
 S.wire(a1, (x0, a1[1]), (x0, Y))
@@ -182,7 +182,7 @@ S.wire(p, (xr + 15.24, Y - 7.62), (xr + 15.24, Y + 2.54))
 S.wire(pu2['8'][:2], (xr + 20.32, Y + 2.54))
 S.junction((xr + 15.24, Y + 2.54))
 pL3 = S.place('Device:L', 'L3', '8,2µH', {'1': None, '2': None}, '1', (xr + 20.32, Y + 2.54), r=90,
-              fp='Inductor_SMD:L_Bourns_SRN6045TA', props=P('árnyékolt, Isat ≥ 3,5 A, ~14 mΩ (pl. SRN6045TA-8R2M) – 3 A-ig'))
+              fp='modularis:L_FerroCore_HPI0630', props=P('D84: HPI0630-8R2 – árnyékolt, Isat 3,8 A, 59,5 mΩ (2 A-en ~0,24 W)'))
 xo5 = pL3['2'][0]
 ys5 = Y + 2.54
 c5 = [xo5 + 7.62, xo5 + 17.78, xo5 + 27.94, xo5 + 38.1, xo5 + 48.26]
@@ -240,7 +240,7 @@ S.junction((xv, vin[0][1]))
 S.junction((xv, vin[1][1]))
 S.rail(yb, [xv - 35.56, xv - 27.94, xv - 17.78, xv - 7.62, xv])
 S.label('VIN_BUCK', (xv - 35.56, yb), 180)
-hang(xv - 27.94, yb, 'C4', '4µ7/50V', fp=C1210)
+hang(xv - 27.94, yb, 'C4', '10µ/50V', fp=C1210)
 hang(xv - 17.78, yb, 'C5', '220n/50V', props=P('a 2-es VIN-lábnál'))
 hang(xv - 7.62, yb, 'C6', '220n/50V', props=P('a 10-es VIN-lábnál'))
 vcc = pl['5'][:2]
@@ -268,7 +268,7 @@ S.wire(p, (p[0] + 2.54, yc7), (p[0] + 2.54, sw1[1]), (xs, sw1[1]))
 S.wire((xs, sw2[1]), (xs + 7.62, sw2[1]))
 S.junction((xs, sw2[1]))
 pL = S.place('Device:L', 'L1', '6,8µH', {'1': None, '2': None}, '1', (xs + 7.62, sw2[1]), r=90,
-             fp='Inductor_SMD:L_Coilcraft_XAL5030-XXX', props=P('árnyékolt, Isat ≥ 2,1 A (ideálisan ≥ 2,8 A), ~5 × 5 mm'))
+             fp='modularis:L_FerroCore_HPI0630', props=P('D84: HPI0630-6R8 – árnyékolt, Isat 4,9 A, 53 mΩ'))
 ysw = sw2[1]
 xo = pL['2'][0]
 fb = [xo + 7.62, xo + 15.24, xo + 25.4, xo + 33.02, xo + 40.64, xo + 48.26]
@@ -276,7 +276,7 @@ S.rail(ysw, [xo] + fb)
 S.wire((fb[5], ysw), (fb[5], ysw - 5.08))
 up('+3V3', (fb[5], ysw - 5.08))
 hang(fb[0], ysw, 'R3', '100k 1%', bottom_net=None, lib='Device:R', fp=R0603)
-hang(fb[1], ysw, 'C9', '20p', bottom_net=None, props=P('CFF, R3-mal párhuzamosan'))
+hang(fb[1], ysw, 'C9', '22p', bottom_net=None, props=P('CFF, R3-mal párhuzamosan (20 pF helyett a kapható 22 pF – D84)'))
 nfb = (fb[0], ysw + 12.7)
 S.wire((fb[0], ysw + 10.16), nfb, (fb[1], nfb[1]), (fb[1], ysw + 10.16))
 S.junction(nfb)
@@ -316,7 +316,7 @@ S.rail(ne[1], [p[0], ne[0] - 15.24, ne[0]])
 hang(ne[0] - 15.24, ne[1], 'R11', '47k', lib='Device:R', fp=R0603)
 S.wire(ne, (ne[0], ne[1] + 2.54))
 S.junction(ne)
-S.place('Device:D_Schottky', 'D9', 'BAT54WS', {'1': None, '2': None}, '2', (ne[0], ne[1] + 2.54), r=90, fp='Diode_SMD:D_SOD-323',
+S.place('Device:D_Schottky', 'D9', 'BAT54HT1G', {'1': None, '2': None}, '2', (ne[0], ne[1] + 2.54), r=90, fp='Diode_SMD:D_SOD-323',
         props=P('anód az EN-en, katód a GPIO20-on'))
 stub((ne[0], ne[1] + 10.16), 'VBUS_EN', 270, 2.54)
 # dVdt (1) → C60 22 nF → ~1,9 V/ms: 5 V 2,7 ms alatt, 200 µF buszkapacitáson ~0,4 A bekapcsolási áram
@@ -353,10 +353,10 @@ S.text('VBUS_SENSE: 5 V → 0,9 V (GPIO1)', vb[4] - 5, yv + 36)
 # =====================================================================================================
 # 3. ESP32-C6-WROOM-1
 # =====================================================================================================
-S.text('3. ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U ugyanerre a footprintre, D63) – strapping: GPIO8 = 1, GPIO9 = 1 (BOOT gomb → 0), GPIO15', 20, 166, 2)
+S.text('3. ESP32-C6-WROOM-1-N8 (D84; fém szekrénybe -1U ugyanerre a footprintre, D63) – strapping: GPIO8 = 1, GPIO9 = 1 (BOOT gomb → 0), GPIO15', 20, 166, 2)
 EX, EY = 132.08, 233.68
 nets = {str(i): None for i in range(1, 30) if i != 22}
-pe = S.comp('modularis:ESP32-C6-WROOM-1', 'U4', 'ESP32-C6-WROOM-1-N16', EX, EY, nets, nc=['22'], fp='modularis:ESP32-C6-WROOM-1')
+pe = S.comp('modularis:ESP32-C6-WROOM-1', 'U4', 'ESP32-C6-WROOM-1-N8', EX, EY, nets, nc=['22'], fp='modularis:ESP32-C6-WROOM-1')
 v = pe['2'][:2]
 yt = v[1] - 25.4
 S.wire(v, (v[0], yt))
@@ -442,7 +442,8 @@ stub(pw['3'][:2], 'GND', 270, 2.54)
 xi, xq = pw['30'][:2], pw['31'][:2]
 xc = xi[0] - 20.32
 pyx = S.place('Device:Crystal_GND24', 'Y1', '25MHz ±30ppm', {'1': None, '3': None, '2': 'GND', '4': 'GND'}, '1',
-              (xc, xi[1] - 2.54), r=270, fp='Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm')
+              (xc, xi[1] - 2.54), r=270, fp='Crystal:Crystal_SMD_3225-4Pin_3.2x2.5mm',
+              props=P('D84: Kyocera CX3225FB25000F0FZZH1 – ±20 ppm, CL = 10 pF (Hestore 100.494.61)'))
 y1t, y1b = pyx['1'][:2], pyx['3'][:2]
 # XTAL25_I = Y1.1, XTAL25_O = Y1.3 → a felső lábról a 30-as, az alsóról a 31-es lábra
 pin_i = pyx['1'][:2]
@@ -454,9 +455,9 @@ pr47 = S.place('Device:R', 'R47', '1M', {'1': None, '2': None}, '1', (pin_i[0] +
 S.wire(pr47['2'][:2], (pin_i[0] + 3.81, pin_o[1]))
 S.junction((pin_i[0] + 3.81, pin_i[1]))
 S.junction((pin_i[0] + 3.81, pin_o[1]))
-for pin_, ref, nt in ((pin_i, 'C40', 'C = 2 × (CL − 3…5 pF) a megvett kvarcból'), (pin_o, 'C41', None)):
+for pin_, ref, nt in ((pin_i, 'C40', 'C = 2 × (CL − 3…5 pF); a CX3225 CL-je 10 pF → 12 pF (D84)'), (pin_o, 'C41', None)):
     S.wire(pin_, (pin_[0] - 7.62, pin_[1]))
-    pc_ = S.place('Device:C', ref, '18p', {'1': None, '2': None}, '1', (pin_[0] - 7.62, pin_[1]), r=270, fp=C0603, props=P(nt))
+    pc_ = S.place('Device:C', ref, '12p', {'1': None, '2': None}, '1', (pin_[0] - 7.62, pin_[1]), r=270, fp=C0603, props=P(nt))
     e = pc_['2'][:2]
     S.wire(e, (e[0] - 2.54, e[1]), (e[0] - 2.54, e[1] + 2.54))
     down('GND', (e[0] - 2.54, e[1] + 2.54))
@@ -533,13 +534,13 @@ S.place('Device:C', 'C20', '1n/2kV', {'1': None, '2': 'GND'}, '1', (sh[0], sh[1]
         props=P('WIZnet-referencia C16: a MagJack árnyékolása és a Bob Smith-lezárás (8-as láb) → 1 nF / 2 kV → GND'))
 # W5500 hidegítés: +3V3 → FB1 → +3V3A
 hy = 297.18
-S.text('W5500 hidegítés: AVDD-lábanként 100 nF; FB1 = HH-1M1608-121JT, ≥ 300 mA', 300, hy - 10)
+S.text('W5500 hidegítés: AVDD-lábanként 100 nF; FB1 = BLM18EG221TN1D, 1 A (D84)', 300, hy - 10)
 up('+3V3', (304.8, hy))
 S.rail(hy, [304.8, 312.42, 320.04, 327.66])
 hang(312.42, hy, 'C37', '100n', props=P('VDD (28)'))
 hang(320.04, hy, 'C38', '10µ', fp=C0805)
-p = series('Device:FerriteBead_Small', 'FB1', '120R@100MHz', (327.66, hy), 'Inductor_SMD:L_0603_1608Metric',
-           props=P('HH-1M1608-121JT, ≥ 300 mA'))
+p = series('Device:FerriteBead_Small', 'FB1', 'BLM18EG221', (327.66, hy), 'Inductor_SMD:L_0603_1608Metric',
+           props=P('D84: Murata BLM18EG221TN1D – 220 Ω @ 100 MHz, 1 A, 0,15 Ω'))
 xs_ = [p[0] + 7.62 * (i + 1) for i in range(8)]
 S.rail(hy, [p[0]] + xs_)
 for i, x in enumerate(xs_[:6]):
@@ -571,8 +572,8 @@ hang(vx[1], yu, 'R30', '2,2k', lib='Device:R', fp=R0603, props=P('levezető: a D
 hang(vx[2], yu, 'C21', '1µ')
 S.wire((vx[3], yu), (vx[3], yu - 5.08))
 S.label('VUSB', (vx[3], yu - 5.08), 90)
-p = series('Device:D_Schottky', 'D3', 'B360', (vx[4], yu), 'Diode_SMD:D_SMC', r=180, lpin='2', rpin='1',
-           props=P('60 V-os kell (túlfeszültségnél VIN_BUCK ~45 V, VUSB ~0 V)'))
+p = series('Device:D_Schottky', 'D3', 'SS56C', (vx[4], yu), 'Diode_SMD:D_SMC', r=180, lpin='2', rpin='1',
+           props=P('60 V-os kell (túlfeszültségnél VIN_BUCK ~45 V, VUSB ~0 V); SS56C: 60 V, 5 A, SMC (D84)'))
 stub(p, 'VIN_BUCK', 0, 5.08)
 # CC1 / CC2 → 5,1 kΩ a GND-re
 for pin, ref, dx in (('A5', 'R28', 15.24), ('B5', 'R29', 7.62)):

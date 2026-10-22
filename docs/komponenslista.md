@@ -8,7 +8,7 @@ A modulmag egy közös hierarchikus lap: a LED-, a relé- és a bemeneti modulon
 
 Jelölések: DNP = az alkatrész helye (footprintje) a NYÁK-on van, de alapból nincs beültetve (későbbi bővítés vagy mérés utáni hangolás). A „D” számok (pl. D71) a döntésnapló bejegyzéseire utalnak.
 
-Állapot: 2026-10-22, a D78–D80 döntésekkel (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V). A lista a kapcsolási rajzok mostani állapotát írja le; a NYÁK-ok huzalozása még hátra van.
+Állapot: 2026-10-22, a D78–D84 döntésekkel (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V; a sorkapcsok, tekercsek és néhány passzív a beszerezhető típusokra igazítva). A lista a kapcsolási rajzok mostani állapotát írja le; a NYÁK-ok huzalozása még hátra van.
 
 # 1. Modulmag (közös lap: a LED-, a relé- és a bemeneti modulon azonos)
 
@@ -34,7 +34,7 @@ C4–C8 (100 nF, 5 db): a mikrovezérlő egy-egy VDD-lábánál (1, 19, 32, 48, 
 
 C13 (4,7 µF): a 3,3 V-os sín közös puffer-kondenzátora a mikrovezérlő mellett (az ST ajánlása).
 
-FB1 (ferritgyöngy vagy 0 Ω): a 3,3 V-ból leválasztja az analóg tápot (VDDA, +3V3A), hogy a digitális zaj ne jusson az ADC-be és a DAC-ba.
+FB1 (ferritgyöngy, BLM18EG221, vagy 0 Ω): a 3,3 V-ból leválasztja az analóg tápot (VDDA, +3V3A), hogy a digitális zaj ne jusson az ADC-be és a DAC-ba.
 
 C14 (1 µF), C15 (10 nF): az analóg táp (VDDA) szűrése a ferrit után – a nagyobb a kisfrekvenciás, a kisebb a nagyfrekvenciás zajt viszi le.
 
@@ -112,7 +112,7 @@ JP1 (jumper) + R5 (120 Ω): a CAN-busz lezárása – csak a lánc két végén 
 
 ### Bemenet és védelem (12–26 V)
 
-J1 (2 pólusú push-in sorkapocs): a 12–26 V-os betáp.
+J1 (2 pólusú rugós sorkapocs, Degson DG250, 8 A): a 12–26 V-os betáp.
 
 F1 (2 A biztosíték): zárlat esetén a tápot leválasztja (12 V-on és teljes 2 A-es buszterhelésnél a bemeneti áram ~1,2 A).
 
@@ -128,23 +128,23 @@ TP1 (mérőpont, +24V_P): méréshez.
 
 D8 (SS16, Schottky): a 24 V-os ágat köti a 3,3 V-os buck bemenetére, és megakadályozza, hogy az USB-táp visszatápláljon a 24 V-os oldalra.
 
-D3 (B360, Schottky): USB-ről (24 V nélkül) is táplálja a 3,3 V-os buckot – így a vezérlő USB-ről önállóan is működik.
+D3 (SS56C, Schottky, 60 V / 5 A): USB-ről (24 V nélkül) is táplálja a 3,3 V-os buckot – így a vezérlő USB-ről önállóan is működik.
 
 U1 (LMR36015, kapcsolóüzemű feszültségcsökkentő, 1 MHz): a 12–26 V-ból 3,3 V-ot állít elő az ESP32-nek, a W5500-nak és a LoRa-modulnak. Kapcsolóüzemű, mert lineáris stabilizátoron 24 V → 3,3 V-nál ~0,5 A-en több watt hő keletkezne.
 
-C4 (4,7 µF / 50 V), C5, C6 (220 nF / 50 V): a buck bemeneti kondenzátorai – a kisebbek közvetlenül a VIN-lábaknál a nagyfrekvenciás kapcsolási áramot adják.
+C4 (10 µF / 50 V), C5, C6 (220 nF / 50 V): a buck bemeneti kondenzátorai – a kisebbek közvetlenül a VIN-lábaknál a nagyfrekvenciás kapcsolási áramot adják.
 
 C7 (100 nF): bootstrap-kondenzátor – a buck felső kapcsolótranzisztorának gate-meghajtásához kell.
 
 C8 (1 µF): a buck belső segédtápjának (VCC) kondenzátora.
 
-L1 (6,8 µH, árnyékolt tekercs): a buck energiatároló tekercse.
+L1 (6,8 µH, árnyékolt tekercs, HPI0630-6R8): a buck energiatároló tekercse.
 
 C10–C12 (22 µF, 3 db): a 3,3 V-os kimenet szűrése – a hullámosságot és a terhelésugrásokat (Wi-Fi-adás) kezelik.
 
 R3 (100 k), R4 (43,2 k): visszacsatoló osztó – ez állítja be a 3,31 V-os kimenetet.
 
-C9 (20 pF): előrecsatoló kondenzátor (CFF) – gyorsabb, stabilabb szabályozást ad.
+C9 (22 pF): előrecsatoló kondenzátor (CFF) – gyorsabb, stabilabb szabályozást ad.
 
 TP3 (mérőpont, +3V3).
 
@@ -164,7 +164,7 @@ C54 (1 µF): a buck belső segédtápja (VCC).
 
 C55 (100 nF): bootstrap-kondenzátor.
 
-L3 (8,2 µH, árnyékolt tekercs): a buck energiatároló tekercse.
+L3 (8,2 µH, árnyékolt tekercs, HPI0630-8R2, Isat 3,8 A): a buck energiatároló tekercse.
 
 C56–C59 (22 µF, 4 db): az 5 V-os kimenet szűrése (a TI ajánlása szerint).
 
@@ -186,7 +186,7 @@ U3 (TPS259531, elektronikus biztosíték): a buszra menő 5 V-ot kapcsolja és v
 
 R10 (100 k), R11 (47 k): az eFuse engedélyező osztója a +5V-ról – bármelyik tápforrásról magától bekapcsol.
 
-D9 (BAT54WS, Schottky): a GPIO20 ezen át le tudja húzni az engedélyező lábat – a firmware szoftveresen lekapcsolhatja a buszt (pl. hibánál újraindításhoz).
+D9 (BAT54HT1G, Schottky): a GPIO20 ezen át le tudja húzni az engedélyező lábat – a firmware szoftveresen lekapcsolhatja a buszt (pl. hibánál újraindításhoz).
 
 C60 (22 nF): a felfutási sebességet állítja be (~2,7 ms) – így a modulok kondenzátorai nem okoznak nagy bekapcsolási áramlökést.
 
@@ -204,7 +204,7 @@ TP4 (mérőpont, V_BUS).
 
 ## ESP32-C6
 
-U4 (ESP32-C6-WROOM-1-N16): a vezérlő processzora rádiókkal (Wi-Fi, Thread/802.15.4, BLE) – Matter-hídként kapcsolja össze a modulokat a Home Assistanttel.
+U4 (ESP32-C6-WROOM-1-N8, 8 MB flash): a vezérlő processzora rádiókkal (Wi-Fi, Thread/802.15.4, BLE) – Matter-hídként kapcsolja össze a modulokat a Home Assistanttel.
 
 C26 (22 µF), C27 (100 nF): a modul 3,3 V-os lábának hidegítése (a Wi-Fi-adás impulzusszerű áramot vesz).
 
@@ -234,7 +234,7 @@ R33 (0 Ω, DNP): a J5 referenciatápja – alapból nincs beültetve, hogy a sor
 
 U5 (W5500, Ethernet-vezérlő SPI-n): az ESP32-C6-ban nincs Ethernet-MAC, ezért egy külső chip adja a vezetékes hálózatot (Thread mellett is használható).
 
-Y1 (25 MHz kvarc, ±30 ppm), C40, C41 (18 pF): a W5500 órajele és terhelőkondenzátorai.
+Y1 (25 MHz kvarc, Kyocera CX3225, CL = 10 pF), C40, C41 (12 pF): a W5500 órajele és terhelőkondenzátorai – a kondenzátor értéke a kvarc terhelő kapacitásából: C = 2 × (CL − 3…5 pF).
 
 R47 (1 M, DNP): a kvarccal párhuzamos ellenállás a WIZnet-referencia szerint – alapból nem kell.
 
@@ -246,7 +246,7 @@ R48–R50 (DNP): a PHY üzemmódját rögzítő lehúzások – nyitva auto-nego
 
 R36, R37, R38 (10 k): a W5500 CS, RST és INT vonalainak felhúzása – meghatározott állapot indításkor (a chip ne válaszoljon véletlenül a közös SPI-buszon).
 
-FB1 (ferritgyöngy, 120 Ω @ 100 MHz): a W5500 analóg tápját (+3V3A) leválasztja a digitális 3,3 V-ról.
+FB1 (ferritgyöngy, BLM18EG221, 220 Ω @ 100 MHz): a W5500 analóg tápját (+3V3A) leválasztja a digitális 3,3 V-ról.
 
 C31–C36 (100 nF, 6 db): az analóg táplábak (AVDD) hidegítése, lábanként.
 
@@ -346,7 +346,7 @@ R52 (4,7 k, DNP): felhúzás 1-wire érzékelőhöz.
 
 R53 (DNP): lehúzás vagy osztó alsó tagja, ha analóg jel jön.
 
-# 3. LED-modul (6 csatorna × 10 A, összesen 20 A)
+# 3. LED-modul (6 csatorna × 10 A, összesen 15 A)
 
 ## Modulmag
 
@@ -358,13 +358,13 @@ R201 (10 k, 1 %), R202 (715 Ω, 1 %), C201 (100 nF): HW-ID – a feszültségosz
 
 R290 (150 k), R291 (10 k), C290 (100 nF): a bejövő 12–26 V mérése a főbiztosíték előtt (24 V → 1,5 V a PB1-re) – a firmware ellenőrzi, hogy van-e táp, és hogy a szalag feszültségéhez illik-e.
 
-R293 (1 Ω, 1206): a busz GND-ér és a modul GND-je közötti ellenállás (D74). A 20 A-es visszatérő áram így nem a vékony busz-kábelen folyik vissza, hanem a saját vastag GND-vezetékén (legfeljebb ~0,2 A jut a buszra).
+R293 (1 Ω, 1206): a busz GND-ér és a modul GND-je közötti ellenállás (D74). A nagy (akár 15 A-es) visszatérő áram így nem a vékony busz-kábelen folyik vissza, hanem a saját vastag GND-vezetékén (legfeljebb ~0,2 A jut a buszra).
 
 ## Betáp és a 24 V-os sín
 
-J201 (2 pólusú csavaros sorkapocs, MKDS 3, 24 A): a LED-szalagok 12–26 V-os, 20 A-es betápja.
+J201 (2 pólusú csavaros sorkapocs, Degson DG128, 15 A UL / 18 A IEC): a LED-szalagok 12–26 V-os betápja – a modul össz-árama ehhez igazodik (15 A).
 
-F201 (20 A, autós lapos biztosíték foglalatban): a teljes modul főbiztosítéka – zárlatnál leválasztja a tápot.
+F201 (15 A, autós mini lapos biztosíték foglalatban): a teljes modul főbiztosítéka – zárlatnál leválasztja a tápot.
 
 Q201 (NTMFS5C604NL, N-csatornás FET a GND-ágban, ~1,2 mΩ) + R294 (10 k) + D202 (BZT52C15, 15 V-os Zener): fordított polaritás elleni védelem (D78). Fordított bekötésnél a FET zár, így a +24 V nem jut a lap GND-jére, és a közös földön (busz) át sem alakul ki zárlat. Helyes polaritásnál a FET nyitva van: 20 A-en ~24 mV esik rajta. Az R294 a gate-et a 24 V-os sínről nyitja, a Zener a gate-feszültséget 15 V-ra korlátozza. (Ez váltja ki a korábbi ideális diódát, az LM74700-at.)
 
@@ -394,7 +394,7 @@ R205 (1 k): a közös engedélyező vonal (DRV_EN, PB12) lehúzása – bekapcso
 
 F202–F204 (NANO² SMD biztosíték, a szalaghoz méretezve: ≤ 100 W-os ághoz 4 A, legfeljebb 10 A): blokkonként (2 csatornánként) külön biztosíték – egy szalag zárlata nem viszi le a többit, és a kis ágbiztosíték a vékonyabb szalagvezetéket is védi (D76).
 
-J202–J204 (3 pólusú csavaros sorkapocs, MKDS 3): a kimenetek – blokkonként +24 V, CHa, CHb (pl. egy CCT-szalag két színe).
+J202–J204 (3 pólusú csavaros sorkapocs, KF128, 10 A): a kimenetek – blokkonként +24 V, CHa, CHb (pl. egy CCT-szalag két színe).
 
 ## Csatornák (× 6)
 
@@ -404,7 +404,7 @@ R211–R216 (10 Ω): gate-ellenállások – lassítják a kapcsolási élt (kis
 
 R221–R226 (10 k): gate–source lehúzások – ha a meghajtó nem kap tápot, a FET biztosan zárva marad.
 
-D211–D216 (B360B, Schottky): szabadonfutó diódák a szalag két vége között – a kábel induktivitásából kikapcsoláskor keletkező feszültségtüskét elvezetik, így az nem üti át a FET-et.
+D211–D216 (STPS3L60U, Schottky, 3 A / 60 V): szabadonfutó diódák a szalag két vége között – a kábel induktivitásából kikapcsoláskor keletkező feszültségtüskét elvezetik, így az nem üti át a FET-et.
 
 R231–R236 (10 Ω) + C221–C226 (2,2 nF) (DNP): RC-snubber a drainen – csak akkor kerül be, ha a mérés kapcsolási lengést mutat (D24).
 
@@ -416,7 +416,7 @@ R261–R266 (470 k), R271–R276 (56 k), C231–C236 (10 nF): drain-feszültség
 
 ## Össz-áram és túláram-védelem
 
-R209 (1 mΩ, 2512, söntellenállás, Kelvin-bekötés): a hat csatorna közös visszatérő áramát méri (20 A-en 20 mV).
+R209 (1 mΩ, 2512, 3 W söntellenállás, Kelvin-bekötésű footprinten): a hat csatorna közös visszatérő áramát méri (15 A-en 15 mV).
 
 U206 (INA181A2, áramérzékelő erősítő, ×50): a sönt kis feszültségét 0–1 V-ra erősíti (20 A → 1,0 V).
 
@@ -452,7 +452,7 @@ R113 (0 Ω, 1206): a busz GND-ér és a modul GND-je közötti kapcsolat (D74) �
 
 ## Betáp és tekercs-táp
 
-J100 (2 pólusú push-in sorkapocs): a 12–26 V-os betáp (csak a relétekercseknek, kis áram).
+J100 (2 pólusú rugós sorkapocs, Degson DG250): a 12–26 V-os betáp (csak a relétekercseknek, kis áram).
 
 Q100 (IRFR120N, N-csatornás FET a GND-ágban) + R114 (10 k) + D106 (BZT52C15, 15 V-os Zener-dióda): fordított polaritás elleni védelem a közös föld miatt (D78), mint a vezérlőn és a LED-modulon.
 

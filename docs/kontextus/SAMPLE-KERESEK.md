@@ -5,6 +5,10 @@ Az aktuális architektúra (D27–D61) alapján, a 2026-10-10-i lista helyett. M
 prototípushoz kell, **Kérni** = ennyit érdemes kérni (ha a program kevesebbet enged, a minimum a fontos).
 A pontos alkatrészek: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`.
 
+> **2026-10-22 – a rendeléshez ez a mérvadó:** `hardware/bom/beszerzes.csv` (a `hardware/gen/beszerzes.py` állítja elő a
+> BOM-ból: tételenként forrás – Hestore-kód, ár, készlet / Mouser-TME típusszám / TI-rendelés / kézben). Összefoglaló a
+> fájl végén („Beszerzés 2026-10-22”). A lenti listák a sample-kérések története.
+
 **2026-10-14:** a modulmag tápja **P78E05-1000 + NCP1117ST33** lett (mindkettő kézben, D56), és a vezérlő V_BUS-át is
 a **P78E05** adja (D59) → **az LMR36006 sehol nem kell**; a vezérlő CAN transceivere **TCAN1044AVDRQ1** (D60) a TCAN330
 helyett.
@@ -152,8 +156,26 @@ A konzultáció után a táp központi lett (D71) → új alkatrészek, egyik si
 - **BZT52C15** (15 V-os Zener, SOD-123) – 3 db + tartalék (a három GND-ági FET gate-je)
 - **25 MHz-es kvarc** a W5500-hoz – Hestore (Balázs döntése: kvarc, nem a kézben lévő oszcillátor)
 
-**Kézből (nem kell venni):** IRFR1205 (vezérlő Q1), IRFR120N (relé Q100), NTMFS5C604NL (LED Q201 – eddig is a BOM-ban),
-zöld 0603 LED (522 nm, HL-PST-1608U51GC, 150 db).
+**Kézből (nem kell venni):** IRFR1205 (vezérlő Q1), IRFR120N (relé Q100), zöld 0603 LED (522 nm, HL-PST-1608U51GC, 150 db).
+~~NTMFS5C604NL (LED Q201)~~ – **javítva 10-22: nincs kézben**, meg kell venni (a Q201 FET-je, Mouser/TME).
 
 **LDO (D80):** marad az **AP2112K-3.3** (2 db/modulkészlet: modulmag + bemeneti modul érzékelősín) – kínai kör vagy Hestore;
 a TC2117-nek tantál kellene (ESR 0,2–10 Ω). A relé 230 V-os kimenetének sorkapcsa: **5,08 mm-es THT a készletből (D83)** – nem kell venni.
+
+## Beszerzés 2026-10-22 – Hestore + DigiKey, D84 (`hardware/bom/beszerzes.csv`)
+Egy készlet (vezérlő + 3 modul) + tartalék: passzívból 10 db, ha olcsó (különben +20 %), más tételből +1, ha 300 Ft alatti.
+Frissítés rendelés előtt: `python3 gen/beszerzes.py --frissit` (a `hardware/` mappából). A Hestore-árak **nettók**.
+A D84 szerint a rajz a Hestore-ban kapható típusokra lett igazítva (sorkapcsok, tekercsek, sönt, kvarc-kondenzátorok stb.).
+
+- **Hestore (78 tétel, ~39 800 Ft bruttó, benne 4 × D4MG + 1 × D6MG ≈ 10 100 Ft;** + opcionális kábeloldal ~3 000 Ft):
+  minden passzív (az E96-osok és néhány kondenzátor kivételével), kvarcok, a legtöbb dióda, ESP32-C6-WROOM-1-N8, W5500,
+  HR911105A, AP2112K, USBLC6, LM66200, WS2812B-V5, USB-C, JST-XH/PH, tüskesor, PTC-k, HPI0630 tekercsek, CRE2512 sönt,
+  Degson DG250 / DG128 és KF128 sorkapcsok, PTS525 gombok, Gainta-házak. Szállítás: GLS CsomagPont 25 000 Ft bruttó felett ingyenes.
+- **DigiKey (26 tétel, becslés ~52–58 € nettó, ÁFA-val ~27–30 eFt; 15 000 Ft felett ingyenes szállítás):** LMR33630, TPS2595,
+  NUCLEO-L433RC-P, NTD5C648NL × 7, NTMFS5C604NL × 2, MC78L12ACD (SOIC-8), SMBJ28A, SMBJ6.0A, NANO² 10 A, 1206-os 2 A / 0,5 A
+  biztosíték, Keystone 3568 + 15 A-es mini betét, 47 µF / 50 V (6,3 × 7,7), 22 µF / 10 V X7R (1206), 220 nF / 50 V (0603),
+  12 pF C0G (0603), 1 nF / 2 kV, B4B-PH-K-S, E96-os ellenállások (1,02 k, 1,54 k, 2,49 k, 23,7 k, 43,2 k, 499 Ω, 715 Ω).
+- **TI-rendelés (8 tétel, ha megjön):** TCAN1044AV, LMR36015, UCC27524 × 3, INA181A2, ESD2CAN24 × 4, TPD4E05U06 × 5, ULN2803A,
+  HDC3020. Ha nem jön: DigiKey; ULN2803A és ESD2CAN24 Hestore-ból is (ULN2803A-CF, PESD2CAN).
+- **Beültetés előtt ellenőrizni:** a kézben lévő 5,08-as sorkapcsok (J101–J104) névleges értéke; a 470 µF-os elkó 20 mm magas
+  (ház); a CRE2512 sönt a Kelvin-footprint két-két padját összeforrasztja (szándékos).

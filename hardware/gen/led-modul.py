@@ -11,7 +11,7 @@ kigen.POWER_UP = {'+3V3', '+12V'}
 kigen.POWER_DOWN = {'GND'}
 
 OUT = sys.argv[1]
-S = kigen.Sheet('LED-modul – 6 × 10 A low-side PWM (össz. 20 A), modulmag', 'led-modul')
+S = kigen.Sheet('LED-modul – 6 × 10 A low-side PWM (össz. 15 A), modulmag', 'led-modul')
 S.label_pos.update({
     'Driver_FET:UCC27524D': ((-7.62, -12.7), (3.81, 13.97)),   # érték a GND-láb mellett jobbra
     'Amplifier_Current:INA181': ((7.62, 6.35), (7.62, 8.89)),
@@ -35,8 +35,8 @@ C0805 = 'Capacitor_SMD:C_0805_2012Metric'
 C1206 = 'Capacitor_SMD:C_1206_3216Metric'
 C1210 = 'Capacitor_SMD:C_1210_3225Metric'
 LED0603 = 'LED_SMD:LED_0603_1608Metric'
-TB2 = 'TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-3-2-5.08_1x02_P5.08mm_Horizontal'
-TB3 = 'TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-3-3-5.08_1x03_P5.08mm_Horizontal'
+TB2 = 'TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal'   # D84: Degson DG128-5.0-02P
+TB3 = 'TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-3_1x03_P5.00mm_Horizontal'   # D84: KF128-5.0-3P
 
 
 def P(n):
@@ -119,11 +119,11 @@ S.label('GND', (_q[0] + 2.54, _q[1] + 2.54), 270)
 
 # =================== 1. Betáp és +24V_RAIL ===================
 Y = 45
-S.text('1. BETÁP (20 A): J201 → F201 20 A → +24V_RAIL; fordított polaritás ellen Q201 N-FET a GND-ágban (D78) – a közös föld miatt a + ági védelem nem elég', 80, 24, 1.5)
+S.text('1. BETÁP (15 A): J201 → F201 15 A → +24V_RAIL; fordított polaritás ellen Q201 N-FET a GND-ágban (D78) – a közös föld miatt a + ági védelem nem elég', 80, 24, 1.5)
 S.text('Q201 hiányában a D–S padek vastag dróttal áthidalhatók (akkor nincs polaritásvédelem)', 150, 29)
 S.ref_pos['J201'] = ((-2.54, -7.62), (-2.54, -5.08))   # a csatlakozó fölé
-pj = S.comp('Connector_Generic:Conn_01x02', 'J201', '24V IN 20A', 90, 60, {'1': None, '2': None}, fp=TB2,
-            props=P('csavaros (Phoenix MKDS 3, 5,08 mm, 24 A / 4 mm²) – D79; barna = +24 V, kék = GND (D43)'))
+pj = S.comp('Connector_Generic:Conn_01x02', 'J201', '24V IN 15A', 90, 60, {'1': None, '2': None}, fp=TB2,
+            props=P('csavaros, liftes: Degson DG128-5.0-02P (5,0 mm, 15 A UL / 18 A IEC, 2,5 mm²) – D84; barna = +24 V, kék = GND (D43)'))
 p1, p2 = pj['1'][:2], pj['2'][:2]
 xa = p1[0] - 7.62
 S.wire(p1, (xa, p1[1]), (xa, Y), (xa + 12.7, Y))
@@ -132,8 +132,8 @@ S.label('GND_IN', (p2[0] - 2.54, p2[1] + 2.54), 270)
 S.wire((xa + 2.54, Y), (xa + 2.54, Y - 5.08))
 S.label('+24V_IN', (xa + 2.54, Y - 5.08), 90)
 S.junction((xa + 2.54, Y))
-p = series('Device:Fuse', 'F201', '20A', (xa + 12.7, Y), 'Fuse:Fuseholder_Blade_Mini_Keystone_3568',
-           props=P('mini lapos autós biztosíték, NYÁK-foglalat'))
+p = series('Device:Fuse', 'F201', '15A', (xa + 12.7, Y), 'Fuse:Fuseholder_Blade_Mini_Keystone_3568',
+           props=P('mini lapos autós biztosíték (normál mini, pl. Littelfuse 0297015), Keystone 3568 foglalat; 15 A = a J201 névleges árama (D84)'))
 # Q201 a GND-ágban: D = J201 GND-pólusa (GND_IN), S = a lap GND-je; G a +24V_RAIL-ről 10 k-n át, 15 V-os Zener védi.
 # Helyes polaritásnál a gate ~15 V-ot kap → vezet (20 A × ~1,2 mΩ ≈ 24 mV); fordítva Vgs ≤ 0 és a body-dióda is zár →
 # a GND-pólusra kerülő +24 V nem jut a lap (és a busz) GND-jére.
@@ -214,7 +214,7 @@ for k, x in enumerate(fuses, 1):
     b = pf['2'][:2]
     S.ref_pos[f'J{201 + k}'] = ((-2.54, -7.62), (-2.54, -5.08))
     pjb = S.comp('Connector_Generic:Conn_01x03', f'J{201 + k}', f'BLOKK {k}', x + 17.78, b[1] + 10.16, {'1': None, '2': None, '3': None},
-                 fp=TB3, props=P(f'1 = +24 V, 2 = CH{2 * k - 1}, 3 = CH{2 * k}; csavaros (MKDS 3, 5,08 mm) – D79'))
+                 fp=TB3, props=P(f'1 = +24 V, 2 = CH{2 * k - 1}, 3 = CH{2 * k}; csavaros, KF128-5.0-3P (5,0 mm, 10 A – a blokkbiztosíték ≤ 10 A) – D84'))
     S.wire(b, (b[0], pjb['1'][1]), pjb['1'][:2])
     S.label(f'+24V_B{k}', (b[0], pjb['1'][1]), 180)
     for n, ch in (('2', 2 * k - 1), ('3', 2 * k)):
@@ -266,7 +266,7 @@ for d in range(3):
 
 # =================== 3. Csatornák ===================
 yB, yN = 158.75, 180.34          # +24V_Bk sor, drain-csomópont
-S.text('3. CSATORNÁK (× 6): FET NTD5C648NL (DPAK; tartalék IRFR1205) · szabadonfutó B360B a blokk +24 V-jára · RC snubber (DNP) ·'
+S.text('3. CSATORNÁK (× 6): FET NTD5C648NL (DPAK; tartalék IRFR1205) · szabadonfutó STPS3L60U a blokk +24 V-jára · RC snubber (DNP) ·'
        ' gate-LED + drain-LED · drain → ADC osztó', 15, yB - 12, 1.5)
 for n in range(1, 7):
     k = (n + 1) // 2
@@ -278,7 +278,7 @@ for n in range(1, 7):
     S.wire((xl, yB), (xs, yB))
     S.label(f'+24V_B{k}', (xl, yB), 180)
     S.wire((xs, yB), (xs, yB + 2.54))
-    S.place('Device:D_Schottky', f'D{210 + n}', 'B360B', {'1': None, '2': None}, '1', (xs, yB + 2.54), r=270,
+    S.place('Device:D_Schottky', f'D{210 + n}', 'STPS3L60U', {'1': None, '2': None}, '1', (xs, yB + 2.54), r=270,
             fp='Diode_SMD:D_SMB', props=P('szabadonfutó, 3 A / 60 V, SMB'))
     S.wire((xs, yB + 10.16), (xs, yN))
     # drain-LED: +24V_Bk → 10k → LED → drain
@@ -350,7 +350,7 @@ S.flag('PGND_SH', xsh - 10, ys - 2.54)
 S.wire((xsh - 10, ys - 2.54), (xsh, ys - 2.54))
 psh = S.place('Device:R_Shunt', 'R209', '1m 1%', {'1': None, '2': None, '3': None, '4': None}, '1', (xsh, ys + 2.54),
               fp='Resistor_SMD:R_Shunt_Vishay_WSK2512_6332Metric_T1.19mm',
-              props=P('2512, ≥ 1 W (20 A-en 0,4 W), Kelvin – pl. Vishay WSK2512 / WSLP2512'))
+              props=P('D84: Bourns CRE2512-FZ-R001E-3 (2512, 3 W; 15 A-en 0,23 W) – 2 kivezetésű: a Kelvin-padokon összeforrasztva'))
 S.wire((xsh, ys - 2.54), (xsh, ys + 2.54))
 S.wire(psh['4'][:2], (xsh, psh['4'][1] + 2.54))
 down('GND', (xsh, psh['4'][1] + 2.54))

@@ -243,8 +243,8 @@ S.rail(yh, xs + [105])
 for i, (x, ref, val) in enumerate(zip(xs, ['C4', 'C5', 'C6', 'C7', 'C8', 'C13'], ['100n'] * 5 + ['4µ7'])):
     shunt('Device:C', ref, val, (x, yh + 2.54), 'GND', C0603)
     S.wire((x, yh), (x, yh + 2.54))
-p = series('Device:FerriteBead_Small', 'FB1', 'ferrit ≤0,1Ω', (105, yh), 'Inductor_SMD:L_0603_1608Metric',
-           props=P('vagy 0 Ω'))
+p = series('Device:FerriteBead_Small', 'FB1', 'BLM18EG221', (105, yh), 'Inductor_SMD:L_0603_1608Metric',
+           props=P('D84: Murata BLM18EG221TN1D (0,15 Ω – a VDDA pár mA-jén elhanyagolható); vagy 0 Ω'))
 S.rail(yh, [p[0], p[0] + 10, p[0] + 22.7])
 for x, ref, val in ((p[0] + 10, 'C14', '1µ'), (p[0] + 22.7, 'C15', '10n')):
     shunt('Device:C', ref, val, (x, yh + 2.54), 'GND', C0603)

@@ -52,7 +52,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
   Bemeneti: 16 bemenet külön EXTI-vonalon, I²C1 PB8/9.
 - **Modulok (v1):**
   - **LED (D43, D47, D53):** 6 csatorna (2 × RGB / 3 × CCT / 6 × egyszínű), low-side → a közös vezeték a +24 V;
-    3 × [+24 V, CHa, CHb]; 10 A/csatorna, össz. 20 A; UCC27524 + 60 V-os FET, 25 kHz. Mérés: 24 V a biztosíték
+    3 × [+24 V, CHa, CHb]; 10 A/csatorna, össz. 15 A (D84: a J201 sorkapocs és F201); UCC27524 + 60 V-os FET, 25 kHz. Mérés: 24 V a biztosíték
     előtt/után, össz-áram (1 mΩ + INA181A2) → COMP2 + DAC-küszöb → TIM1/TIM15/TIM16 break (hardveres lekapcsolás).
     D65: FET NTD5C648NL (DPAK), blokkbiztosíték a szalaghoz (D76), csatornánként gate- és drain-LED, drain → ADC.
     D78: polaritásvédelem **N-FET a GND-ágban** (NTMFS5C604NL, az LM74700 helyett), hőmérő **MCP9701A**; csavaros sorkapocs (D79).
@@ -61,7 +61,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
   - **Általános bemeneti (D44, D48, D51, D66):** 16 bemenet külön 3 tűs JST-PH-n; 10 k felhúzás a csatlakozó oldalán + 10 k soros + 10 nF (D75)
     (+ osztó-footprint 5/12/24 V-hoz) + ESD; 4 érzékelő-tápcsoport (3,3 / 5 V jumperrel, PTC-vel, külön 3,3 V-os
     LDO); HDC3020 a NYÁK-on + 4 tűs PH I²C-csatlakozó külső érzékelőhöz.
-  - **Vezérlő (D45, D58–D61):** ESP32-C6-WROOM-1-N16 (fém szekrénybe -1U, ugyanarra a footprintre – D63), W5500 +
+  - **Vezérlő (D45, D58–D61):** ESP32-C6-WROOM-1-N8 (D84; fém szekrénybe -1U, ugyanarra a footprintre – D63), W5500 +
     MagJack (opcionálisan beültetve), TCAN1044AV (±58 V), USB-C (táp busz nélkül), 2 XH, RGB LED + táp-LED;
     3,3 V: LMR36015; 5 V: LMR33630 + LM66200; V_BUS: TPS2595 (D71). Bemenet 12–26 V (F1 2 A, Q1 N-FET a GND-ágban – D78).
 - **Mechanika (D50, javaslat):** DIN 43880-as ház-forma, a NYÁK a ház alján; felső váll: 24 V + busz + jumper,
@@ -71,7 +71,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
   protokoll CANopen-fogalmakkal (heartbeat, SDO/PDO-szerű, LSS-szerű).
 - **Matter (D21):** Aggregator + modulonként Bridged Node endpoint (UID → endpoint az NVS-ben); új modul
   újrapárosítás nélkül. **Állapot (D22):** kiesésnél a modul tartja az utolsó állapotot.
-- **Tűzvédelem (D30, javaslat):** biztosíték a forrás oldalán, LED-táp ágakra bontva (≤ 100 W/ág), push-in sorkapocs (LED 20 A: csavaros, D79)
+- **Tűzvédelem (D30, javaslat):** biztosíték a forrás oldalán, LED-táp ágakra bontva (≤ 100 W/ág), rugós sorkapocs (LED-betáp: csavaros, D79/D84)
   + érvéghüvely, álmennyezetben V-0 vagy fém ház, relémodul elosztódobozban; a firmware-es hőmérés (MCP9701A) csak harmadik réteg.
 
 ## Hardver – amit tudni kell
@@ -128,10 +128,11 @@ SCT-013-030 (v2) és az ULN2803A.
       ~~W5500 MDI-hálózat~~ ✅ (D72, WIZnet-referencia); MagJack lábkiosztása (KiCad Hanrun-szimbólum szerint); RGB LED + 74HCT14 vagy WS2812B-V5)
 - [ ] **DIN-ház (D73):** Gainta D4MG, NYÁK 86,5 × 68 mm (bemeneti: 86,5 × 103 mm) ✅; hátra: vállmagasság és kivágások a ház rajzából
 - [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil
-- [ ] Beszerzés: W5500 + MagJack + 25 MHz-es kvarc (Hestore), 1 mΩ-os sönt, JST-XH/PH, kvarcok, elkók, USB-C aljzat,
-      NUCLEO-L433RC-P + 3 × BZT52C15 (D78–D79); fiók-érzékelők (AH1911 / reed) később
+- [ ] **Beszerzés (D84 – legolcsóbb):** a lista kész – `hardware/bom/beszerzes.csv` (`gen/beszerzes.py`): Hestore 78 tétel
+      (~40 eFt bruttó, házakkal), DigiKey 26 tétel (~27–30 eFt), TI-rendelés 8; a rajz a Hestore-típusokra igazítva
+      (`SAMPLE-KERESEK.md` vége); fiók-érzékelők (AH1911 / reed) később
 - [ ] NYÁK: kapcsolási rajzok ✅ (lezárás 10-22), layout (Balázs, 10-26-ig), rendelés ≈ 10-30
-- [ ] Firmware később (L433, NUCLEO-L433RC-P-n kezdhető): LED-modul (önteszt, árammintavétel, 20 A-es korlát, DAC-küszöb,
+- [ ] Firmware később (L433, NUCLEO-L433RC-P-n kezdhető): LED-modul (önteszt, árammintavétel, 15 A-es korlát (D84), DAC-küszöb,
       kiégett biztosíték), csatorna-csoportok → Matter-lámpák; modul-protokoll + bootloader; vezérlő: V_BUS-kezelés
 - [ ] CCT firmware (D16) a breadboardon (`cp-03-cct-szalag` javaslat); 16 W/m a két szín együtt vagy külön?
 - [ ] HA: futás közben hozzáadott endpoint tesztje (matterjs-server #1016); Matter-színmód (HS/XY) az RGB-csoportokhoz
@@ -141,7 +142,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D83 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D84 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, SN65HVD230, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni
