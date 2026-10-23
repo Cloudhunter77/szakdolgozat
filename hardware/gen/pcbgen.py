@@ -31,28 +31,82 @@ W4, L = 68.0, 86.5
 SH = 20.75                      # vállmélység: (86,5 − 45) / 2 – az előlapi ablak 45 mm (DIN 43880)
 TOP, FRONT, BOT = (0, 0, W4, SH), (0, SH, W4, L - SH), (0, L - SH, W4, L)
 
+# Gainta D4MG (D86, docs/d4mg.pdf): a vállfedél (GUARD) 12 csavarfurata 5,08 mm-es osztású, a ház közepére szimmetrikus →
+# a 68 mm-es lapon x = 34 ± 2,54·(2k+1) = 6,06 / 11,14 / … / 61,94 mm. A sorkapcsok csavarja ide esik: 2 pólusúnál a két láb két
+# szomszédos furatra (középpont 8,60 / 13,68 / … / 59,40), 3 pólusúnál a középső láb furatra (11,14 / 31,46 / 56,86 …).
+# lock: a mechanikailag kötött helyű alkatrészek zárolva (KiCad-lakat) – kézzel is csak feloldás után mozdíthatók.
+
+# Modulmag-blokk (D86): mindhárom modulon ugyanaz a relatív elrendezés (a jelölések azonosak → a kész layout átvihető).
+# ref -> (dx, dy, forgatás) a courtyard közepe a blokk bal felső sarkához képest (a NYÁK felső éle y = 0); a blokk ~34 × 42 mm (a relémodulon a K1–K4 43 mm-től);
+# a courtyardok között ≥ 0,5 mm (GAP) – a hidegítők így is 0,5–0,6 mm-re a tokjuktól.
+# Felül a busz (J2, J3, JP1), alatta a védelem és a CAN (U3, L1/JP2/JP3, U2 a lábaival lefelé a PA11/PA12 felé), balra a táp
+# (U5 a +5V-ról), középen az STM32 (U6) – minden VDD-lábnál 100 nF, a PH0/PH1 mellett a kvarc, a VDDA-nál FB1 + C14/C15 –,
+# jobbra az SWD (J1); a J4 bővítő és a táp-/állapot-LED a generátorra marad.
+MODULMAG_BLOKK = {
+    # busz és védelem (felső váll)
+    'J2': (7.2, 4.5, 0), 'J3': (21.2, 4.5, 0), 'JP1': (31.6, 4.5, 0),
+    'D5': (3.2, 10.5, 0), 'U3': (14.6, 10.5, 0), 'L1': (24.5, 10.8, 0), 'R5': (31.5, 10.0, 270),
+    'JP2': (22.6, 14.4, 0), 'JP3': (26.5, 14.4, 0),
+    # 3,3 V a busz +5V-járól
+    'C2': (4.6, 13.3, 0), 'U5': (4.6, 17.0, 270), 'C3': (4.6, 20.7, 0), 'TP2': (8.6, 20.0, 0),
+    # CAN-transceiver: lábai lefelé, a TXD (1) / RXD (4) a PA12 / PA11 felé – a két jel a C6 és az R10 között, keresztezés nélkül
+    'U2': (26.0, 20.0, 90), 'R12': (21.9, 17.8, 90), 'R1': (21.9, 21.6, 90), 'C18': (30.1, 20.6, 90), 'C19': (32.2, 20.6, 90),
+    # STM32 és hidegítés: a 100 nF-ok +3,3 V-os padja a VDD-, a GND-padja a VSS-láb felé
+    'TP1': (16.0, 21.2, 0), 'C13': (8.6, 23.0, 0), 'C5': (12.25, 23.9, 0), 'R2': (15.9, 23.9, 0),
+    'U6': (16.0, 32.0, 0), 'C4': (7.95, 28.0, 90), 'C6': (24.1, 28.2, 270),
+    'C10': (4.4, 27.0, 0), 'Y1': (4.4, 30.3, 0), 'C11': (4.4, 33.6, 0), 'C16': (7.95, 31.6, 270),
+    'C14': (7.95, 35.2, 90), 'C15': (5.8, 36.5, 90), 'FB1': (3.6, 36.5, 90),
+    'C8': (13.25, 40.1, 180), 'C7': (19.75, 40.1, 180),
+    'R3': (2.6, 40.2, 90), 'R4': (4.7, 40.2, 90), 'C9': (6.8, 40.2, 90),
+    'R10': (24.1, 33.4, 90), 'R11': (26.2, 33.4, 90), 'C20': (24.1, 37.0, 90),
+    'J1': (31.2, 32.4, 0),
+}
+BLOKK_RACS = 0.25           # minden nem zárolt alkatrész a NYÁK sarkához mért 0,25 mm-es rácson (a footprint origója)
+BLOKK_MERET = (34.7, 42.4)  # a blokk befoglalója – más alkatrész nem kerülhet bele
+
+# LED-modul (D86): csatornánként a FET fölött a gate- (bal) és a drain-LED (jobb) egy sorban az előlapi ablakban, alattuk az
+# ellenállásuk; a meghajtók (U201–U203) a LED-sor és a FET-ek között, két-két FET között középen
+LED_CH_X = [5.5, 16.5, 28.5, 39.5, 51.5, 62.5]
+LED_SOR = {}
+for _n, _x in enumerate(LED_CH_X, 1):
+    LED_SOR.update({f'D{220 + _n}': (_x - 1.85, 43.65, 0), f'D{230 + _n}': (_x + 1.85, 43.65, 0),
+                    f'R{240 + _n}': (_x - 1.85, 45.75, 0), f'R{250 + _n}': (_x + 2.1, 45.95, 0)})
+LED_SOR.update({'U201': (11.0, 50.25, 0), 'U202': (34.0, 50.25, 0), 'U203': (57.0, 50.25, 0)})
+
 BOARDS = {
     'rele-modul': dict(
         size=(W4, L),
-        fixed={'J100': (6, 6, 'N'), 'J2': (22, 4.5, None), 'J3': (36, 4.5, None), 'JP1': (46, 4, None),
-               'K1': (8.5, 58, 'coilN'), 'K2': (25, 58, 'coilN'), 'K3': (41.5, 58, 'coilN'), 'K4': (58, 58, 'coilN'),
-               'J101': (8.5, 79.8, 'S'), 'J102': (25, 79.8, 'S'), 'J103': (41.5, 79.8, 'S'), 'J104': (58, 79.8, 'S'),
-               'J105': (59, 8.8, 'N')},
-        anchors={'U6': (12, 10, 52, 40), 'U101': (40, 10, 68, 42), 'U2': (14, 8, 44, 22), 'F100': (0, 10, 20, 40)},
+        blokk=(33.0, 0),         # D86: modulmag-blokk a jobb felső részen
+        fixed={'J100': (8.6, 6, 'N'), 'Q100': (7.5, 16.5, 0), 'F100': (16.0, 14.0, 90),
+               'K1': (8.6, 58, 'coilN'), 'K2': (23.84, 58, 'coilN'), 'K3': (44.16, 58, 'coilN'), 'K4': (59.4, 58, 'coilN'),
+               'J101': (8.6, 79.8, 'S'), 'J102': (23.84, 79.8, 'S'), 'J103': (44.16, 79.8, 'S'), 'J104': (59.4, 79.8, 'S'),
+               'J105': (24, 9.3, 'N'),
+               # relé-LED-ek egy sorban az előlapi ablakban (a blokktól balra, a relék fölött)
+               'D101': (4.0, 41.0, 0), 'D102': (10.0, 41.0, 0), 'D103': (16.0, 41.0, 0), 'D104': (22.0, 41.0, 0),
+               'D4': (28.0, 41.0, 0)},
+        anchors={'U101': (0, 20, 33, 42)},
         hv=(0, 43, W4, L),       # 230 V-os tartomány: ide csak a relék érintkezői és a sorkapcsok kerülhetnek
         hv_parts=['K1', 'K2', 'K3', 'K4', 'J101', 'J102', 'J103', 'J104'],
-        attach={'R114': 'J100', 'D106': 'J100'},   # a Q100 gate-ellenállása és Zenere a betáp mellé
+        lock=['J100', 'J2', 'J3', 'JP1', 'J105', 'K1', 'K2', 'K3', 'K4', 'J101', 'J102', 'J103', 'J104'],
+        attach={'D105': 'F100', 'C105': 'F100', 'D100': 'F100'},   # (F100 rögzített: '@F100' csoport)   # +24V_P: TVS, puffer, dióda a betáp-ágnál
+        pin_attach={'R114': 'Q100', 'D106': 'Q100', 'C104': 'U101'},   # a Q100 gate-eleme a gate-hez, a 10 µF a relé-táphoz
     ),
     'vezerlo': dict(
         size=(W4, L),
-        fixed={'J1': (5.5, 6, 'N'), 'J2': (19, 4.5, None), 'J3': (33, 4.5, None), 'JP1': (44.5, 4, None),
+        fixed={'J1': (8.6, 6, 'N'), 'J2': (21.5, 4.5, None), 'J3': (35.5, 4.5, None), 'JP1': (45.2, 4, None),
                'U4': (58, 16, 'antN'), 'J6': (20, 76, 'S'), 'J4': (42, 82, 'S'), 'U10': (8.5, 40, None),
                'J7': (3, 26, None), 'J8': (55, 82.5, 'S'), 'SW1': (51, 70, None), 'SW2': (61.5, 70, None),
                'Q1': (7, 18.5, None)},      # D78: polaritásvédő FET a GND-ágban, a J1 alatt
         anchors={'U1': (0, 10, 30, 35), 'U2': (14, 10, 46, 32), 'U12': (30, 22, 50, 34), 'U3': (24, 10, 48, 24),
                  'U5': (14, 46, 50, 68), 'U6': (28, 8, 50, 24), 'U9': (46, 30, 68, 68), 'U8': (30, 62, 56, 80),
                  'U11': (0, 28, 20, 56)},
-        keepout=[(46, 0, W4, 8)],   # a C6 antennája előtt/mellett ne legyen réz (a modul maga ide lóg)
+        keepout=[(46, 0, W4, 8)],
+        lock=['J1', 'J2', 'J3', 'JP1', 'U4', 'J6', 'J4', 'J8'],
+        pin_attach={'C5': 'U1', 'C6': 'U1', 'L1': 'U1', 'C4': 'U1', 'C7': 'U1', 'C8': 'U1', 'C9': 'U1', 'R3': 'U1', 'R4': 'U1',
+                    'C53': 'U2', 'C2': 'U2', 'L3': 'U2', 'C54': 'U2', 'R54': 'U2', 'R55': 'U2', 'D2': 'J1',
+                    'C10': 'L1', 'C11': 'L1', 'C12': 'L1', 'C56': 'L3', 'C57': 'L3', 'C58': 'L3', 'C59': 'L3',
+                    'Y1': 'U5', 'C40': 'Y1', 'C41': 'Y1', 'R40': 'U5', **{f'C{i}': 'U5' for i in range(31, 38)},
+                    'C26': 'U4', 'C27': 'U4', 'U8': 'J4', 'R28': 'J4', 'R29': 'J4', 'U7': 'J2'},   # a C6 antennája előtt/mellett ne legyen réz (a modul maga ide lóg)
         antenna_of=('U4', 7.0),
         attach={'D10': 'U2', 'D11': 'J4', 'F1': 'J1', 'R56': 'Q1', 'D12': 'Q1'},   # TVS: a buck kimenetén (U2), illetve az USB-C mellett (J4)      # az ESP32-C6-WROOM-1 antennarésze (~6,5 mm a modul végén) – rule area minden rétegen
     ),
@@ -60,26 +114,40 @@ BOARDS = {
         size=(W4, L),
         # teljesítményút fentről lefelé: J201 → F201 → +24V_RAIL → F202–F204 → J202–J204; Q201 a GND-ágban a J201 mellett (D78);
         # a FET-ek drain-füle a kimenet felé, a szabadonfutó diódák és a blokk-biztosítékok a sorkapcsok fölött
-        fixed={'J201': (7, 6.5, 'N'), 'J2': (24, 4.5, None), 'J3': (38, 4.5, None), 'JP1': (47.5, 4, None),
-               'Q201': (25, 13, None), 'F201': (9.5, 17, None), 'C203': (61, 19, None),
-               'Q202': (5.5, 59, 'tabS'), 'Q203': (16.5, 59, 'tabS'), 'Q204': (28.5, 59, 'tabS'),
-               'Q205': (39.5, 59, 'tabS'), 'Q206': (51.5, 59, 'tabS'), 'Q207': (62.5, 59, 'tabS'),
-               'D211': (4, 69.3, 90), 'F202': (11, 69.3, None), 'D212': (18, 69.3, 90),
-               'D213': (27, 69.3, 90), 'F203': (34, 69.3, None), 'D214': (41, 69.3, 90),
-               'D215': (50, 69.3, 90), 'F204': (57, 69.3, None), 'D216': (64, 69.3, 90),
-               'J202': (11, 79.8, 'S'), 'J203': (34, 79.8, 'S'), 'J204': (57, 79.8, 'S'),
+        blokk=(33.0, 0),         # D86: modulmag-blokk a jobb felső részen; a betáp és a puffer balra
+        fixed={'J201': (8.6, 6.5, 'N'),
+               'Q201': (19.5, 8.5, None), 'F201': (9.5, 17, None), 'C203': (25.5, 28.5, None),
+               'Q202': (5.5, 59.5, 'tabS'), 'Q203': (16.5, 59.5, 'tabS'), 'Q204': (28.5, 59.5, 'tabS'),
+               'Q205': (39.5, 59.5, 'tabS'), 'Q206': (51.5, 59.5, 'tabS'), 'Q207': (62.5, 59.5, 'tabS'),
+               'D211': (4.14, 69.3, 90), 'F202': (11.14, 69.3, None), 'D212': (18.14, 69.3, 90),
+               'D213': (24.46, 69.3, 90), 'F203': (31.46, 69.3, None), 'D214': (38.46, 69.3, 90),
+               'D215': (49.86, 69.3, 90), 'F204': (56.86, 69.3, None), 'D216': (63.86, 69.3, 90),
+               'J202': (11.14, 79.8, 'S'), 'J203': (31.46, 79.8, 'S'), 'J204': (56.86, 79.8, 'S'),
                'R209': (22.5, 49.5, None),
-               'U207': (34, 61, 90)},    # D78: MCP9701A a FET-ek között (Q204–Q205)
-        anchors={'U6': (14, 21, 54, 42), 'U2': (18, 9, 50, 21),
-                 'U201': (0, 43, 18, 54), 'U202': (26, 43, 44, 54), 'U203': (48, 43, 68, 54),
+               'U207': (34, 61, 90), **LED_SOR},    # D78: MCP9701A a FET-ek között (Q204–Q205)
+        anchors={
                  'U206': (14, 40, 34, 54), 'U205': (0, 22, 14, 44)},
-        attach={'C243': 'U207'},   # a hőmérő hidegítése közvetlenül mellé
+        attach={'C204': 'F202', 'C205': 'F203', 'C206': 'F204', 'D201': 'F201'},   # 10 µF / 50 V a blokkbiztosítékokhoz, TVS a főhöz
+        # lábhoz rendelés (D86): a közös (nem GND) hálózatú lábhoz a lehető legközelebb – gate-ellenállás és -lehúzás a FET
+        # gate-jéhez, a hidegítés a tápjához
+        pin_attach={'C211': 'U201', 'C210': 'U201', 'C213': 'U202', 'C212': 'U202', 'C215': 'U203', 'C214': 'U203',
+                    **{f'R{210 + n}': f'Q{201 + n}' for n in range(1, 7)}, **{f'R{220 + n}': f'Q{201 + n}' for n in range(1, 7)},
+                    'C240': 'U206', 'R207': 'U206', 'C243': 'U207', 'C208': 'U205', 'C209': 'U205', 'D202': 'Q201', 'R294': 'Q201'},
+        lock=['J201', 'J2', 'J3', 'JP1', 'J202', 'J203', 'J204'],
     ),
     'bemeneti-modul': dict(
         size=(103.0, L),
-        fixed={'J2': (8, 4.5, None), 'J3': (22, 4.5, None), 'JP1': (32, 4, None),
-               'U302': (99.5, 43, None)},        # HDC3020 a jobb szélen, a melegedő részektől távol (D66)
-        anchors={'U6': (30, 25, 75, 60), 'U2': (0, 10, 40, 24), 'U301': (40, 10, 70, 24)},
+        blokk=(0.5, 0),          # D86: modulmag-blokk a bal felső részen (a felső élen jobbra a PH-k)
+        fixed={'U302': (99.5, 43, None)},        # HDC3020 a jobb szélen, a melegedő részektől távol (D66)
+        lock=['J2', 'J3', 'JP1', 'J320'] + ['J3%02d' % i for i in range(1, 17)],
+        # bemenetenként: felhúzó (csatlakozó-oldal) · soros 10 k · 10 nF · osztóhely (DNP) egy oszlopban a csatlakozó mellett;
+        # az ESD-tömbök (MCU-oldali hálózatokon) a blokk jobb szélén, ahol a 16 jel az STM32 felé belép
+        csatorna_oszlop={'esd': ['U303', 'U304', 'U305', 'U306'], 'esd_x': 37.5, 'esd_y0': 24.0},
+        pin_attach={'C303': 'U301', 'C302': 'U301', 'C330': 'U302', 'R371': 'J320', 'R372': 'J320', 'R374': 'J320', 'R375': 'J320',
+                    'U307': 'J320', 'F305': 'J320', 'F301': 'J302', 'C304': 'J302', 'F302': 'J306', 'C305': 'J306',
+                    'F303': 'J310', 'C306': 'J310', 'F304': 'J314', 'C307': 'J314',
+                    'JP301': 'F301', 'JP302': 'F302', 'JP303': 'F303', 'JP304': 'F304'},
+        anchors={'U301': (40, 10, 70, 24)},
         edge_rows={'N': (36, 103, ['J3%02d' % i for i in range(1, 7)] + ['J320']),          # felső váll: PH-k
                    'S': (0, 103, ['J3%02d' % i for i in range(7, 17)])},                   # alsó váll
     ),
@@ -331,6 +399,9 @@ def main():
         fps[ref] = fp
     rects, report, unplaced = [], [], []
     fixed = {r: v for r, v in cfg['fixed'].items() if r in fps}
+    if 'blokk' in cfg:                                   # D86: a modulmag-blokk rögzített elemként
+        bx, by = cfg['blokk']
+        fixed.update({r: (bx + dx, by + dy, rot) for r, (dx, dy, rot) in MODULMAG_BLOKK.items() if r in fps})
     # él menti PH-sorok (bemeneti modul)
     for edge, (xa, xb, refs) in cfg.get('edge_rows', {}).items():
         refs = [r for r in refs if r in fps]
@@ -344,6 +415,29 @@ def main():
         for r, w_ in zip(refs, ws):
             fixed[r] = (x + w_ / 2, 4.5 if edge == 'N' else Hh - 4.5, edge)
             x += w_ + gap
+    if cfg.get('csatorna_oszlop'):                       # D86: bemenetenként egy oszlop a csatlakozó mellett
+        noded = {}
+        for name, nodes in nets.items():
+            for rr, pp in nodes:
+                noded[(rr, pp)] = name
+        def masik(ref, net):
+            return [n_ for (rr, pp), n_ in noded.items() if rr == ref and n_ != net]
+        for j in [r for r in fixed if r.startswith('J3') and len(r) == 4 and r[2:].isdigit() and r != 'J320']:
+            sig = noded.get((j, '3'))
+            if not sig:
+                continue
+            on_sig = [rr for rr, _ in nets[sig] if rr.startswith('R')]
+            felh = [rr for rr in on_sig if any(n_.split('/')[-1].startswith('SUP') for n_ in masik(rr, sig))]
+            soros = [rr for rr in on_sig if rr not in felh]
+            mcu = masik(soros[0], sig)[0] if soros else None
+            tobbi = sorted([rr for rr, _ in nets[mcu] if rr[0] in 'RC' and rr not in soros]) if mcu else []
+            sor = felh + soros + [rr for rr in tobbi if rr.startswith('C')] + [rr for rr in tobbi if rr.startswith('R')]
+            cx, cy, e = fixed[j]
+            yy = cy + 5.1 if e == 'N' else cy - 5.1
+            for i, rr in enumerate(sor[:4]):
+                fixed[rr] = (cx + (i - 1.5) * 2.1, yy, 90)
+        for i, u in enumerate(cfg['csatorna_oszlop'].get('esd', [])):
+            fixed[u] = (cfg['csatorna_oszlop']['esd_x'], cfg['csatorna_oszlop']['esd_y0'] + i * 4.0, 90)
     fixed_c = {}
     for ref, (x, y, mode) in fixed.items():
         fp = fps[ref]
@@ -360,6 +454,9 @@ def main():
     anchors = {r: v for r, v in cfg['anchors'].items() if r in fps}
     grp = groups(comps, nets, anchors, fixed, cfg.get('attach'))
     hv = cfg.get('hv')
+    if 'blokk' in cfg:                                   # D86: a modulmag-blokkba más alkatrész nem kerül
+        bx, by = cfg['blokk']
+        forbid.append((bx, by, bx + BLOKK_MERET[0], by + BLOKK_MERET[1]))
     lv_forbid = forbid + ([hv] if hv else [])
     # horgonyok a régiójuk közepére, aztán a csoportjuk köréjük (nagyobbak előbb)
     order = list(anchors)
@@ -374,9 +471,21 @@ def main():
             unplaced.append(a); continue
         rects.append(r)
         centers[a] = ((r[0] + r[2]) / 2, (r[1] + r[3]) / 2)
+    pinatt = {r: tgt for r, tgt in cfg.get('pin_attach', {}).items() if r in fps and tgt in fps and r not in fixed}
+    for r, tgt in pinatt.items():                       # D86: a közös (nem GND) hálózatú láb mellé
+        hal = {p.GetNetname() for p in fps[r].Pads() if p.GetNetname() and p.GetNetname() != 'GND'}
+        pads = [p for p in fps[tgt].Pads() if p.GetNetname() in hal] or list(fps[tgt].Pads())
+        px = pcbnew.ToMM(pads[0].GetPosition().x) - OX
+        py = pcbnew.ToMM(pads[0].GetPosition().y) - OY
+        got = try_place(fps[r], (px - 7, py - 7, px + 7, py + 7), (px, py), rects, (W, Hh), lv_forbid) or \
+            try_place(fps[r], (0, 0, W, Hh), (px, py), rects, (W, Hh), lv_forbid)
+        if got:
+            rects.append(got)
+        else:
+            unplaced.append(r)
     members = {}
     for r, g in grp.items():
-        if g and r not in anchors and r not in fixed and r in fps:
+        if g and r not in anchors and r not in fixed and r in fps and r not in pinatt:
             members.setdefault(g, []).append(r)
     for g, refs in members.items():
         refs.sort(key=lambda r: -((bbox_mm(fps[r])[2] - bbox_mm(fps[r])[0]) * (bbox_mm(fps[r])[3] - bbox_mm(fps[r])[1])))
@@ -422,6 +531,15 @@ def main():
         rect = (q[0] - OX - 1, 0, W, q[1] - OY + depth)
         rule_area(rect, (pcbnew.F_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu, pcbnew.B_Cu), 'ANTENNA_keepout')
         report.append(f'antenna-tiltás: {tuple(round(v, 1) for v in rect)} minden rézrétegen')
+    zar = set(cfg.get('lock', []))
+    for r in fps:                                        # D86: minden nem zárolt alkatrész rácsra (a footprint origója)
+        if r not in zar and r not in unplaced:
+                p = fps[r].GetPosition()
+                g = lambda v, o: mm(o + round((pcbnew.ToMM(v) - o) / BLOKK_RACS) * BLOKK_RACS)
+                fps[r].SetPosition(pcbnew.VECTOR2I(g(p.x, OX), g(p.y, OY)))
+    for r in cfg.get('lock', []):                       # D86: mechanikailag kötött helyű alkatrészek zárolva
+        if r in fps:
+            fps[r].SetLocked(True)
     # ami nem fért el: a NYÁK mellé, jól láthatóan
     for i, r in enumerate(unplaced):
         center_at(fps[r], W + 10 + (i % 4) * 9, 5 + (i // 4) * 9)

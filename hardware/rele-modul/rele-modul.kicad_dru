@@ -1,0 +1,57 @@
+(version 1)
+# JLCPCB, 4 réteg, 1 oz (D42, D82) – felár nélküli értékek. Generálta: Claude (D86). A nyitott KiCad nem írja felül
+# (hálózatosztályok helyett név szerinti feltételek). Megnézni: Board Setup → Custom Rules. A később felsorolt szabály erősebb.
+(rule "JLC: sáv és rés"
+  (constraint track_width (min 0.127mm))
+  (constraint clearance (min 0.127mm)))
+# via: a JLC felár nélküli legkisebbje 0,3 mm-es fúrt furat / 0,45 mm-es pad (kisebb = felár); ~1 A / via
+(rule "Via: jel (JLC, felár nélkül)"
+  (condition "A.Type == 'Via'")
+  (constraint hole_size (min 0.3mm) (opt 0.3mm))
+  (constraint via_diameter (min 0.45mm) (opt 0.45mm))
+  (constraint annular_width (min 0.075mm)))
+(rule "JLC: furat"
+  (constraint hole_clearance (min 0.25mm))
+  (constraint hole_to_hole (min 0.25mm)))
+(rule "JLC: lapszél"
+  (constraint edge_clearance (min 0.3mm)))
+(rule "JLC: szitanyomat"
+  (layer "?.Silkscreen")
+  (constraint text_height (min 0.8mm))
+  (constraint text_thickness (min 0.15mm)))
+(rule "Táp: sáv 0.5mm"
+  (condition "A.NetName == '/+24V_IN' || A.NetName == '/+24V_P' || A.NetName == '/GND_IN' || A.NetName == '/COIL?'")
+  (constraint track_width (min 0.3mm) (opt 0.5mm)))
+(rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
+  (condition "A.Type == 'Via' && (A.NetName == '/+24V_IN' || A.NetName == '/+24V_P' || A.NetName == '/GND_IN' || A.NetName == '/COIL?')")
+  (constraint hole_size (min 0.3mm) (opt 0.4mm))
+  (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
+(rule "Táp: sáv 0.6mm"
+  (condition "A.NetName == '+5V' || A.NetName == '/GND_BUS'")
+  (constraint track_width (min 0.3mm) (opt 0.6mm)))
+(rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
+  (condition "A.Type == 'Via' && (A.NetName == '+5V' || A.NetName == '/GND_BUS')")
+  (constraint hole_size (min 0.3mm) (opt 0.4mm))
+  (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
+(rule "Táp: sáv 0.4mm"
+  (condition "A.NetName == '+3V3' || A.NetName == '/modulmag/+3V3A'")
+  (constraint track_width (min 0.3mm) (opt 0.4mm)))
+(rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
+  (condition "A.Type == 'Via' && (A.NetName == '+3V3' || A.NetName == '/modulmag/+3V3A')")
+  (constraint hole_size (min 0.3mm) (opt 0.4mm))
+  (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
+# 230 V (D62): a kontaktus-hálózatok (J101–J104 ↔ K1–K4 11/14, és a nem használt NC 12-es láb – elengedett relénél a COM-on van) – SELV felé ≥ 8 mm (megerősített szigetelés + marás),
+# egymás között ≥ 3 mm; egy relén / sorkapcson belül a lábtávolságot az alkatrész névleges értéke adja (kivétel). Via itt nincs:
+# a belső rétegeken tiltás van, a THT-padok kötik össze a felső és az alsó réteget.
+(rule "230 V ↔ SELV: 8 mm"
+  (condition "(A.NetName == 'Net-(J10?-Pin_?)' || A.NetName == 'unconnected-(K?-Pad12)') && !(B.NetName == 'Net-(J10?-Pin_?)' || B.NetName == 'unconnected-(K?-Pad12)') && !((A.memberOfFootprint('K1') && B.memberOfFootprint('K1')) || (A.memberOfFootprint('K2') && B.memberOfFootprint('K2')) || (A.memberOfFootprint('K3') && B.memberOfFootprint('K3')) || (A.memberOfFootprint('K4') && B.memberOfFootprint('K4')) || (A.memberOfFootprint('J101') && B.memberOfFootprint('J101')) || (A.memberOfFootprint('J102') && B.memberOfFootprint('J102')) || (A.memberOfFootprint('J103') && B.memberOfFootprint('J103')) || (A.memberOfFootprint('J104') && B.memberOfFootprint('J104')))")
+  (constraint clearance (min 8mm)))
+(rule "230 V ↔ 230 V: 3 mm"
+  (condition "(A.NetName == 'Net-(J10?-Pin_?)' || A.NetName == 'unconnected-(K?-Pad12)') && (B.NetName == 'Net-(J10?-Pin_?)' || B.NetName == 'unconnected-(K?-Pad12)') && !((A.memberOfFootprint('K1') && B.memberOfFootprint('K1')) || (A.memberOfFootprint('K2') && B.memberOfFootprint('K2')) || (A.memberOfFootprint('K3') && B.memberOfFootprint('K3')) || (A.memberOfFootprint('K4') && B.memberOfFootprint('K4')) || (A.memberOfFootprint('J101') && B.memberOfFootprint('J101')) || (A.memberOfFootprint('J102') && B.memberOfFootprint('J102')) || (A.memberOfFootprint('J103') && B.memberOfFootprint('J103')) || (A.memberOfFootprint('J104') && B.memberOfFootprint('J104')))")
+  (constraint clearance (min 3mm)))
+(rule "230 V sáv (16 A)"
+  (condition "A.NetName == 'Net-(J10?-Pin_?)'")
+  (constraint track_width (min 2.0mm) (opt 4.0mm)))
+(rule "230 V: nincs via"
+  (condition "A.Type == 'Via' && A.NetName == 'Net-(J10?-Pin_?)'")
+  (constraint disallow via))

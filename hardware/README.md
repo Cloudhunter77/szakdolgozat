@@ -80,5 +80,9 @@ a ház szerinti élen, a többi a hozzá kötött IC köré. Huzalozás nincs �
     flatpak run --command=python3 org.kicad.KiCad gen/pcbgen.py <lap> [--force]   # board generálása
     gen/pcbshow.sh <lap> kep.png                                                  # kép ellenőrzéshez
 
+**Szabályok (D86):** laponként `<lap>/<lap>.kicad_dru` – JLC 4 réteg / 1 oz, via 0,3 / 0,45 (jel), 0,4 / 0,7 (táp), 0,6 / 1,0 mm
+(nagyáram), 230 V-os távolságok; a KiCad magától betölti (Board Setup → Custom Rules). **Modulmag-blokk:** a `pcbgen.py`
+`MODULMAG_BLOKK` sablonja mindhárom modulon azonos relatív elrendezést ad (a lap `blokk=(x, y)` eltolásával).
+
 **A D67 a NYÁK-ra is érvényes:** amint egy `.kicad_pcb`-t kézzel szerkesztettél, az a forrás; a szkript csak
 `--force`-szal írja felül. Kapcsolási rajz változása után a KiCad-ben: *Tools → Update PCB from Schematic*.

@@ -1,0 +1,44 @@
+(version 1)
+# JLCPCB, 4 réteg, 1 oz (D42, D82) – felár nélküli értékek. Generálta: Claude (D86). A nyitott KiCad nem írja felül
+# (hálózatosztályok helyett név szerinti feltételek). Megnézni: Board Setup → Custom Rules. A később felsorolt szabály erősebb.
+(rule "JLC: sáv és rés"
+  (constraint track_width (min 0.127mm))
+  (constraint clearance (min 0.127mm)))
+# via: a JLC felár nélküli legkisebbje 0,3 mm-es fúrt furat / 0,45 mm-es pad (kisebb = felár); ~1 A / via
+(rule "Via: jel (JLC, felár nélkül)"
+  (condition "A.Type == 'Via'")
+  (constraint hole_size (min 0.3mm) (opt 0.3mm))
+  (constraint via_diameter (min 0.45mm) (opt 0.45mm))
+  (constraint annular_width (min 0.075mm)))
+(rule "JLC: furat"
+  (constraint hole_clearance (min 0.25mm))
+  (constraint hole_to_hole (min 0.25mm)))
+(rule "JLC: lapszél"
+  (constraint edge_clearance (min 0.3mm)))
+(rule "JLC: szitanyomat"
+  (layer "?.Silkscreen")
+  (constraint text_height (min 0.8mm))
+  (constraint text_thickness (min 0.15mm)))
+(rule "Táp: sáv 1.0mm"
+  (condition "A.NetName == '/+24V_IN' || A.NetName == '/+24V_P' || A.NetName == '/+24V_F' || A.NetName == '/GND_IN' || A.NetName == '/VIN_BUCK' || A.NetName == '/+5V_BUCK' || A.NetName == '+5V' || A.NetName == '/V_BUS' || A.NetName == '/VUSB'")
+  (constraint track_width (min 0.5mm) (opt 1.0mm)))
+(rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
+  (condition "A.Type == 'Via' && (A.NetName == '/+24V_IN' || A.NetName == '/+24V_P' || A.NetName == '/+24V_F' || A.NetName == '/GND_IN' || A.NetName == '/VIN_BUCK' || A.NetName == '/+5V_BUCK' || A.NetName == '+5V' || A.NetName == '/V_BUS' || A.NetName == '/VUSB')")
+  (constraint hole_size (min 0.3mm) (opt 0.4mm))
+  (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
+(rule "Táp: sáv 0.5mm"
+  (condition "A.NetName == '+3V3' || A.NetName == '/+3V3A' || A.NetName == '/+3V3_LORA' || A.NetName == '/CAN_VCC' || A.NetName == '/CAN_VIO'")
+  (constraint track_width (min 0.3mm) (opt 0.5mm)))
+(rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
+  (condition "A.Type == 'Via' && (A.NetName == '+3V3' || A.NetName == '/+3V3A' || A.NetName == '/+3V3_LORA' || A.NetName == '/CAN_VCC' || A.NetName == '/CAN_VIO')")
+  (constraint hole_size (min 0.3mm) (opt 0.4mm))
+  (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
+# Ethernet (100BASE-TX, 100 Ω diff.) – JLC04161H-7628 rétegrend, L1 a L2 felett: ~0,2 / 0,15 mm (a JLC impedancia-kalkulátorával pontosítható)
+(rule "Ethernet-párok"
+  (condition "A.NetName == '/ETH_?X?' || A.NetName == '/ETH_?X?_W'")
+  (constraint track_width (opt 0.2mm))
+  (constraint diff_pair_gap (opt 0.15mm)))
+# USB 2.0 FS (90 Ω diff.) – a /USB_DP / /USB_DM nevet a KiCad nem ismeri fel párnak (P/N kellene): kézzel, egymás mellett vezetni
+(rule "USB"
+  (condition "A.NetName == '/USB_D?' || A.NetName == '/USB_D?_CONN'")
+  (constraint track_width (opt 0.25mm)))
