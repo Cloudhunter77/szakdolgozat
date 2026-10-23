@@ -402,5 +402,5 @@ for i, n in enumerate(['+24V_IN', '+24V_RAIL']):
     S.flag(n, 262 + i * 17.78, 238)
 
 S.text('Generálva (hardware/gen/led-modul.py) – D43/D47/D53/D65 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 281, 1.3)
-S.write(OUT, date='2026-10-22')
+S.write(OUT, date='2026-10-23')
 print('ok', OUT)

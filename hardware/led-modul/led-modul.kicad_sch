@@ -6,7 +6,7 @@
 	(paper "A3")
 	(title_block
 		(title "LED-modul – 6 × 10 A low-side PWM (össz. 15 A), modulmag")
-		(date "2026-10-22")
+		(date "2026-10-23")
 		(rev "v1 vázlat")
 		(company "Moduláris okosotthon platform – szakdolgozat")
 	)
@@ -4098,17 +4098,6 @@
 		)
 		(uuid "ae26e7db-8261-5df8-aa82-c124f5eb063d")
 	)
-	(text "Generálva (hardware/gen/led-modul.py) – D43/D47/D53/D65 alapján; kézi szerkesztés helyett a generátort módosítsd."
-		(exclude_from_sim no)
-		(at 15 281 0)
-		(effects
-			(font
-				(size 1.3 1.3)
-			)
-			(justify left bottom)
-		)
-		(uuid "b1d37c92-762e-518b-ba14-6b9e5a4c3af0")
-	)
 	(text "a 24 V-ot a PB1 méri, a főbiztosíték előtt"
 		(exclude_from_sim no)
 		(at 15 28.5 0)
@@ -4271,12 +4260,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "21aca817-069f-5db2-91a7-f5dbdccda58b")
-	)
-	(junction
-		(at 125.73 44.45)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "21ea5e08-b377-5cda-a7f6-ad54499806f4")
 	)
 	(junction
 		(at 199.39 248.92)
@@ -4847,16 +4830,6 @@
 			(type default)
 		)
 		(uuid "0e08bb41-fd6d-59a2-a26d-82af3d8c04ac")
-	)
-	(wire
-		(pts
-			(xy 125.73 44.45) (xy 130.81 44.45)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0e9309a2-4ab2-5061-9ad0-34f8ec72edec")
 	)
 	(wire
 		(pts
@@ -5510,7 +5483,7 @@
 	)
 	(wire
 		(pts
-			(xy 97.79 44.45) (xy 125.73 44.45)
+			(xy 97.79 44.45) (xy 130.81 44.45)
 		)
 		(stroke
 			(width 0)
@@ -24470,4 +24443,5 @@
 			(page "1")
 		)
 	)
+	(embedded_fonts no)
 )

@@ -235,5 +235,5 @@ S.junction((93.98, tp[1]))
 S.label('CT_SENSE', (99.06, tp[1]), 0)
 
 S.text('Generálva (hardware/gen/rele-modul.py) – a MODULMAG-SPEC + D62 alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 281, 1.3)
-S.write(OUT, date='2026-10-22')
+S.write(OUT, date='2026-10-23')
 print('ok', OUT)

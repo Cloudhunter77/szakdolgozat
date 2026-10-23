@@ -23,8 +23,8 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
   `docs/komponenslista.md` + `hardware/out/kapcsolasi-rajzok-2026-10-23.pdf`. **Következik: layout (Balázs, 10-23 – 10-28).**
 - 💰 **D84–D85 (10-22/23): legolcsóbb beszerzés** – minden az LCSC-ről a JLC-s NYÁK-rendeléssel (~15 eFt); a megszűnt NTD5C648NL /
   NTMFS5C604NL helyett NCE6080K / NCEP6090AGU; F201 NANO² 15 A → a LED-modul össz-árama 15 A; betáp-sorkapcsok DG128.
-- ✏️ **D67:** amint Balázs kézzel szerkeszt egy lapot, onnantól a `.kicad_sch` a forrás (generátort arra nem futtatunk);
-  munkafolyamat: `hardware/README.md`
+- ✏️ **D67:** a kézzel szerkesztett lapnál a `.kicad_sch` a forrás – **10-23 óta mind az öt lap kézi** (`hardware/gen/kezi-lapok.txt`;
+  a `build.sh` ezeket csak ellenőrzi); munkafolyamat: `hardware/README.md`
 - 📦 `SAMPLE-KERESEK.md` – TI kérés + rendelés leadva (10-19); a többi gyártó hátra (határidő 10-22)
 - 📋 `NYAK-ELOKESZITES.md` – ami a rajz/layout előtt még nyitott
 - ⏰ **NYÁK-rendelés legkésőbb ≈ 2026-10-31** (vezérlő + LED- + relé- + bemeneti modul, D25) – ütemterv: `UTEMTERV.md`

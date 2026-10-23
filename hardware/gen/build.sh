@@ -1,6 +1,7 @@
 #!/bin/bash
 # Kapcsolási rajz generálása + ellenőrzés:  hardware/gen/build.sh <lap>   (modulmag | vezerlo | rele-modul)
-#   1. a <lap>.py legenerálja a <lap>/<lap>.kicad_sch-t  ← FIGYELEM: felülírja a kézi elrendezést!
+#   1. a <lap>.py legenerálja a <lap>/<lap>.kicad_sch-t  ← felülírná a kézi elrendezést, ezért a gen/kezi-lapok.txt-ben
+#      felsorolt lapoknál kimarad (D67); felülírás csak:  build.sh <lap> --force
 #   2. kicad-cli: upgrade (KiCad 10 formátum), ERC, netlista, PDF  → hardware/out/
 #   3. footprint-ellenőrzés: minden alkatrésznek van-e footprintje, és létezik-e
 # A KiCad-könyvtárak másolatát (gen/kilib/, nincs a repóban) az első futás tölti le a Flatpakból.
@@ -16,8 +17,12 @@ for l in 74xx 74xGxx Connector_Audio Connector_Generic Connector Converter_DCDC 
       /app/extensions/Library/symbols/$l.kicad_sym > "$G/kilib/$l.kicad_sym"
 done
 cd "$H"
-python3 "$G/$B.py" "$B/$B.kicad_sch"
-$K sch upgrade "$B/$B.kicad_sch" >/dev/null
+if grep -qx "$B" "$G/kezi-lapok.txt" 2>/dev/null && [ "$2" != "--force" ]; then
+  echo "$B: kézzel szerkesztett lap (D67, gen/kezi-lapok.txt) – nem generálom újra, csak ellenőrzöm (felülírás: --force)"
+else
+  python3 "$G/$B.py" "$B/$B.kicad_sch"
+  $K sch upgrade "$B/$B.kicad_sch" >/dev/null
+fi
 $K sch erc --severity-all -o "out/$B-erc.rpt" "$B/$B.kicad_sch" | grep violations
 grep -E "^\[" "out/$B-erc.rpt" | sed 's/\]:.*/]/' | sort | uniq -c
 $K sch export netlist -o "out/$B.net" "$B/$B.kicad_sch" >/dev/null

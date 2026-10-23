@@ -19,7 +19,8 @@ ERC, netlista-export és összevetés a specifikációval, később DRC és gerb
 
 - **Forrás:** amíg Balázs egy lapot nem szerkeszt kézzel, a `gen/<lap>.py` a forrás. Amint kézzel átrendez rajta
   valamit, onnantól a `.kicad_sch` – arra a lapra a generátort **nem futtatjuk újra** (a mozgatások elvesznének).
-  A kézzel átvett lapokat itt jelöljük: _(még egyik sem)_.
+  A kézzel átvett lapok: **mind az öt (2026-10-23)** – `gen/kezi-lapok.txt`; a `build.sh` ezeket nem generálja újra, csak
+  ellenőrzi (ERC, netlista, PDF). Módosítás innentől a `.kicad_sch`-ban (KiCad-ben vagy MCP-vel), nem a `gen/<lap>.py`-ban.
 - **Egyszerre csak egyikünk szerkeszt:** Balázs ment → Claude módosít (fájlban vagy KiCad MCP-vel) → Balázs a
   KiCad-ben újratölti a lapot (File → Revert).
 - **Minden módosítás után:**

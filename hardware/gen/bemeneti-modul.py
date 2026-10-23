@@ -253,5 +253,5 @@ p = series('Device:Polyfuse', 'F305', 'PTC 0,2A', (347.98, 236.22), 'Fuse:Fuse_1
 stub(p, 'SUP_I2C', 0, 5.08)
 
 S.text('Generálva (hardware/gen/bemeneti-modul.py) – D44/D48/D51/D66 alapján; kézi szerkesztés helyett a generátort módosítsd.', 15, 281, 1.3)
-S.write(OUT, date='2026-10-22')
+S.write(OUT, date='2026-10-23')
 print('ok', OUT)

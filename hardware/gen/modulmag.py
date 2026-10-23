@@ -339,5 +339,5 @@ S.label('CAN_L', p, 0)
 for i, n in enumerate(['+5V', 'GND', '+3V3A']):
     S.flag(n, 110 + i * 14, 262)
 S.text('Generálva a MODULMAG-SPEC.md alapján (hardware/gen/modulmag.py) – kézi szerkesztés helyett a generátort módosítsd.', 20, 281, 1.3)
-S.write(OUT, date='2026-10-20')
+S.write(OUT, date='2026-10-23')
 print('ok', OUT)

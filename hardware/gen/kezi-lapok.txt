@@ -1,0 +1,8 @@
+# D67: kézzel szerkesztett lapok – a build.sh ezeket nem generálja újra (csak ERC, netlista, PDF).
+# A forrás innentől a .kicad_sch; a gen/<lap>.py csak a kezdeti állapotot írja le.
+# 2026-10-23: Balázs átrendezte mind az öt lapot.
+modulmag
+vezerlo
+led-modul
+rele-modul
+bemeneti-modul

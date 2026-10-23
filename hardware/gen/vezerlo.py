@@ -864,5 +864,5 @@ for i, net in enumerate(tps):
 for i, n in enumerate(['GND', '+3V3', '+24V_P', '+24V_F', 'VIN_BUCK', '+3V3A', 'CAN_VCC', 'CAN_VIO', 'VUSB', '+3V3_LORA', '+5V_BUCK', 'ETH_CGND']):
     S.flag(n, 20 + i * 20.32, 405)
 S.text('Generálva (hardware/gen/vezerlo.py) – a VEZERLO-SPEC.md alapján; kézi szerkesztés helyett a generátort módosítsd.', 20, 414, 1.4)
-S.write(OUT, date='2026-10-22')
+S.write(OUT, date='2026-10-23')
 print('ok', OUT)
