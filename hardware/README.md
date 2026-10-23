@@ -58,6 +58,10 @@ layoutnál rendeződnek (figyelmeztetés). Kilépési kód 1, ha van hiba.
 újragenerálás után is egyezik a NYÁK footprintjeinek útvonalával („Update PCB from Schematic” működik); a többi elem UUID-je
 laponként sorszámból képződik (két futás bájtra azonos fájlt ad).
 
+## Konzulensi PDF (`gen/pdf.sh`)
+`bash gen/pdf.sh` → `out/kapcsolasi-rajzok-<dátum>.pdf` – a mostani `.kicad_sch`-okból (a rajzokhoz nem nyúl), minden lap egyszer,
+a komponenslista sorrendjében: vezérlő, modulmag, LED-, relé-, bemeneti modul (5 oldal).
+
 ## Darabjegyzék (`gen/bom.sh`)
 `bash gen/bom.sh` → `bom/<lap>.csv` – laponként, értékenként és footprintenként csoportosítva, a DNP-k nélkül
 (a „Megjegyzés” mezővel). A kézben lévő és a megveendő tételek: `docs/kontextus/SAMPLE-KERESEK.md`.
