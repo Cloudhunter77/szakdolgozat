@@ -35,6 +35,11 @@ ERC, netlista-export és összevetés a specifikációval, később DRC és gerb
 - **KiCad MCP:** `kicad-mcp-pro` (uvx, Python 3.13), helyi scope, munkaterület = `hardware/`, **írható mód**
   (`KICAD_MCP_OPERATING_MODE=write`). Minden projektmappában `output/` munkamappát hoz létre (gitignore-ban).
 
+**Rajzszerkesztés szkriptből (`gen/schedit.py`, D90):** a kézi `.kicad_sch`-okhoz – szimbólumok és lábpozíciók (a forgatás /
+tükrözés a `kigen` szerint), vezeték, címke, tápszimbólum (a hálózat neve a Value), PWR_FLAG, törlés, áthelyezés, címke csonkra
+(`stub_labels`), a D-hivatkozások kivétele a konzulensnek szánt szövegekből (`strip_d`). A `save()` csak akkor ír, ha a fájl a beolvasás
+óta nem változott (Balázs nem mentett közben). Minden módosítás után: netlista-összevetés (`gen/netcmp.py`) + ERC + SVG-kép.
+
 ## STM32CubeMX-projektek (`cubemx/`)
 `python3 gen/cubemx.py` → `cubemx/<modul>/<modul>.ioc` a MODULMAG-SPEC 7. fejezetének lábkiosztásából (a jel- és
 üzemmódnevek a CubeMX 6.18 adatbázisából). MCU: **STM32L433RCT3** (D78). Indítás: `flatpak run com.st.STM32CubeMX` →
@@ -74,7 +79,7 @@ táblában van (ellenállás / kondenzátor magától); ha a BOM-ba ismeretlen t
 ## NYÁK-előkészítés (2026-10-21, D73)
 `gen/pcbgen.py` a netlistából (`out/<lap>.net`) elkészíti a `<lap>/<lap>.kicad_pcb`-t: 4 réteg, körvonal (86,5 × 68 mm;
 a bemeneti modul 86,5 × 103 mm), DIN-zónák a Dwgs.User rétegen (felső/alsó váll, előlapi ablak), a footprintek a
-hálózatokkal és a kapcsolási rajzhoz kötve (az „Update PCB from Schematic” működik), kezdő elhelyezés: a csatlakozók
+hálózatokkal és a kapcsolási rajzhoz kötve (az „Update PCB from Schematic” működik; a DNP-jelző és a mezők is átkerülnek – D89), kezdő elhelyezés: a csatlakozók
 a ház szerinti élen, a többi a hozzá kötött IC köré. Huzalozás nincs – azt kézzel.
 
     flatpak run --command=python3 org.kicad.KiCad gen/pcbgen.py <lap> [--force]   # board generálása
@@ -84,5 +89,20 @@ a ház szerinti élen, a többi a hozzá kötött IC köré. Huzalozás nincs �
 (nagyáram), 230 V-os távolságok; a KiCad magától betölti (Board Setup → Custom Rules). **Modulmag-blokk:** a `pcbgen.py`
 `MODULMAG_BLOKK` sablonja mindhárom modulon azonos relatív elrendezést ad (a lap `blokk=(x, y)` eltolásával).
 
+**Vezérlő (D87):** az U4 a jobb élen (antenna kifelé), a két buck rögzített relatív elrendezéssel (`VEZ_U1`, `VEZ_U2` – TI-ajánlás);
+a kisebb alkatrészek a `pin_attach` szerint a saját lábukhoz (a felhúzó a jellábhoz, több azonos tápú lábnál sorban mindegyikhez).
+
 **A D67 a NYÁK-ra is érvényes:** amint egy `.kicad_pcb`-t kézzel szerkesztettél, az a forrás; a szkript csak
-`--force`-szal írja felül. Kapcsolási rajz változása után a KiCad-ben: *Tools → Update PCB from Schematic*.
+`--force`-szal írja felül. Kapcsolási rajz változása után a KiCad-ben: *Tools → Update PCB from Schematic*. **Kézi NYÁK-ok:** led-modul (Balázs huzalozza, 2026-10-23).
+
+**Szitanyomat-feliratok (`gen/felirat.py`):** `flatpak run --command=python3 org.kicad.KiCad gen/felirat.py <be> <ki>` – minden
+jelölést a saját alkatrésze mellé tesz (0°/90°, 1,0 mm, ahol nem fér el 0,8 mm), padra, viára, furatra, ≥ 1 mm-es (fedetlen, D82) sávra
+és más feliratra nem lóghat, a szitanyomat-rajzokat (a lapra rajzoltakat is) kerüli; ami 4 mm-en belül nem fér el, azt 6–8 mm-es körzetben
+keresi. Csak a feliratokhoz nyúl. Kézi NYÁK-on: Balázs ment → futtatás → a KiCad-ben File → Revert.
+`--csak R1,C2,…`: csak ezek felirata mozdul, a többi (kézzel igazított) felirat akadály.
+
+**Maszknyitás a nagyáramú utakon (`gen/maszknyitas.py`, D82):** `flatpak run --command=python3 org.kicad.KiCad gen/maszknyitas.py <be> <ki>`
+– a nagyáramú hálózatok ≥ 1 mm-es sávjai és külső zónái fölé kitöltött sokszöget tesz az F.Mask / B.Mask rétegre (ónnal / rézdróttal
+megvastagításhoz); felül az alkatrészek udvara és a sönt (R209) 1,5 mm-es környéke fedett marad. A „D82 maszknyitás” csoportba kerül,
+újrafuttatva lecseréli – huzalozás-módosítás után: zónatöltés (B) → mentés → futtatás → File → Revert. A hálózatok: `--halok REGEX`
+(alapból a LED-modulé), a sönt: `--sont R209`. A `felirat.py` a nyitásokat is kerüli.

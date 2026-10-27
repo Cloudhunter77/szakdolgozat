@@ -13,7 +13,7 @@ közben nézd át.
 - 2026-10-22 (D78): fordított polaritás ellen **Q1 N-FET a GND-ágban** a D1 (B360) helyett – a közös föld miatt (D71) a + ági
   dióda nem véd: fordított bekötésnél a busz GND-érén át zárlat lenne · a táp-LED (D5) a `+5V`-ról jár (zöld, 522 nm).
 - 2026-10-22 (D84, legolcsóbb beszerzés): J1 Degson DG250 · L1/L3 FerroCore HPI0630 (saját footprint) · C40/C41 12 pF ·
-  D3 SS56C · D9 BAT54HT1G · FB1 BLM18EG221 · C4 10 µF · C9 22 pF · U4 **N8** · SW1/SW2 PTS525 (a TL3342-footprinten).
+  D3 SS56C · D9 BAT54HT1G · C4 10 µF · C9 22 pF · U4 **N8** · SW1/SW2 PTS525 (a TL3342-footprinten).
 - 2026-10-23 (D85, LCSC): J1 Degson DG128 (mint a LED-modul J201-e) · L1/L3 LCSC-s 0630-as tekercs (ugyanaz a footprint) ·
   Y1 SX3B25.000F1010F30 (CL 10 pF, ESR ≤ 30 Ω).
 - **2026-10-20 (D71, konzultáció után): központi 5 V.** A vezérlő adja az összes modul logikai tápját a buszon:
@@ -46,7 +46,6 @@ közben nézd át.
 | `VUSB` | az USB-C VBUS-a | |
 | `VIN_BUCK` | az LMR36015 bemenete | `+24V_P` (D8-on át) VAGY `VUSB` (D3-on át) |
 | `3V3` | C6, W5500 digitális, VIO | U1 |
-| `3V3A` | a W5500 analóg tápja | `3V3`-ból FB1 ferriten át |
 | `+5V_BUCK` | az LMR33630 kimenete (5,22 V) | az U12 VIN1-e |
 | `+5V` | a CAN transceiver VCC-je, a TPS2595 bemenete, RGB LED + 74HCT14 | U12 (LM66200): a buckból **vagy USB-ről** (D71) |
 | `V_BUS` | a lánc tápja (XH 1-es tű) | U3 kimenete |
@@ -63,7 +62,7 @@ trafón át leválasztott. Bekötési szabály: egy táp, csillagpontosan (D71).
 +24V_IN → F1 → +24V_P ──────┬─ D2 SMBJ28A → GND        (J1 GND-pólusa → GND_IN → Q1 → GND, D78)
                              ├─ R1/R2 → VIN_SENSE (GPIO0)
                              ├─ D8 → VIN_BUCK → U1 (LMR36015) → 3V3
-                             └─ R7 0 Ω → +24V_F ─ D7 SMBJ28A, C1 47 µF elkó, C2 10 µF → U2 (LMR33630) → +5V_BUCK ─┐
+                             └─ R7 0 Ω → +24V_F ─ C1 47 µF elkó, C2 10 µF → U2 (LMR33630) → +5V_BUCK ─┐
 VUSB → D3 → VIN_BUCK                                                                           U12 LM66200 → +5V → U3 TPS2595 → V_BUS
 VUSB ──────────────────────────────────────────────────────────────────────────────────────────┘   (D71)
 ```
@@ -84,8 +83,7 @@ VUSB ─────────────────────────
 | D2 | TVS | SMBJ28A | `+24V_P` → GND; ~45 V-on fog (az LMR36015 60 V-os) |
 | D8 | Schottky | SS16 (60 V, 1 A) | `+24V_P` → `VIN_BUCK`; az USB ne táplálja vissza a 24 V-os oldalt |
 | D3 | Schottky | **SS56C** (60 V, 5 A, SMC – D84) | `VUSB` → `VIN_BUCK`. **60 V-os kell**: túlfeszültségnél a `VIN_BUCK` ~45 V is lehet, miközben a `VUSB` ~0 V. A 3 A-es dióda 0,5 A-en kisebbet ejt (~0,4 V) → USB-ről is meglegyen az LMR36015 4,2 V-ja |
-| R7 | ellenállás | **0 Ω (D70)**; a 2512-es footprint marad, szükség esetén 10 Ω impulzusbíró | a C1-gyel RC-szűrő az U2 (LMR33630) elé, korlátozza a D7 áramát (D57 mintájára). Legrosszabb esetben ~0,16 A → 1,6 V, 0,26 W – ezért 2512 |
-| D7 | TVS | SMBJ28A | `+24V_F` → GND – az LMR33630 max. 36 V-ja előtt |
+| R7 | ellenállás | **0 Ω (D70)**; a 2512-es footprint marad, szükség esetén 10 Ω impulzusbíró | a C1-gyel RC-szűrő az U2 (LMR33630) elé, korlátozza a D2 áramát, ha 10 Ω kerül be (D57 mintájára). Legrosszabb esetben ~0,16 A → 1,6 V, 0,26 W – ezért 2512 |
 | C1 | elektrolit – **kötelező** | 47 µF, 50 V, low-ESR, 105 °C | az R7-tel soros R-C a bemeneten → a betápkábel LC-lengését is csillapítja (D57) |
 | C2 | kerámia | 10 µF, 50 V, X7R (1210) | az U2 VIN–PGND lábai mellett (+ C53 220 nF) |
 | R1, R2, C3 | osztó | 150 kΩ / 10 kΩ, 100 nF | `+24V_P` → **GPIO0** (VIN_SENSE, ADC1_CH0): 24 V → 1,47 V; csak USB-ről 0 V |
@@ -253,7 +251,8 @@ TI eFuse, 2,7–18 V (abs. 20 V), 0,5–4 A, **5,7 V-os túlfeszültség-vágás
 | 38–42 | RSVD | **nyitva** (az adatlap v1.0.2 óta nem GND!) |
 | 43, 44, 45 | PMODE2/1/0 | nyitva (belső felhúzás → 111 = minden mód, auto-negotiation); opcionális lehúzó-footprintek |
 
-- **FB1:** ferritgyöngy `3V3` → `3V3A` (WIZnet: HH-1M1608-121JT, 120 Ω @ 100 MHz; D84: BLM18EG221TN1D, 220 Ω, 1 A).
+- **Ferritgyöngy nincs (D90):** a W5500 AVDD-je közvetlenül a `3V3`-ról, lábanként 100 nF + 10 µF (a WIZnet-referencia HH-1M1608-121JT-je
+  a kerámiákkal csillapítatlan LC-kört alkotna).
 - Hidegítés: 7 × 100 nF (AVDD-k + VDD) + 10 µF a `3V3`-on + 10 µF a `3V3A`-n.
 - Áramfelvétel ~132 mA (100 Mbit adás). Nincs auto-MDIX – ma már szinte minden switch elintézi.
 
@@ -371,7 +370,7 @@ VBUS rövid ideig túllőhet – az LM66200 VIN2-je abs. max. 6 V.
   3,7 V alatt nincs specifikálva, ezért nem a 3,3 V-ról jár. Fényvezető alá, az előlap felőli szélen. Csak 24 V-ról
   világít.
 - **U9 – 74HCT14D (kézben, SOIC-14) szintillesztő:** VCC (14) ← `5V` + 100 nF, GND (7). GPIO8 → 1A (1); 1Y (2) → 2A (3);
-  2Y (4) → R31 33 Ω → D6 DIN (két inverter sorban = nem invertál; a HCT bemenete a 3,3 V-ot biztosan magasnak
+  2Y (4) → D6 DIN (a soros R31 a D90-nel kikerült) (két inverter sorban = nem invertál; a HCT bemenete a 3,3 V-ot biztosan magasnak
   látja). A nem használt 3A (5), 4A (9), 5A (11), 6A (13) a GND-re.
   **R32 (0 Ω, nem beültetve):** GPIO8 → DIN közvetlenül – a WS2812B-V5 bemenete 3,3 V-tal is működik, ilyenkor az
   U9 elhagyható. **U9 és R32 egyszerre ne legyen beültetve.**
@@ -386,11 +385,14 @@ Lásd 3.2. **Szabad láb már nincs** (D68/D69): GPIO4/22/23 a LoRáé, a GPIO5 
 gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UART0-val (GPIO16/17).
 
 ## 10. Mechanika és layout (DIN 4 M, NYÁK ~66 × 85 mm – D50)
-- **Felső váll:** J1 (24 V) · J2, J3 (busz) · JP1 (lezárás) · J4 (USB-C).
-- **Alsó váll:** J6 (RJ45) – a hálózati kábel lefelé, a kábelcsatornába. (A felső vállon már nem fér el
-  kényelmesen: 24 V ~10 mm + 2 × XH ~20 mm + jumper ~5 mm + USB-C ~9 mm + RJ45 ~16 mm ≈ 60 mm.)
-- **Előlap felőli szél:** D5, D6 (fényvezető), SW1, SW2.
-- **Antenna:** a WROOM-1 antennája egy sarokban, a lap szélén, minden fémtől (RJ45, sorkapocs) távol (3.3).
+- **Felső váll:** J1 (24 V) · J2, J3 (busz) · JP1 (lezárás).
+- **Alsó váll:** J6 (RJ45) – a hálózati kábel lefelé, a kábelcsatornába · J4 (USB-C) · J8 (bővítő) · J5 (debug, DNP).
+  (A felső vállon nem fér el: 24 V ~10 mm + 2 × XH ~27 mm + jumper ~4 mm + USB-C ~11 mm ≈ 53 mm, a 3,3 V-os buck mellett.)
+- **Előlapi ablak:** D5, D6 (fényvezető), SW1, SW2 – jobbra lent.
+- **Antenna (D87):** az U4 a **jobb élen**, az antenna kifelé (az oldalfal felé), az előlapi ablak magasságában – a J1/J2/J3-tól,
+  az RJ45-től és az USB-C-től ≥ 15 mm-re; alatta és ±4 mm-en minden rézrétegen tiltás (3.3).
+- **Elrendezés (D87, `gen/pcbgen.py`):** bal felül a betáp (F1, Q1, TVS-ek, R7 + C1), középen az 5 V-os buck, a csatlakozók alatt
+  az U12/U3 és a CAN, a 3,3 V-os buck az U4 3V3-lába fölött; lent balra a LoRa (DNP), a W5500 az RJ45 fölött.
 - **C1 (47 µF elkó):** 7,7 mm magas – a ház vállmagassága alá kell férnie. Az LMR33630 hűtőpadja alatt viák a GND-síkra.
 - **Ethernet:** a W5500 a MagJack mellett; a TX/RX párok rövidek, 100 Ω-osak (JLC impedancia-kalkulátor, a
   választott rétegrendre), folytonos GND-sík fölött, via nélkül. A 25 MHz-es kvarc a W5500 lábainál.
@@ -412,7 +414,7 @@ gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UAR
 ## 12. Darabjegyzék (vezérlő)
 U1 LMR36015BRNXR · U2 LMR33630ADDA · U12 LM66200DRLR · U3 TPS259531DSGR · L3 8,2 µH 0630 (APS0630M8R2A) · U4 ESP32-C6-WROOM-1-N8 (vagy -1U) · U5 W5500 ·
 U6 TCAN1044AVDRQ1 · U7 ESD2CAN24-Q1 · U8 USBLC6-2SC6 · U9 74HCT14D (kézben) · Y1 25 MHz (SX3B25.000F1010F30, CL 10 pF, ESR ≤ 30 Ω) · L1 6,8 µH 0630 (SLO0630H6R8MTT) ·
-FB1 BLM18EG221 · F1 2 A / 32 V · D8 SS16 · Q1 IRFR1205 + R56 10 k + D12 BZT52C15 (D78) · D3 SS56C · D2, D7 SMBJ28A · D4 SMF5.0A ·
+F1 2 A / 32 V · D8 SS16 · Q1 IRFR1205 + R56 10 k + D12 BZT52C15 (D78) · D3 SS56C · D2 SMBJ28A (a D7 a D90-nel kikerült) · D4 SMF5.0A ·
 D9 BAT54HT1G · D5 zöld LED · D6 WS2812B-V5 (vagy WS2812C-2020) · J1 Degson DG128-5.0-02P · J2/J3 B4B-XH-A · J4 USB-C
 (16 tűs) · J5 1 × 6 tüskesor · J6 MagJack (J1B1211CCD / HR911105A) · JP1 2 tűs + jumper · JP2/JP3 3 padas
 forrasztható jumper · SW1/SW2 PTS525S5215A · kondenzátorok: 47 µF 50 V elektrolit (kötelező), 10 µF 50 V (1210, 2),
@@ -477,7 +479,7 @@ a generátor tri-state-re írja át (ERC).
   **R48–R50** PMODE-lehúzások (4.1); **L2** közös módusú CAN-fojtó + **JP4/JP5** alapból zárt áthidaló (6.4 –
   `CAN_H_T/CAN_L_T` a transceiver oldalán).
 - **U1** saját footprint: `modularis:TI_VQFN-HR-12_RNX0012B` (a TI RNX0012B csomagrajzából).
-- **Footprint-ellenőrzés (2026-10-20):** U1 (RNX0012B), U10 (E22 – két független referencia-footprinttel is: azonos lábsorrend, a padok ±7,0 mm-re igazítva), U12 LM66200 (SOT-583-8), U3 TPS2595 (DSG, ThermalVias) – a TI/Ebyte-rajzokkal egyeznek.
+- **Footprint-ellenőrzés (2026-10-20):** U1 (RNX0012B), U10 (E22 – két független referencia-footprinttel is: azonos lábsorrend, a padok ±7,0 mm-re igazítva), U12 LM66200 (SOT-583-8), U3 TPS2595 (DSG; D88 óta a via nélküli változat) – a TI/Ebyte-rajzokkal egyeznek.
 
 ### 15.4 R7 = 0 Ω (D70)
 A D57-féle 10 Ω helyett 0 Ω; a footprint marad. Bedugáskor a TVS nagyobb áramon, magasabban fog – a 24 V-os táp

@@ -46,8 +46,8 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
 - **Modulmag tápja (D71, D80):** a busz +5V-ja → AP2112K-3.3 (kis ejtésű LDO, kerámiával stabil); 24 V a modulmagon nincs. A LED- és a
   relémodul a terheléshez saját 12–26 V-ot kap (VIN_SENSE a PB1-en), a bemeneti modulon nincs 24 V.
   A vezérlő LMR33630-a max. 36 V → **a tápot ≤ 26 V-ra állítani** (D57 marad).
-- **HW-ID és HW_REV (D71):** 16 sáv (R_top 10 k + R_bottom): 0 = hiba, 1 LED, 2 relé (24 V-os tekercs), 3 bemeneti,
-  4 relé (12 V-os tekercs), 5–14 későbbi, **15 = a firmware-ből megadott** (csak R_top).
+- **HW-ID és HW_REV (D71, D89):** 16 sáv (R_top 10 k + R_bottom): 0 = hiba, 1 LED, 2 relé (24 V-os tekercs), 3 bemeneti,
+  4 relé (12 V-os tekercs), 5–14 későbbi, **15 = a firmware-ből megadott** (csak R_top). Mindkét osztó a modul saját lapján (D89).
 - **Lábkiosztás (D54, D79; CubeMX-ben ellenőrizni):** modulmag: CAN PA11/12, USART3 PC4/5, SWD, HSE, HW-ID PC0,
   VBUS_SENSE PC1, LED PC13; VIN_SENSE (24 V) **PB1** a LED- és a relémodulon. LED-modul: TIM1 PA8–10 + TIM15 PB14/15 + TIM16 PB8,
   I_SENSE PA3 (COMP2 → TIM1/15/16 break), DAC1 PA4, DRV_EN PB12. Relé: PB12–15.
@@ -133,7 +133,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] **Beszerzés (D85 – legolcsóbb):** minden az LCSC-ről, a JLC-s NYÁK-rendeléssel együtt – 99 tétel, ~15 eFt ÁFA-val;
       kosár: `hardware/bom/lcsc-kosar.csv` (lista: `beszerzes.csv`, `gen/beszerzes.py`); házak később (~8 eFt, Hestore); TI-rendelés 8;
       fiók-érzékelők (AH1911 / reed) később
-- [ ] NYÁK: rajzok ✅, szabályok + modulok elrendezése ✅ (D86, a modulmag huzalozható); **vezérlő: U4 helye (javaslat: jobb él) → elrendezés**; layout (Balázs), rendelés ≈ 10-30
+- [ ] NYÁK: rajzok ✅, szabályok + elrendezés mind a négy lapon ✅ (D86, D87 – vezérlő: U4 a jobb élen, buckok a TI-ajánlás szerint); **huzalozás (Balázs): a LED-modul elkezdve (10-23, onnantól kézi – D67)**, a többi utána; rendelés ≈ 10-30
 - [ ] Firmware később (L433; a meglévő Nucleón / ST-Linkkel kezdhető – D85): LED-modul (önteszt, árammintavétel, 15 A-es korlát (D84), DAC-küszöb,
       kiégett biztosíték), csatorna-csoportok → Matter-lámpák; modul-protokoll + bootloader; vezérlő: V_BUS-kezelés
 - [ ] CCT firmware (D16) a breadboardon (`cp-03-cct-szalag` javaslat); 16 W/m a két szín együtt vagy külön?
@@ -144,7 +144,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D86 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D88 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, SN65HVD230, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni

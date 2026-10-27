@@ -6,9 +6,9 @@ A rendszer felépítése röviden: egy vezérlő (ESP32-C6, Matter-híd a Home A
 
 A modulmag egy közös hierarchikus lap: a LED-, a relé- és a bemeneti modulon ugyanaz (mikrovezérlő, táp a buszról, CAN, busz-csatlakozók). Ezért külön fejezetben szerepel, a moduloknál csak a modulspecifikus rész van.
 
-Jelölések: DNP = az alkatrész helye (footprintje) a NYÁK-on van, de alapból nincs beültetve (későbbi bővítés vagy mérés utáni hangolás). A „D” számok (pl. D71) a döntésnapló bejegyzéseire utalnak.
+Jelölések: DNP = az alkatrész helye (footprintje) a NYÁK-on van, de alapból nincs beültetve (későbbi bővítés vagy mérés utáni hangolás).
 
-Állapot: 2026-10-23, a D78–D85 döntésekkel (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V; a sorkapcsok, tekercsek és néhány passzív a beszerezhető típusokra igazítva). A lista a kapcsolási rajzok mostani állapotát írja le; a NYÁK-ok huzalozása még hátra van.
+Állapot: 2026-10-27 (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V; a konzulensi átnézés után: NRST-felhúzás, a ferritgyöngyök, a vezérlő második 24 V-os TVS-e (D7), az RGB-adatvonal soros ellenállása (R31) és a relémodul soros diódája (D100) kivéve). A lista a kapcsolási rajzok mostani állapotát írja le; a LED-modul NYÁK-ja huzalozva, a többi hátra van.
 
 # 1. Modulmag (közös lap: a LED-, a relé- és a bemeneti modulon azonos)
 
@@ -18,7 +18,7 @@ Jelölések: DNP = az alkatrész helye (footprintje) a NYÁK-on van, de alapból
 
 C2 (10 µF, kerámia): a buszról érkező 5 V puffere a modulnál – a kábel induktivitása miatti feszültségletörést és a bekapcsolási tüskéket simítja.
 
-U5 (AP2112K-3.3, kis ejtésű lineáris stabilizátor): az 5 V-ból állítja elő a modul 3,3 V-os logikai tápját (mikrovezérlő, CAN-transceiver). Lineáris, mert kicsi a terhelés (~0,1 A), és nem zajos; kerámia kimeneti kondenzátorral is stabil (D80).
+U5 (AP2112K-3.3, kis ejtésű lineáris stabilizátor): az 5 V-ból állítja elő a modul 3,3 V-os logikai tápját (mikrovezérlő, CAN-transceiver). Lineáris, mert kicsi a terhelés (~0,1 A), és nem zajos; kerámia kimeneti kondenzátorral is stabil.
 
 C3 (10 µF, kerámia): a stabilizátor kimeneti kondenzátora – a szabályozó stabilitásához kötelező, és a terhelésugrásokat puffereli.
 
@@ -34,15 +34,14 @@ C4–C8 (100 nF, 5 db): a mikrovezérlő egy-egy VDD-lábánál (1, 19, 32, 48, 
 
 C13 (4,7 µF): a 3,3 V-os sín közös puffer-kondenzátora a mikrovezérlő mellett (az ST ajánlása).
 
-FB1 (ferritgyöngy, BLM18EG221, vagy 0 Ω): a 3,3 V-ból leválasztja az analóg tápot (VDDA, +3V3A), hogy a digitális zaj ne jusson az ADC-be és a DAC-ba.
 
-C14 (1 µF), C15 (10 nF): az analóg táp (VDDA) szűrése a ferrit után – a nagyobb a kisfrekvenciás, a kisebb a nagyfrekvenciás zajt viszi le.
+C14 (1 µF), C15 (10 nF): az analóg táp (VDDA) hidegítése a saját lábánál – a nagyobb a kisfrekvenciás, a kisebb a nagyfrekvenciás zajt viszi le. (Ferritgyöngy nincs: a hidegítő kondenzátorokkal csillapítatlan LC-kört alkotna, amely a rezonanciáján erősítené a zajt.)
 
 ## Mikrovezérlő
 
 ### U6 – STM32L433RCT3
 
-U6 (STM32L433RCT3, Cortex-M4F, 80 MHz, 256 KB flash, LQFP64): a modul „agya” – a CAN-kommunikáció, a mérések (ADC) és a kimenetek vezérlése (PWM, GPIO) ezen fut. Az STM32F303RET6 helyére került (D78): 75 db van belőle kézben, ugyanaz a CAN-periféria, és lábra kompatibilis (a relé- és a bemeneti modulon az F303 is beültethető).
+U6 (STM32L433RCT3, Cortex-M4F, 80 MHz, 256 KB flash, LQFP64): a modul „agya” – a CAN-kommunikáció, a mérések (ADC) és a kimenetek vezérlése (PWM, GPIO) ezen fut. Az STM32F303RET6 helyére került: 75 db van belőle kézben, ugyanaz a CAN-periféria, és lábra kompatibilis (a relé- és a bemeneti modulon az F303 is beültethető).
 
 ### Órajel
 
@@ -52,7 +51,7 @@ C10, C11 (12 pF): a kvarc terhelőkondenzátorai – a pontos rezgési frekvenci
 
 ### Reset és indítás
 
-C16 (100 nF): az NRST láb szűrése – zavar ne okozzon véletlen újraindulást.
+C16 (100 nF) + R6 (10 k felhúzás a 3,3 V-ra): az NRST láb szűrése és határozott magas szintje – a belső (~40 k-s) felhúzás mellett zavar ne okozzon véletlen újraindulást.
 
 R2 (10 k): a BOOT0 láb lehúzása – bekapcsoláskor a mikrovezérlő a saját flash-éből indul (normál működés).
 
@@ -70,9 +69,7 @@ D4 (piros LED) + R9 (1 k): állapot-LED, a mikrovezérlő PC13 lába kapcsolja �
 
 ### Revízió-azonosító (HW_REV)
 
-R10 (10 k, 1 %), R11 (715 Ω, 1 %): feszültségosztó a PB0 ADC-lábon – a NYÁK-revíziót kódolja (16 feszültségsáv, a v1 az 1. sáv). Így a firmware tudja, melyik hardverváltozaton fut, ha később új revízió készül.
-
-C20 (100 nF): az osztó szűrése.
+A PB0 ADC-lábon egy feszültségosztó (10 k, 1 % + 715 Ω, 1 %, szűrő: 100 nF) a NYÁK-revíziót kódolja (16 feszültségsáv, a v1 az 1. sáv). Így a firmware tudja, melyik hardverváltozaton fut, ha később új revízió készül. Az osztó – a HW-ID-éhez hasonlóan – a modul saját lapján van (LED: R295/R296/C295, relé: R115/R116/C107, bemeneti: R303/R304/C308), mert a revízió az adott NYÁK tulajdonsága: egy modul új változatánál csak annak az ellenállása változik.
 
 ### Bővítő csatlakozó
 
@@ -82,7 +79,7 @@ J4 (2 × 5 tűs tüskesor, DNP): tartalék lábak kivezetése (SPI1, I²C1, egy 
 
 ### Transceiver
 
-U2 (SN65HVD230D, 3,3 V-os CAN-transceiver): a mikrovezérlő logikai CAN-jeleit (TX/RX) alakítja át a busz differenciális jelévé (CAN_H/CAN_L) és vissza. 86 db van belőle kézben (D79). Korlát: a buszlábai −4…16 V-ot bírnak.
+U2 (SN65HVD230D, 3,3 V-os CAN-transceiver): a mikrovezérlő logikai CAN-jeleit (TX/RX) alakítja át a busz differenciális jelévé (CAN_H/CAN_L) és vissza. 86 db van belőle kézben. Korlát: a buszlábai −4…16 V-ot bírnak.
 
 C18 (100 nF), C19 (4,7 µF): a transceiver tápjának hidegítése (a CAN-meghajtó adáskor impulzusszerűen vesz áramot).
 
@@ -116,7 +113,7 @@ J1 (2 pólusú csavaros sorkapocs, Degson DG128, 5,0 mm, 15 A): a 12–26 V-os b
 
 F1 (2 A biztosíték): zárlat esetén a tápot leválasztja (12 V-on és teljes 2 A-es buszterhelésnél a bemeneti áram ~1,2 A).
 
-Q1 (IRFR1205, N-csatornás FET a GND-ágban) + R56 (10 k) + D12 (BZT52C15, 15 V-os Zener-dióda): fordított polaritás elleni védelem (D78). Fordított bekötésnél a FET zár, így a táp + pólusa nem jut a lap GND-jére – ez a közös föld miatt fontos, mert különben a busz GND-erén át rövidzár alakulna ki. Helyes polaritásnál a FET teljesen nyitva van (elhanyagolható veszteség). A Zener a FET gate-jét a megengedett ±20 V alatt tartja. (Ez váltja ki a korábbi D1 soros Schottky-diódát.)
+Q1 (IRFR1205, N-csatornás FET a GND-ágban) + R56 (10 k) + D12 (BZT52C15, 15 V-os Zener-dióda): fordított polaritás elleni védelem. Fordított bekötésnél a FET zár, így a táp + pólusa nem jut a lap GND-jére – ez a közös föld miatt fontos, mert különben a busz GND-erén át rövidzár alakulna ki. Helyes polaritásnál a FET teljesen nyitva van (elhanyagolható veszteség). A Zener a FET gate-jét a megengedett ±20 V alatt tartja. (Ez váltja ki a korábbi D1 soros Schottky-diódát.)
 
 D2 (SMBJ28A, TVS): túlfeszültség-védelem a bemeneten (pl. a betápkábel induktivitása miatti tüskék).
 
@@ -152,13 +149,12 @@ TP3 (mérőpont, +3V3).
 
 R7 (0 Ω, 2512): a buck ágának leválasztási pontja – szükség esetén 10 Ω-os impulzusbíró ellenállás tehető a helyére (bekapcsolási áramkorlát, csillapítás).
 
-D7 (SMBJ28A, TVS): túlfeszültség-védelem a buck bemenetén.
 
-C1 (47 µF / 50 V, elektrolit): kötelező csillapító kondenzátor – a betápkábel induktivitása és a kerámia-kondenzátorok által alkotott rezgőkört csillapítja, különben bedugáskor a feszültség a táp kétszereséig is felléphet (D57).
+C1 (47 µF / 50 V, elektrolit): kötelező csillapító kondenzátor – a betápkábel induktivitása és a kerámia-kondenzátorok által alkotott rezgőkört csillapítja, különben bedugáskor a feszültség a táp kétszereséig is felléphet.
 
 C2 (10 µF / 50 V), C53 (220 nF): a buck bemeneti kondenzátorai, a VIN-lábaknál.
 
-U2 (LMR33630, kapcsolóüzemű feszültségcsökkentő, 3 A, 400 kHz): az 5,2 V-os busz-tápot állítja elő – ez táplálja az összes modul logikáját (D71). ~2 A-re méretezve.
+U2 (LMR33630, kapcsolóüzemű feszültségcsökkentő, 3 A, 400 kHz): az 5,2 V-os busz-tápot állítja elő – ez táplálja az összes modul logikáját. ~2 A-re méretezve.
 
 C54 (1 µF): a buck belső segédtápja (VCC).
 
@@ -170,7 +166,7 @@ C56–C59 (22 µF, 4 db): az 5 V-os kimenet szűrése (a TI ajánlása szerint).
 
 R54 (100 k), R55 (23,7 k): visszacsatoló osztó – 5,22 V-os kimenet.
 
-D10 (SMBJ6.0A, TVS): ha a buck meghibásodik és átüt (24 V jelenne meg a kimenetén), rövidre zár és kiolvasztja az F1-et – így a buszra nem jut 24 V (D75).
+D10 (SMBJ6.0A, TVS): ha a buck meghibásodik és átüt (24 V jelenne meg a kimenetén), rövidre zár és kiolvasztja az F1-et – így a buszra nem jut 24 V.
 
 ### USB vagy buck (U12 LM66200)
 
@@ -246,7 +242,6 @@ R48–R50 (DNP): a PHY üzemmódját rögzítő lehúzások – nyitva auto-nego
 
 R36, R37, R38 (10 k): a W5500 CS, RST és INT vonalainak felhúzása – meghatározott állapot indításkor (a chip ne válaszoljon véletlenül a közös SPI-buszon).
 
-FB1 (ferritgyöngy, BLM18EG221, 220 Ω @ 100 MHz): a W5500 analóg tápját (+3V3A) leválasztja a digitális 3,3 V-ról.
 
 C31–C36 (100 nF, 6 db): az analóg táplábak (AVDD) hidegítése, lábanként.
 
@@ -312,7 +307,7 @@ TP5, TP6, TP7 (mérőpontok: CAN_H, CAN_L, GND): oszcilloszkópos méréshez.
 
 ## LoRa (előkészítés, DNP)
 
-U10 (Ebyte E22-900M22S, 868 MHz-es LoRa-modul, DNP): későbbi nagy hatótávú, elemes érzékelőkhöz (D68) – most nincs beültetve.
+U10 (Ebyte E22-900M22S, 868 MHz-es LoRa-modul, DNP): későbbi nagy hatótávú, elemes érzékelőkhöz – most nincs beültetve.
 
 U11 (74LVC1G04, inverter, DNP): a modul antennakapcsolójának vezérlése (vétel = az adás-jel negáltja).
 
@@ -332,7 +327,6 @@ D6 (WS2812B-V5, címezhető RGB LED): állapotjelző (pl. párosítás, hálóza
 
 U9 (74HCT14, Schmitt-triggeres inverter): szintillesztő – az ESP32 3,3 V-os jelét 5 V-os szintre emeli a WS2812-nek (két inverter sorban, így a jel nem fordul meg).
 
-R31 (33 Ω): soros ellenállás az RGB LED adatvonalán (reflexiók ellen).
 
 R32 (0 Ω, DNP): áthidalja a szintillesztőt, ha az nincs beültetve (3,3 V-os bemenetű LED-nél).
 
@@ -356,9 +350,11 @@ A mikrovezérlő, a busz-táp és a CAN a modulmag fejezetben (1.) van leírva. 
 
 R201 (10 k, 1 %), R202 (715 Ω, 1 %), C201 (100 nF): HW-ID – a feszültségosztó kódolja a modul típusát (LED = 1. sáv). Mivel a modulmag minden modulon azonos, a firmware ebből tudja, milyen modulon fut, és ennek megfelelően kezeli a kimeneteket (pl. nem kapcsol relékimenetet egy LED-modulon).
 
+R295 (10 k, 1 %), R296 (715 Ω, 1 %), C295 (100 nF): HW_REV – a LED-modul NYÁK-revíziója (v1 = 1. sáv), lásd a modulmagnál.
+
 R290 (150 k), R291 (10 k), C290 (100 nF): a bejövő 12–26 V mérése a főbiztosíték előtt (24 V → 1,5 V a PB1-re) – a firmware ellenőrzi, hogy van-e táp, és hogy a szalag feszültségéhez illik-e.
 
-R293 (1 Ω, 1206): a busz GND-ér és a modul GND-je közötti ellenállás (D74). A nagy (akár 15 A-es) visszatérő áram így nem a vékony busz-kábelen folyik vissza, hanem a saját vastag GND-vezetékén (legfeljebb ~0,2 A jut a buszra).
+R293 (1 Ω, 1206): a busz GND-ér és a modul GND-je közötti ellenállás. A nagy (akár 15 A-es) visszatérő áram így nem a vékony busz-kábelen folyik vissza, hanem a saját vastag GND-vezetékén (legfeljebb ~0,2 A jut a buszra).
 
 ## Betáp és a 24 V-os sín
 
@@ -366,7 +362,7 @@ J201 (2 pólusú csavaros sorkapocs, Degson DG128, 15 A UL / 18 A IEC): a LED-sz
 
 F201 (15 A, NANO² SMD biztosíték, beforrasztva): a teljes modul főbiztosítéka – zárlatnál leválasztja a tápot.
 
-Q201 (NCEP6090AGU, N-csatornás FET a GND-ágban, ~2,8 mΩ) + R294 (10 k) + D202 (BZT52C15, 15 V-os Zener): fordított polaritás elleni védelem (D78). Fordított bekötésnél a FET zár, így a +24 V nem jut a lap GND-jére, és a közös földön (busz) át sem alakul ki zárlat. Helyes polaritásnál a FET nyitva van: 20 A-en ~24 mV esik rajta. Az R294 a gate-et a 24 V-os sínről nyitja, a Zener a gate-feszültséget 15 V-ra korlátozza. (Ez váltja ki a korábbi ideális diódát, az LM74700-at.)
+Q201 (NCEP6090AGU, N-csatornás FET a GND-ágban, ~2,8 mΩ) + R294 (10 k) + D202 (BZT52C15, 15 V-os Zener): fordított polaritás elleni védelem. Fordított bekötésnél a FET zár, így a +24 V nem jut a lap GND-jére, és a közös földön (busz) át sem alakul ki zárlat. Helyes polaritásnál a FET nyitva van: a legnagyobb, 15 A-es áramnál ~42 mV esik rajta (~0,6 W). Az R294 a gate-et a 24 V-os sínről nyitja, a Zener a gate-feszültséget 15 V-ra korlátozza. (Ez váltja ki a korábbi ideális diódát, az LM74700-at.)
 
 D201 (SMBJ28A, TVS): túlfeszültség-védelem a sínen (pl. a szalagkábelek induktivitásából eredő tüskék).
 
@@ -392,7 +388,7 @@ R205 (1 k): a közös engedélyező vonal (DRV_EN, PB12) lehúzása – bekapcso
 
 ## Kimeneti blokkok
 
-F202–F204 (NANO² SMD biztosíték, a szalaghoz méretezve: ≤ 100 W-os ághoz 4 A, legfeljebb 10 A): blokkonként (2 csatornánként) külön biztosíték – egy szalag zárlata nem viszi le a többit, és a kis ágbiztosíték a vékonyabb szalagvezetéket is védi (D76).
+F202–F204 (NANO² SMD biztosíték, a szalaghoz méretezve: ≤ 100 W-os ághoz 4 A, legfeljebb 10 A): blokkonként (2 csatornánként) külön biztosíték – egy szalag zárlata nem viszi le a többit, és a kis ágbiztosíték a vékonyabb szalagvezetéket is védi.
 
 J202–J204 (3 pólusú csavaros sorkapocs, KF128, 10 A): a kimenetek – blokkonként +24 V, CHa, CHb (pl. egy CCT-szalag két színe).
 
@@ -406,7 +402,7 @@ R221–R226 (10 k): gate–source lehúzások – ha a meghajtó nem kap tápot,
 
 D211–D216 (SS56B, Schottky, 5 A / 60 V): szabadonfutó diódák a szalag két vége között – a kábel induktivitásából kikapcsoláskor keletkező feszültségtüskét elvezetik, így az nem üti át a FET-et.
 
-R231–R236 (10 Ω) + C221–C226 (2,2 nF) (DNP): RC-snubber a drainen – csak akkor kerül be, ha a mérés kapcsolási lengést mutat (D24).
+R231–R236 (10 Ω) + C221–C226 (2,2 nF) (DNP): RC-snubber a drainen – csak akkor kerül be, ha a mérés kapcsolási lengést mutat.
 
 R241–R246 (10 k) + D221–D226 (zöld LED): gate-LED-ek – azt mutatják, hogy a mikrovezérlő bekapcsolta a csatornát.
 
@@ -430,7 +426,7 @@ TP202 (mérőpont, I_SENSE), TP201 (mérőpont, DAC_THR): a mért áram és a be
 
 ## Hőmérséklet
 
-U207 (MCP9701A, analóg hőmérő, 19,5 mV/°C) a FET-ek között: a teljesítményrész hőmérsékletét méri (PC3) – túlmelegedésnél a firmware csökkenti a terhelést vagy lekapcsol (harmadik védelmi réteg a biztosítékok és a túláram-védelem mögött, D30). Lineáris kimenetű, így nem kell hozzá táblázat. (A korábbi NTC-termisztor helyére került, D78.)
+U207 (MCP9701A, analóg hőmérő, 19,5 mV/°C) a FET-ek között: a teljesítményrész hőmérsékletét méri (PC3) – túlmelegedésnél a firmware csökkenti a terhelést vagy lekapcsol (harmadik védelmi réteg a biztosítékok és a túláram-védelem mögött). Lineáris kimenetű, így nem kell hozzá táblázat. (A korábbi NTC-termisztor helyére került.)
 
 C243 (100 nF): a hőmérő tápjának hidegítése.
 
@@ -446,19 +442,20 @@ A mikrovezérlő, a busz-táp és a CAN a modulmag fejezetben (1.) van leírva. 
 
 R101 (10 k, 1 %), R102 (1,54 k, 1 %), C101 (100 nF): HW-ID – relémodul 24 V-os tekercsekkel = 2. sáv (12 V-os relékkel R102 = 3,65 k → 4. sáv). A firmware így tudja, milyen relék vannak beültetve.
 
+R115 (10 k, 1 %), R116 (715 Ω, 1 %), C107 (100 nF): HW_REV – a relémodul NYÁK-revíziója (v1 = 1. sáv).
+
 R111 (150 k), R112 (10 k), C106 (100 nF): a tekercs-táp mérése (PB1) – a firmware összeveti a HW-ID-vel, és letiltja a kapcsolást, ha pl. 24 V-os relék mellett csak 12 V a táp (a relé nem húzna be megbízhatóan).
 
-R113 (0 Ω, 1206): a busz GND-ér és a modul GND-je közötti kapcsolat (D74) – itt 0 Ω, mert a tekercsek árama kicsi; ha hurokáram mérhető, 1 Ω tehető a helyére.
+R113 (0 Ω, 1206): a busz GND-ér és a modul GND-je közötti kapcsolat – itt 0 Ω, mert a tekercsek árama kicsi; ha hurokáram mérhető, 1 Ω tehető a helyére.
 
 ## Betáp és tekercs-táp
 
 J100 (2 pólusú csavaros sorkapocs, Degson DG128): a 12–26 V-os betáp (csak a relétekercseknek, kis áram).
 
-Q100 (IRFR120N, N-csatornás FET a GND-ágban) + R114 (10 k) + D106 (BZT52C15, 15 V-os Zener-dióda): fordított polaritás elleni védelem a közös föld miatt (D78), mint a vezérlőn és a LED-modulon.
+Q100 (IRFR120N, N-csatornás FET a GND-ágban) + R114 (10 k) + D106 (BZT52C15, 15 V-os Zener-dióda): fordított polaritás elleni védelem a közös föld miatt, mint a vezérlőn és a LED-modulon.
 
 F100 (0,5 A biztosíték): a tekercs-táp védelme (4 tekercs × ~17 mA).
 
-D100 (SS16, Schottky): soros dióda a tekercs-tápban – fordított polaritás ellen a + ágban.
 
 D105 (SMBJ28A, TVS): túlfeszültség-védelem.
 
@@ -474,11 +471,11 @@ R103–R106 (10 k) + D101–D104 (zöld LED): relé-állapot LED-ek – akkor vi
 
 ## 230 V-os kimenetek
 
-J101–J104 (2 pólusú, 5,08 mm-es THT sorkapocs, COM + NO, ≥ 16 A, ≥ 250 V): a relék kimenetei. A 230 V-os rész a NYÁK-on ≥ 8 mm-re van a törpefeszültségű résztől, a belső rétegeken alatta nincs réz (D77).
+J101–J104 (2 pólusú, 5,08 mm-es THT sorkapocs, COM + NO, ≥ 16 A, ≥ 250 V): a relék kimenetei. A 230 V-os rész a NYÁK-on ≥ 8 mm-re van a törpefeszültségű résztől, a belső rétegeken alatta nincs réz.
 
 ## Fogyasztásmérés-előkészítés (DNP)
 
-J105 (3,5 mm-es jack, SCT-013 lakatfogós áramváltóhoz, DNP): egy kimenet áramának mérése (v2-ötlet, D69); a lakatfogó leválaszt, a 230 V-os oldalt nem érinti.
+J105 (3,5 mm-es jack, SCT-013 lakatfogós áramváltóhoz, DNP): egy kimenet áramának mérése (v2-ötlet); a lakatfogó leválaszt, a 230 V-os oldalt nem érinti.
 
 R107, R108 (10 k / 10 k) + C102: 1,65 V-os középfeszültség – az áramváltó váltakozó jelét az ADC tartományának közepére emeli.
 
@@ -495,6 +492,8 @@ A mikrovezérlő, a busz-táp és a CAN a modulmag fejezetben (1.) van leírva. 
 ## Azonosítás
 
 R301 (10 k, 1 %), R302 (2,49 k, 1 %), C301 (100 nF): HW-ID – bemeneti modul = 3. sáv.
+
+R303 (10 k, 1 %), R304 (715 Ω, 1 %), C308 (100 nF): HW_REV – a bemeneti modul NYÁK-revíziója (v1 = 1. sáv).
 
 R390 (0 Ω, 1206): a busz GND-ér és a modul GND-je – itt 0 Ω, mert a modul teljesen a buszról jár (nincs saját betápja), ellenállás itt nem lehet.
 
@@ -518,7 +517,7 @@ J301–J316 (JST-PH, 3 tű: táp, GND, jel): bemenetenként egy csatlakozó – 
 
 R330–R345 (10 k): felhúzó ellenállások a csatlakozó oldalán – nyitott kontaktusnál a bemenet 1, zártnál 0 (kontaktus-érzékelőkhöz nem kell külső ellenállás). 12/24 V-os jelnél kivehető.
 
-R310–R325 (10 k, soros): áramkorlát a mikrovezérlő lába előtt – ha valaki tévedésből 24 V-ot köt egy osztó nélküli bemenetre, legfeljebb ~2 mA folyik, és ezt az ESD-védő tömb (U303–U306) veszi fel (D75). A láb feszültsége ekkor az ESD-tömb letörési feszültségére áll be, ami a mikrovezérlő 5 V-tűrő lábának határa (~7,3 V) körül van – ez csak félrekötés elleni tartalék, 12/24 V-os jelhez az osztót be kell ültetni (D66).
+R310–R325 (10 k, soros): áramkorlát a mikrovezérlő lába előtt – ha valaki tévedésből 24 V-ot köt egy osztó nélküli bemenetre, legfeljebb ~2 mA folyik, és ezt az ESD-védő tömb (U303–U306) veszi fel. A láb feszültsége ekkor az ESD-tömb letörési feszültségére áll be, ami a mikrovezérlő 5 V-tűrő lábának határa (~7,3 V) körül van – ez csak félrekötés elleni tartalék, 12/24 V-os jelhez az osztót be kell ültetni.
 
 R350–R365 (DNP): feszültségosztó alsó tagja – 5/12/24 V-os jelhez beültethető (akkor a soros ellenállás 68 k).
 
@@ -528,7 +527,7 @@ U303–U306 (TPD4E05U06, 4 csatornás ESD-védő): az ESD-tüskéket vezetik le 
 
 ## Klíma-érzékelő és külső I²C
 
-U302 (HDC3020, hőmérséklet- és páratartalom-érzékelő, I²C): a ház belsejének (elosztószekrény) klímáját méri – a szoba klímájához a külső I²C-érzékelő való (D77). A NYÁK szélén van, a melegedő részektől távol.
+U302 (HDC3020, hőmérséklet- és páratartalom-érzékelő, I²C): a ház belsejének (elosztószekrény) klímáját méri – a szoba klímájához a külső I²C-érzékelő való. A NYÁK szélén van, a melegedő részektől távol.
 
 C330 (100 nF): az érzékelő tápjának hidegítése.
 

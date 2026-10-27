@@ -107,7 +107,9 @@ class Sheet:
         self.libsyms = {}
         self.items = []
         self.refs = {}
-        self.power_n = 0
+        # a tápszimbólumok (#PWR, #FLG) a modul saját számtartományában – a modulmag allapja 001-től számoz, és a KiCad a
+        # projekten belüli ütközést hiányos annotálásnak veszi (az „Update PCB” ezért újraszámozna mindent)
+        self.power_n = {'rele-modul': 100, 'led-modul': 200, 'bemeneti-modul': 300}.get(project, 0)
         self.hier = set()
         self.power_lib = {}  # net -> (lib, name)
         self.label_dx = {'Device:LED': 3.81}   # lib_id -> x offset of Reference/Value

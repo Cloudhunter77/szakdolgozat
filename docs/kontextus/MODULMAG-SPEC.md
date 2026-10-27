@@ -41,7 +41,7 @@ HAL COMP-leírás. Független ellenőrzés után javítva (2026-10-13). **2026-1
 | Net | Honnan | Megjegyzés |
 |---|---|---|
 | `+5V` | J2/J3 1-es tű (a vezérlő V_BUS-a) | 4,5–5,2 V (a lánc végén kevesebb); az LDO bemenete, a táp-LED |
-| `+3V3`, `+3V3A` | U5 | MCU, CAN-transceiver; VDDA ferriten át |
+| `+3V3` | U5 | MCU, CAN-transceiver, VDDA (ferrit nélkül – D90) |
 | `GND` | J2/J3 2-es tű + a modul saját GND-je | **közös föld** – a LED- és a relémodulon a 24 V-os GND is |
 | `CAN_H`, `CAN_L` | J2/J3 4-es / 3-as tű | |
 
@@ -68,11 +68,11 @@ Lánc: `+5V` (J2/J3) → C2 → U5 AP2112K-3.3 → `+3V3` (C3). A vezérlő TPS2
 | 1 | VBAT | `3V3` + 100 nF (nincs elem) |
 | 19, 32, 48, 64 | VDD (L433-on a 48 = VDDUSB) | `3V3`, lábanként 100 nF + összesen 1 × 4,7 µF |
 | 18, 31, 47, 63 | VSS | `GND` |
-| 13 | VDDA (= VREF+ ezen a tokon) | `3V3`-ról **FB1**-en át, + 1 µF + 10 nF |
+| 13 | VDDA (= VREF+ ezen a tokon) | `3V3`-ról közvetlenül (D90), + 1 µF + 10 nF a lábnál |
 | 12 | VSSA | `GND` |
 
-**FB1:** nagyon kis DC-ellenállású ferritgyöngy (≤ 0,1 Ω, 0603) **vagy 0 Ω** – ugyanarra a footprintre. Az ST
-szerint a VDDA nem lehet kisebb a VDD-nél, és nem jöhet fel később; egy nagy ellenállású szűrő ezt megsértené.
+**Ferritgyöngy nincs (D90, konzulensi javaslat):** a gyöngy a hidegítő kerámiákkal csillapítatlan LC-kört alkot, a rezonanciáján
+erősíti a zajt. Az ST szerint a VDDA nem lehet kisebb a VDD-nél, és nem jöhet fel később – a közvetlen bekötés ezt biztosan teljesíti.
 
 ### 3.2 Órajel
 - **Y1:** 8 MHz-es kvarc (3225), PH0-OSC_IN (5) – PH1-OSC_OUT (6) (F303-on PF0/PF1). D85: 3TJ480000JWLAC – CL = 10 pF (→ C10/C11
@@ -82,7 +82,7 @@ szerint a VDDA nem lehet kisebb a VDD-nél, és nem jöhet fel később; egy nag
 - Közvetlenül a lábak mellé, alatta csak GND, más jel ne fusson alatta.
 
 ### 3.3 Reset és boot
-- **NRST (7):** 100 nF a GND-re (belső felhúzás van); reset-gomb footprintje opcionális.
+- **NRST (7):** 100 nF a GND-re + **R6 10 k felhúzás a +3V3-ra** (a gyenge, ~40 k-s belső mellé – D90); reset-gomb footprintje opcionális.
 - **BOOT0 (60):** 10 kΩ a GND-re + egy tesztpad a `3V3`-hoz (tartalék; a programozás SWD-n megy). **A ROM-bootloader USART1-e az
   AN2606 szerint a PA9/PA10-en van, nem a J1 UART-ján (PC4/PC5)** – a J1-ről tehát csak SWD-vel programozható (D77).
 
@@ -129,8 +129,10 @@ hiba néhány mV.
 ST-Link V2 klónhoz dupont-vezetékkel bekötve; a lap szélén, hozzáférhetően.
 
 ### 3.7 Revízió-azonosító és bővítő (D69)
-- **HW_REV a PB0-n:** 3V3 – R10 10 kΩ – PB0 – R11 – GND, + C20 100 nF; ugyanaz a 16 sávos rendszer, mint a HW-ID-nél
-  (3.5). **v1 = 1. sáv (R11 = 715 Ω)**; 0 = hiba, 15 = a firmware-ből megadott (D71).
+- **HW_REV a PB0-n:** 3V3 – 10 kΩ – PB0 – R_bottom – GND, + 100 nF; ugyanaz a 16 sávos rendszer, mint a HW-ID-nél
+  (3.5). **v1 = 1. sáv (715 Ω)**; 0 = hiba, 15 = a firmware-ből megadott (D71). **Az osztó a modul saját lapján van** (D89; a
+  modulmag csak a `HW_REV` hierarchikus jelet adja ki, mint a HW-ID-nél) – LED: R295/R296/C295, relé: R115/R116/C107, bemeneti:
+  R303/R304/C308; a NYÁK-on is a modulmag-blokkon kívül (LED: a HW-ID-osztó mellett; relé / bemeneti: a PB0-láb mellett).
 - **J4** (2 × 5, 2,54 mm, DNP): 1 3V3 · 2 GND · 3 PA15 · 4 PB6 · 5 PB3 · 6 PB7 · 7 PB4 · 8 PB10 · 9 PB5 · 10 GND –
   SPI1 (PB3 SCK, PB4 MISO, PB5 MOSI, PA15 NSS), I²C1 alternatív lábai (PB6 SCL, PB7 SDA), PB10. A layoutnál dől el,
   hogy elfér-e.
@@ -279,9 +281,9 @@ Megjegyzések:
 
 ## 9. Darabjegyzék (egy modulmag, D71, D78, D79)
 U5 AP2112K-3.3TRG1 (D80) · U2 SN65HVD230D · U3 ESD2CAN24-Q1 · STM32L433RCT3 · Y1 8 MHz · D5 SMF5.0A ·
-D3/D4 zöld (522 nm, a +5V-ról)/piros LED · J1 1 × 7 tüskesor · J2/J3 B4B-XH-A · JP1 2 tűs + jumper · FB1 ferrit (≤ 0,1 Ω) vagy 0 Ω ·
+D3/D4 zöld (522 nm, a +5V-ról)/piros LED · J1 1 × 7 tüskesor · J2/J3 B4B-XH-A · JP1 2 tűs + jumper · R6 10 k (NRST-felhúzás, D90) ·
 kondenzátorok: 10 µF 16 V (0805, 2 db), 100 nF (≈ 9 db), 1 µF, 4,7 µF (2), 10 nF, 2 × C_kvarc · ellenállások:
-10 k (több, ebből R3/R4/R10 1 %), 715 Ω 1 % (R11), 0 Ω (R12), 1 k, 2,2 k, 120 Ω. (A HW-ID osztó a modul saját lapján van, 3.5.)
+10 k (több, ebből R3/R4 1 %), 0 Ω (R12), 1 k, 2,2 k, 120 Ω. (A HW-ID és a HW_REV osztója a modul saját lapján van, 3.5, 3.7 – D89.)
 
 ## 10. Változások a korábbi döntésekhez
 - **Lezárás:** sima 120 Ω egy jumperrel, nem osztott (D49 pontosítva → D52).

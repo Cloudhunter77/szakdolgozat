@@ -149,7 +149,8 @@ def modulmag():
             hiba(f'{lap}: U6 = {comps["U6"]["value"]}')
         for p in ('1', '19', '32', '48', '64'):
             elvar(lap, pin, 'U6', p, '+3V3')
-        elvar(lap, pin, 'U6', '13', '+3V3A')
+        elvar(lap, pin, 'U6', '13', '+3V3')                         # D90: a VDDA ferrit nélkül a +3V3-on
+        elvar(lap, pin, 'R6', '2', 'NRST'); elvar(lap, pin, 'R6', '1', '+3V3')   # D90: NRST-felhúzás
         for p in ('12', '18', '31', '47', '63'):
             elvar(lap, pin, 'U6', p, 'GND')
         for p, n in {'44': 'CAN_RX', '45': 'CAN_TX', '46': 'SWDIO', '49': 'SWCLK', '7': 'NRST', '60': 'BOOT0',

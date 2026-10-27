@@ -73,7 +73,7 @@ FORRAS = {
     ('USBLC6-2SC6', 'SOT-23-6'): dict(h='10034399', l={'q': 'USBLC6-2SC6', 'tok': 'SOT-23-6', 'tipus': 'USBLC6-2SC6'}),
     ('LM66200DRLR', 'SOT-583-8'): dict(h='10051566', l={'q': 'LM66200DRLR', 'tipus': 'LM66200'}),
     ('LMR33630ADDA', 'Texas_HSOP-8-1EP_3.9x4.9mm_P1.27mm_ThermalVias'): dict(l={'q': 'LMR33630ADDAR', 'tipus': 'LMR33630ADDA'}),
-    ('TPS259531DSGR', 'Texas_DSG0008A_WSON-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm_ThermalVias'): dict(l={'q': 'TPS259531DSGR', 'tipus': 'TPS259531'}),
+    ('TPS259531DSGR', 'Texas_DSG0008A_WSON-8-1EP_2x2mm_P0.5mm_EP0.9x1.6mm'): dict(l={'q': 'TPS259531DSGR', 'tipus': 'TPS259531'}),
     ('MC78L12ACDR2G', 'SOIC-8_3.9x4.9mm_P1.27mm'): dict(l={'q': 'MC78L12ACDR2G', 'tok': 'SO', 'tipus': '78L12'}),
     ('NCE6080K', 'TO-252-2'): dict(l={'q': 'NCE6080K', 'tok': 'TO-252', 'tipus': 'NCE6080K'}, vesz=7, n='D85 – az NTD5C648NL megszűnt'),
     ('NCEP6090AGU', 'ONSemi_SO-8FL_488AA'): dict(l={'q': 'NCEP6090AGU', 'tok': 'DFN', 'tipus': 'NCEP6090AGU'}, vesz=2,

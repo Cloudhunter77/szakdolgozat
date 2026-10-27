@@ -1,4 +1,5 @@
 (version 1)
+# (D90: a tápsínek tápszimbólumot kaptak – a nevük „/” nélkül; a +3V3A megszűnt)
 # JLCPCB, 4 réteg, 1 oz (D42, D82) – felár nélküli értékek. Generálta: Claude (D86). A nyitott KiCad nem írja felül
 # (hálózatosztályok helyett név szerinti feltételek). Megnézni: Board Setup → Custom Rules. A később felsorolt szabály erősebb.
 (rule "JLC: sáv és rés"
@@ -20,10 +21,10 @@
   (constraint text_height (min 0.8mm))
   (constraint text_thickness (min 0.15mm)))
 (rule "Táp: sáv 0.5mm"
-  (condition "A.NetName == '/+24V_IN' || A.NetName == '/+24V_P' || A.NetName == '/GND_IN' || A.NetName == '/COIL?'")
+  (condition "A.NetName == '+24V_IN' || A.NetName == '+24V_P' || A.NetName == '/GND_IN' || A.NetName == '/COIL?'")
   (constraint track_width (min 0.3mm) (opt 0.5mm)))
 (rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
-  (condition "A.Type == 'Via' && (A.NetName == '/+24V_IN' || A.NetName == '/+24V_P' || A.NetName == '/GND_IN' || A.NetName == '/COIL?')")
+  (condition "A.Type == 'Via' && (A.NetName == '+24V_IN' || A.NetName == '+24V_P' || A.NetName == '/GND_IN' || A.NetName == '/COIL?')")
   (constraint hole_size (min 0.3mm) (opt 0.4mm))
   (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
 (rule "Táp: sáv 0.6mm"
@@ -34,10 +35,10 @@
   (constraint hole_size (min 0.3mm) (opt 0.4mm))
   (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
 (rule "Táp: sáv 0.4mm"
-  (condition "A.NetName == '+3V3' || A.NetName == '/modulmag/+3V3A'")
+  (condition "A.NetName == '+3V3'")
   (constraint track_width (min 0.3mm) (opt 0.4mm)))
 (rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
-  (condition "A.Type == 'Via' && (A.NetName == '+3V3' || A.NetName == '/modulmag/+3V3A')")
+  (condition "A.Type == 'Via' && (A.NetName == '+3V3')")
   (constraint hole_size (min 0.3mm) (opt 0.4mm))
   (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
 # 230 V (D62): a kontaktus-hálózatok (J101–J104 ↔ K1–K4 11/14, és a nem használt NC 12-es láb – elengedett relénél a COM-on van) – SELV felé ≥ 8 mm (megerősített szigetelés + marás),
