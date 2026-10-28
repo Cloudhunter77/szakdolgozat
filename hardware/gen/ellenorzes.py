@@ -354,6 +354,14 @@ def nyak():
             elif tt != 'unconnected_items':
                 hiba(f'{lap} DRC: {n} × {tt}')
         print(f'  {lap}: {len(fps)} footprint, DRC {tip}')
+        # D91: a fő áramutak legszűkebb pontja (a DRC-szabály minimuma 0,2 mm, a mellékágak miatt)
+        r = subprocess.run(['timeout', '600', 'flatpak', 'run', '--command=python3', 'org.kicad.KiCad', f'{G}/aramut.py', lap],
+                           cwd=H, capture_output=True, text=True)
+        for sor in r.stdout.splitlines():
+            if sor.startswith('HIBA '):
+                hiba(sor[5:])
+            elif sor.startswith('FIGYELEM '):
+                figyelem(sor[9:])
 
 
 # ---------------------------------------------------------------------------------------------------- 7. elavult kifejezések

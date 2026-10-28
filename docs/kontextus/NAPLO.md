@@ -14,6 +14,31 @@ Sablon:
 
 ---
 
+## 2026-10-22 → 10-28 – Beszerzés, layout, a LED-modul huzalozásának átnézése, konzulensi visszajelzés, konzultáció-előkészítés
+- Csináltuk:
+  - D84–D85: legolcsóbb beszerzés (LCSC-kosár a JLC-rendeléshez), megszűnt FET-ek pótlása; D86–D88: JLC-szabályok, via-méretek,
+    modulmag-blokk, elrendezés; D89: HW_REV a modul lapján;
+  - a LED-modul kézi huzalozásának átnézése, szitanyomat-feliratok (`gen/felirat.py`), maszknyitás a nagyáramú sávokon
+    (`gen/maszknyitas.py`, D82);
+  - Pali visszajelzése → D90 (NRST-felhúzás, ferritek és a felesleges D7/R31/D100 törölve, tápszimbólumok, rajzi átrendezés –
+    `gen/schedit.py`), PDF 10-27; D91: táp-sávok min. 0,2 mm a DRC-ben, a fő áramutakat a `gen/aramut.py` nézi (az
+    `ellenorzes.py` 6. lépése); a lapok ellenőrzése a Gainta D4MG rajzából (`NYAK-ELOKESZITES.md`);
+  - 10-28: Pali kérdéseinek egyenkénti átbeszélése a konzultáció előtt – válaszok és nyitott kérdések:
+    `docs/konzultacio/2026-10-27-valaszok.md`; D92 (prémium halványítás kis fényerőn is).
+- Eredmény: commitok 2074b1b, fddd137 (10-27) és a mai; LED-modul: bekötetlen 0, rajz ↔ NYÁK eltérés 0, a DRC-n csak szitanyomat-
+  figyelmeztetés, 1 lógó +3V3-csonk (R6 mellett, törölni) és 2 termikus via.
+- Tanultuk:
+  - a LED-modul GND_IN-szakadásakor a szalag árama az R293-on, majd a D5-ön át a V_BUS felé keres utat (a V_BUS ~7 V-ra is
+    felmehet, a többi modul LDO-ja 6,5 V-ig bírja) → a LED-modul busz-oldali leválasztásának javaslata (ISO1042 + B0505S-1WR3);
+  - a bemeneti csillapító elkónál az ESR számít (√(L/C) ≈ 0,4–0,6 Ω), a „low-ESR” félrevezető; az R7 10 Ω-os opciója a központi 5 V
+    óta használhatatlan (12 V-on ~10 V esne rajta) – helyette 0,5 Ω lehetséges;
+  - W5500 vs. W6100: az ESP-IDF mindkettőt MACRAW módban hajtja (az IPv6-ot a lwIP adja), a W5500 az IPv6 multicastot mindig
+    átengedi (a Matter mDNS-éhez jó), a W6100 lábkiosztása más és a meghajtója 2026-os → marad a W5500;
+  - fázistolt PWM-nél a COMP2-küszöb zárlati szint (a csatornák átlapolódnak), a 15 A-es korlát a firmware dolga; a frekvencia-
+    dithering csak minden időzítőn egyszerre (különben lebegés); az árammérés ~16 mA / lépés, nullpont-kalibrálással ~±30 mA.
+- Nyitott: a konzultáció döntései (`ATTEKINTES.md` teendői: LED-leválasztás, U2 60 V / R7 0,5 Ω, relé-Zener, bemeneti felhúzás,
+  R207 1 kΩ, rajzi megjegyzések, többféle blokkbiztosíték); a vezérlő huzalozása; egy D4MG ház lemérése; rendelés ≈ 10-30/31.
+
 ## 2026-10-20 → 10-22 – Konzultáció utáni átdolgozás, NYÁK-előkészítés, L433-váltás, éjszakai ellenőrzés
 - Csináltuk:
   - D71 (központi 5 V, közös föld, 12–26 V, HW-ID 16 sáv) mind az öt lapon;

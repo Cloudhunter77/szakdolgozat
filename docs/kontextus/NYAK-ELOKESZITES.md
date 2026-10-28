@@ -107,6 +107,32 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 - 3D-nyomtatás: a relémodul háza lángálló anyagból (pl. PC-FR / ASA-FR) vagy gyári ház (D30); DIN-klipsz
   nyomtatva (PETG) vagy vásárolt.
 
+### Ellenőrzés a Gainta D4MG rajzából (2026-10-27, `docs/d4mg.pdf`)
+A rajzból leolvasva, **±1 mm-es bizonytalansággal – egy valódi házon le kell mérni** (a NYÁK-rendelés előtt).
+A NYÁK-koordináták a NYÁK felső élétől (a felső váll felől), a 86,5 × 68 mm-es 4 M-es lapra:
+
+| Sáv (y) | Mi van felette | Szabad magasság a NYÁK fölött |
+|---|---|---|
+| 0–12,5 és 74–86,5 mm | váll: a terminálfedél (D4MG-GUARD) 12 csavarhúzó-furattal, alatta fésű | a fésűfogak alatt ~5 mm, a fogak között (5,08 mm-es rekeszek) ~12 mm, a fedélig ~15–17 mm |
+| ~13,0 és ~73,5 mm | **belső borda a teljes szélességben** (a középrész fala, a NYÁK-ot is leszorítja) | **~2–2,5 mm** – ennél magasabb alkatrész nem lóghat át rajta (vagy a bordát helyben vissza kell vágni) |
+| 12,5–74 mm | középrész | ~30 mm |
+| 20,7–65,8 mm | előlapi ablak (fedél 66,8 × 42 mm) | a fedél ~43 mm-re a NYÁK felett; az elülső NYÁK-hornyok 5–7 és 11,5–13,6 mm-re a homlokfelülettől |
+
+- **Terminálfedél-furatok:** x = 6,06 + 5,08·k mm (12 db). A sorkapcsaink mind ezen a rácson vannak (≤ 0,13 mm eltérés) ✓.
+- **Vezérlő:**
+  - **RJ45 (J6):** 13 mm magas, és átnyúlik a ~73,5 mm-es bordán (y 64,9–87,2). Ehhez a bordát ki kell vágni, a fésűt el
+    kell távolítani, és a véglapon nyílás kell.
+  - **USB-C (J4):** alacsony, de a véglapon a NYÁK szintjén nyílás kell.
+  - **Debug-tüskesor (J5):** 8,5 mm, a bordán át – a házban ne legyen beültetve.
+  - **A ~13 mm-es bordánál határeset:** L1 (3 mm), D10 (SMB), Q1 (DPAK), C4 (1210).
+  - **Felső váll:** a buszcsatlakozók (J2/J3) és a JP1 dugóval ~10–12 mm magasak, ezért fölöttük a fésűfogakat le kell vágni.
+    A kábel a véglap nyílásain jön ki.
+- **LED-modul:** a sorkapcsok a rácson; a C205 (1210) a ~73,5 mm-es bordánál határeset; a J2/J3/JP1 ugyanúgy, mint a vezérlőn.
+- **Relémodul:** a J101–J104 sorkapocs (y 73,7-től) és a relék alja (73,0) a ~73,5 mm-es bordánál **határeset**.
+- **Előlap:** a LED-ek ~43 mm-re vannak a fedél alatt → ~40 mm-es fényvezető vagy egy kis elülső NYÁK; a RESET/BOOT gomb
+  belül marad, vagy tűvel a fedélen át, hosszú szárral.
+- **A 6 M-es ház (bemeneti modul)** nincs ezen a rajzon – valószínűleg ugyanígy épül fel.
+
 ## 4 rétegű NYÁK (D42)
 - Ár: a tényleges méretekkel a JLC-ajánlatkérőben ellenőrizni (2026 augusztusában árkorrekció volt). A 4 réteges
   lap gyártási ideje 2–5 nap (a 2 rétegesé ~24 óra) – a határidőbe belefér.

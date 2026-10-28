@@ -2,7 +2,7 @@
 
 > Ezt a fájlt a gyökér `CLAUDE.md` minden munkamenet elején betölti. Legyen **tömör és naprakész** (kb. 150 sor
 > alatt): ha valami változik, itt is frissüljön; a részletek a specifikációkban, a `DONTESEK.md`-ben és a
-> `beszelgetesek/`-ben. Utolsó frissítés: 2026-10-23.
+> `beszelgetesek/`-ben. Utolsó frissítés: 2026-10-28.
 
 ## Cél
 Szakdolgozat: **Moduláris okosotthon platform** (korábbi munkanév: ModuNode, D26). Egy **node** = ESP32-C6
@@ -11,21 +11,21 @@ vezérlő + JST-XH láncon csatlakozó **modulok** (LED, relé, általános beme
 endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12–26 V-os tápra tervezünk (12 vagy 24 V, D71)**; a későbbi ötletek:
 `V2-OTLETEK.md`.
 
-## Aktuális állapot (2026-10-20)
+## Aktuális állapot (2026-10-28)
 - ✅ `firmware/esphome-demo` → `cp-01-esphome-demo` · ✅ `firmware/matter-c6` (Thread, HA-ba párosítva, szín csak
   részben) → `cp-02-matter-thread-ha` · ✅ breadboard 24 V-os LED-meghajtó, 2 csatorna (D15)
 - 📝 CCT szalag firmware (D16): prompt kész, **még nincs lefuttatva**
-- 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`. **Mind az öt KiCad-lap kész** (`hardware/`, generátorral); D71–D77 beépítve;
-  NYÁK-ok előkészítve (körvonal, rétegek, kezdő elhelyezés – a huzalozást Balázs csinálja).
-- 🔁 **D78–D80 (10-22):** modul-MCU **STM32L433RCT3**, modul-transceiver **SN65HVD230**, **N-FET a GND-ágban**, MCP9701A, zöld
-  táp-LED a +5V-ról, AP2112K marad, 1 oz + fedetlen nagyáramú sávok (D82) – **rajzok lezárva (10-22)**; teljes ellenőrzés: `hardware/gen/ellenorzes.py` (0 hiba),
-  a NYÁK-ok a rajzi szimbólumokra mutatnak (determinisztikus UUID-k); darabjegyzék: `hardware/bom/`; konzulensnek:
-  `docs/komponenslista.md` + `hardware/out/kapcsolasi-rajzok-2026-10-23.pdf`. **Következik: layout (Balázs, 10-23 – 10-28).**
+- 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`; **mind az öt KiCad-lap kész** (D71–D80: STM32L433RCT3, SN65HVD230,
+  N-FET a GND-ágban, 1 oz + fedetlen nagyáramú sávok – D82); ellenőrzés: `hardware/gen/ellenorzes.py`; darabjegyzék: `hardware/bom/`;
+  konzulensnek: `docs/komponenslista.md` + `hardware/out/kapcsolasi-rajzok-2026-10-27.pdf`.
 - 💰 **D84–D85 (10-22/23): legolcsóbb beszerzés** – minden az LCSC-ről a JLC-s NYÁK-rendeléssel (~15 eFt); a megszűnt NTD5C648NL /
   NTMFS5C604NL helyett NCE6080K / NCEP6090AGU; F201 NANO² 15 A → a LED-modul össz-árama 15 A; betáp-sorkapcsok DG128.
 - ✏️ **D67:** a kézzel szerkesztett lapnál a `.kicad_sch` a forrás – **10-23 óta mind az öt lap kézi** (`hardware/gen/kezi-lapok.txt`;
   a `build.sh` ezeket csak ellenőrzi); munkafolyamat: `hardware/README.md`
-- 📦 `SAMPLE-KERESEK.md` – TI kérés + rendelés leadva (10-19); a többi gyártó hátra (határidő 10-22)
+- 🛠️ **D86–D91 (10-23 – 10-27):** JLC-szabályok, elrendezés; **a LED-modul kézzel huzalozva és átnézve** (maszknyitás – D82,
+  fő áramutak: `gen/aramut.py` – D91); a konzulens visszajelzése beépítve (D90); a Gainta-ház rajzából ellenőrizve (`NYAK-ELOKESZITES.md`).
+  **Konzultáció 10-28** – válaszok és nyitott kérdések: `docs/konzultacio/2026-10-27-valaszok.md`; D92: prémium halványítás.
+- 📦 `SAMPLE-KERESEK.md` – TI kérés + rendelés leadva (10-19)
 - 📋 `NYAK-ELOKESZITES.md` – ami a rajz/layout előtt még nyitott
 - ⏰ **NYÁK-rendelés legkésőbb ≈ 2026-10-31** (vezérlő + LED- + relé- + bemeneti modul, D25) – ütemterv: `UTEMTERV.md`
 - 📄 A régi Design Reference és BOM a Windows-os `Documents\szakdolgozat` mappában van (nincs a repóban); a beadható
@@ -119,23 +119,31 @@ SCT-013-030 (v2) és az ULN2803A.
   hely közös anyaga (D13).
 
 ## Nyitott kérdések / teendők
+- [ ] **LED-modul földelése (Pali kérdése, 10-28):** a GND_IN szakadásakor a szalag árama a buszon (R293 → D5 → V_BUS) keres utat →
+      **javaslat: a LED-modul busz-oldali leválasztása** – ISO1042BDWVR (LCSC C484409) + B0505S-1WR3 (1 W, 5 V → 5 V izolált DC-DC); a
+      modulmagon mindhárom modulon ISO1042, a relé- és a bemeneti modulon 0 Ω-os átkötők. Palival megbeszélni (10-28); ha igen: rajz
+      10-28 este, LED-NYÁK busz-sarka 10-29, rendelés 10-30/31. Ha nem: firmware-es felismerés (VBUS_SENSE ADC-watchdog → DRV_EN le,
+      reteszelve). Részletek: `docs/konzultacio/2026-10-27-valaszok.md`
+- [ ] **A konzultáció (10-28) után eldönteni és átvezetni** (részletek: ugyanott): vezérlő U2 → 60 V-os buck, vagy R7 = 0,5 Ω a C1-gyel;
+      relé: Zener (BZT52C15 + 0 Ω) az ULN2803A COM-ágába a gyorsabb elengedésért; bemeneti: a +3V3-ra menő felhúzás visszatáplálása
+      félrekötött 24 V-nál (Schottky / leírás / terhelés); LED: R207 → 1 kΩ (vagy külön ADC-ág); rajzi megjegyzések: C1 (az ESR
+      számít, nem polimer), R7 (a 10 Ω elavult), F202–F204 (blokkbiztosíték, érthetőbben); firmware: COMP2-küszöb a csatornaáramokból
+      (átlapolódás), a frekvencia-dithering minden időzítőn egyszerre
 - [ ] **Beültetés előtt:** a relékimenet THT sorkapcsainak névleges értéke (≥ 16 A / 250 V, D83) és a magasságok a Gainta-ház
       vállához (relé ~16 mm, sorkapcsok, elkók); 12/24 V-os bemenethez az osztót beültetni (D66, D81 elvetve)
-- [x] **CubeMX (L433):** a `gen/ellenorzes.py` fejsorból betölti és kódot generál – minden periféria inicializálódik (10-22);
-      a COMP2 → TIM1/15/16 break-et a firmware állítja be
-- [x] **TI-rendelés leadva** (2026-10-19) – a beérkezést figyelni; ami nem jön, azt a többi beszerzéssel együtt megrendelni
-- [ ] **Sample-kérések:** TI-kérelem elküldve (BME-s e-mail, 11 típus); a többi gyártó hátra (`SAMPLE-KERESEK.md`, határidő
-      2026-10-22); ha a TI elutasít: LMR36015 és W5500 megvenni
+- [ ] **Sample-kérések:** TI-kérelem elküldve (11 típus, `SAMPLE-KERESEK.md`); ha a TI elutasít: LMR36015 és W5500 megvenni
 - [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/USB-C/gombok típusa;
       ~~W5500 MDI-hálózat~~ ✅ (D72, WIZnet-referencia); MagJack lábkiosztása (KiCad Hanrun-szimbólum szerint); RGB LED + 74HCT14 vagy WS2812B-V5)
-- [ ] **DIN-ház (D73):** Gainta D4MG, NYÁK 86,5 × 68 mm (bemeneti: 86,5 × 103 mm) ✅; hátra: vállmagasság és kivágások a ház rajzából
+- [ ] **DIN-ház (D73):** Gainta D4MG, NYÁK 86,5 × 68 mm (bemeneti: 86,5 × 103 mm) ✅; a ház rajzából ellenőrizve (10-27): a ~13 és
+      ~73,5 mm-es belső bordák a vezérlő J6/J5-jét és a relé sorkapcsait érintik → **egy D4MG-t venni és lemérni a rendelés előtt**
 - [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil
 - [ ] **Beszerzés (D85 – legolcsóbb):** minden az LCSC-ről, a JLC-s NYÁK-rendeléssel együtt – 99 tétel, ~15 eFt ÁFA-val;
       kosár: `hardware/bom/lcsc-kosar.csv` (lista: `beszerzes.csv`, `gen/beszerzes.py`); házak később (~8 eFt, Hestore); TI-rendelés 8;
-      fiók-érzékelők (AH1911 / reed) később
-- [ ] NYÁK: rajzok ✅, szabályok + elrendezés mind a négy lapon ✅ (D86, D87 – vezérlő: U4 a jobb élen, buckok a TI-ajánlás szerint); **huzalozás (Balázs): a LED-modul elkezdve (10-23, onnantól kézi – D67)**, a többi utána; rendelés ≈ 10-30
+      fiók-érzékelők (AH1911 / reed) később; **a LED-modul blokkbiztosítékaiból (F202–F204, NANO² 2410) többféle érték** – a kosárban
+      most csak 4 × 10 A (0451010.MRL); mellé pl. 4 A (0451004.MRL) és 8 A (0451008.MRL), hogy a szalaghoz lehessen választani
+- [ ] NYÁK: rajzok ✅, szabályok + elrendezés mind a négy lapon ✅ (D86, D87 – vezérlő: U4 a jobb élen, buckok a TI-ajánlás szerint); **huzalozás (Balázs): a LED-modul kész (10-27, kézi – D67)**, következik a vezérlő, majd a relé és a bemeneti; rendelés ≈ 10-30/31
 - [ ] Firmware később (L433; a meglévő Nucleón / ST-Linkkel kezdhető – D85): LED-modul (önteszt, árammintavétel, 15 A-es korlát (D84), DAC-küszöb,
-      kiégett biztosíték), csatorna-csoportok → Matter-lámpák; modul-protokoll + bootloader; vezérlő: V_BUS-kezelés
+      kiégett biztosíték, prémium halványítás kis fényerőn is – D92), csatorna-csoportok → Matter-lámpák; modul-protokoll + bootloader; vezérlő: V_BUS-kezelés
 - [ ] CCT firmware (D16) a breadboardon (`cp-03-cct-szalag` javaslat); 16 W/m a két szín együtt vagy külön?
 - [ ] HA: futás közben hozzáadott endpoint tesztje (matterjs-server #1016); Matter-színmód (HS/XY) az RGB-csoportokhoz
 - [ ] `tools/serial_log.py`: ne resetelje a C6-ot porton nyitáskor
@@ -144,14 +152,14 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D88 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D92 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, SN65HVD230, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni
 - `NYAK-ELOKESZITES.md` – rajz/layout előtti teendők, mechanika, 4 réteg
 - `UTEMTERV.md` – napra bontott ütemterv a NYÁK-rendelésig (10-14 → 10-31), pipálható
 - `V2-OTLETEK.md` – a v1-ből kihagyott ötletek
-- `NAPLO.md` – a helyi Claude Code munkanaplója
+- `NAPLO.md` – a helyi Claude Code munkanaplója · `../konzultacio/` – a konzulensnek szóló válaszok, jegyzetek
 - `beszelgetesek/` – a claude.ai chatek jegyzetei (csak ha a téma előkerül); legutóbbiak: `2026-10-14-alkatreszkeszlet-p78e05.md`,
   `2026-10-14-vezerlo-spec.md`, `2026-10-21-alkatreszkeszlet-2.md` (benne „D74” = a mi D78-unk)
 - `../matter-tanulasi-terv.md` – 4 órás Matter labor terv (klasszikus ESP32-re készült, a C6-ra igazítani)

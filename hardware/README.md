@@ -35,6 +35,10 @@ ERC, netlista-export és összevetés a specifikációval, később DRC és gerb
 - **KiCad MCP:** `kicad-mcp-pro` (uvx, Python 3.13), helyi scope, munkaterület = `hardware/`, **írható mód**
   (`KICAD_MCP_OPERATING_MODE=write`). Minden projektmappában `output/` munkamappát hoz létre (gitignore-ban).
 
+**Fő áramutak (`gen/aramut.py`, D91):** `flatpak run --command=python3 org.kicad.KiCad gen/aramut.py <lap>` – a DRC-ben a táp-sávok
+minimuma csak 0,2 mm (mellékágak), ezért ez nézi, hogy a fő út (pl. betáp → biztosíték → sorkapocs, FET → sönt, busz) a keskenyebb
+sávok nélkül is egyben van-e; az `ellenorzes.py` 6. lépése futtatja.
+
 **Rajzszerkesztés szkriptből (`gen/schedit.py`, D90):** a kézi `.kicad_sch`-okhoz – szimbólumok és lábpozíciók (a forgatás /
 tükrözés a `kigen` szerint), vezeték, címke, tápszimbólum (a hálózat neve a Value), PWR_FLAG, törlés, áthelyezés, címke csonkra
 (`stub_labels`), a D-hivatkozások kivétele a konzulensnek szánt szövegekből (`strip_d`). A `save()` csak akkor ír, ha a fájl a beolvasás
