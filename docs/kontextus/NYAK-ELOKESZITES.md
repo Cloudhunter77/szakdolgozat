@@ -13,7 +13,7 @@
 4. [ ] **LED-NYÁK:** **F8** (a footprintek frissítése és a rajzon már nem szereplők törlése bekapcsolva; ha kéri: újrakapcsolás a
    hivatkozási jel szerint) → mentés → szólni Claude-nak: a modulmag-sarkot (U2 széles SOIC-8, C18–C21, R1, JP2/JP3, L1, TP1) a
    relé szerinti helyre teszi → **File → Revert**. Utána kézzel:
-   - U208 (DC-DC, ~10 mm magas): a felső éltől ≥ 15 mm-re (a ~13 mm-es borda alá nem), az 1–2. lába a busz felé; C216 / C217 /
+   - U208 (DC-DC, ~10 mm magas): ~~a felső éltől ≥ 15 mm-re~~ a J3 alatt, a bordát ki kell vágni (D98), az 1–2. lába a busz felé; C216 / C217 /
      C218 mellé;
    - **GND_BUS-zóna** a busz-sarokban minden rézrétegen (J2/J3, U3, D5, L1/JP-k, U2 jobb oldala, U208 1–2., C20/C21/C216),
      nagyobb prioritással, mint a GND – a ≥ 0,8 mm-es rést a DRC-szabály adja;
@@ -154,6 +154,7 @@ A NYÁK-koordináták a NYÁK felső élétől (a felső váll felől), a 86,5 �
   - **Felső váll:** a buszcsatlakozók (J2/J3) és a JP1 dugóval ~10–12 mm magasak, ezért fölöttük a fésűfogakat le kell vágni.
     A kábel a véglap nyílásain jön ki.
 - **LED-modul:** a sorkapcsok a rácson; a C205 (1210) a ~73,5 mm-es bordánál határeset; a J2/J3/JP1 ugyanúgy, mint a vezérlőn.
+  **Az U208 (DC-DC, ~10 mm) a ~13 mm-es bordán át (y ≈ 9–21, x ≈ 54–61) → a bordát ott ~7 mm szélesen ki kell vágni (D98).**
 - **Relémodul:** a J101–J104 sorkapocs (y 73,7-től) és a relék alja (73,0) a ~73,5 mm-es bordánál **határeset**.
 - **Előlap:** a LED-ek ~43 mm-re vannak a fedél alatt → ~40 mm-es fényvezető vagy egy kis elülső NYÁK; a RESET/BOOT gomb
   belül marad, vagy tűvel a fedélen át, hosszú szárral.

@@ -8843,7 +8843,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "027bf41b-9141-5e4d-81a4-c8f594a1b964")
-		(property "Reference" "#PWR037"
+		(property "Reference" "#PWR937"
 			(at 327.66 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -8902,25 +8902,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR037")
+					(reference "#PWR937")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR037")
+					(reference "#PWR937")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR037")
+					(reference "#PWR937")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR037")
+					(reference "#PWR937")
 					(unit 1)
 				)
 			)
@@ -9035,7 +9035,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "0ac411a0-484e-57af-bf99-42ba8da4e889")
-		(property "Reference" "#PWR008"
+		(property "Reference" "#PWR908"
 			(at 299.72 34.29 0)
 			(hide yes)
 			(show_name no)
@@ -9094,25 +9094,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR008")
+					(reference "#PWR908")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR008")
+					(reference "#PWR908")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR008")
+					(reference "#PWR908")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR008")
+					(reference "#PWR908")
 					(unit 1)
 				)
 			)
@@ -9235,7 +9235,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "0c5e5778-f186-530e-89c6-7436484fcc9a")
-		(property "Reference" "#PWR006"
+		(property "Reference" "#PWR906"
 			(at 111.76 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -9294,25 +9294,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR006")
+					(reference "#PWR906")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR006")
+					(reference "#PWR906")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR006")
+					(reference "#PWR906")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR006")
+					(reference "#PWR906")
 					(unit 1)
 				)
 			)
@@ -9789,7 +9789,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "1b54b9d5-65ec-594d-9d21-f5e94a04a37a")
-		(property "Reference" "#PWR042"
+		(property "Reference" "#PWR942"
 			(at 341.63 209.55 0)
 			(hide yes)
 			(show_name no)
@@ -9848,25 +9848,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR042")
+					(reference "#PWR942")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR042")
+					(reference "#PWR942")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR042")
+					(reference "#PWR942")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR042")
+					(reference "#PWR942")
 					(unit 1)
 				)
 			)
@@ -9883,7 +9883,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "1f3ffb81-0243-5013-8a2a-029186a2420b")
-		(property "Reference" "#PWR005"
+		(property "Reference" "#PWR905"
 			(at 93.98 52.07 0)
 			(hide yes)
 			(show_name no)
@@ -9942,25 +9942,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR005")
+					(reference "#PWR905")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR005")
+					(reference "#PWR905")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR005")
+					(reference "#PWR905")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR005")
+					(reference "#PWR905")
 					(unit 1)
 				)
 			)
@@ -9977,7 +9977,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "23cb379d-f0e7-5ed4-b6aa-56eec43fb8f2")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR913"
 			(at 139.7 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -10036,25 +10036,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR013")
+					(reference "#PWR913")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR013")
+					(reference "#PWR913")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR013")
+					(reference "#PWR913")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR013")
+					(reference "#PWR913")
 					(unit 1)
 				)
 			)
@@ -10071,7 +10071,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "2579289a-3c42-5db4-8439-7f10a55205be")
-		(property "Reference" "#PWR031"
+		(property "Reference" "#PWR931"
 			(at 68.58 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -10130,25 +10130,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR031")
+					(reference "#PWR931")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR031")
+					(reference "#PWR931")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR031")
+					(reference "#PWR931")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR031")
+					(reference "#PWR931")
 					(unit 1)
 				)
 			)
@@ -10165,7 +10165,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "2711acd8-2c45-5578-a75b-58cd9c7e9fcc")
-		(property "Reference" "#PWR038"
+		(property "Reference" "#PWR938"
 			(at 335.28 111.76 0)
 			(hide yes)
 			(show_name no)
@@ -10224,25 +10224,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR038")
+					(reference "#PWR938")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR038")
+					(reference "#PWR938")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR038")
+					(reference "#PWR938")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR038")
+					(reference "#PWR938")
 					(unit 1)
 				)
 			)
@@ -10259,7 +10259,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "2bedf9e9-9cec-5240-940d-652740027298")
-		(property "Reference" "#PWR034"
+		(property "Reference" "#PWR934"
 			(at 120.65 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -10318,25 +10318,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR034")
+					(reference "#PWR934")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR034")
+					(reference "#PWR934")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR034")
+					(reference "#PWR934")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR034")
+					(reference "#PWR934")
 					(unit 1)
 				)
 			)
@@ -10353,7 +10353,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "2e11055a-ae5a-598a-87f1-b0df4d0a0f14")
-		(property "Reference" "#PWR004"
+		(property "Reference" "#PWR904"
 			(at 68.58 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -10412,25 +10412,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR004")
+					(reference "#PWR904")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR004")
+					(reference "#PWR904")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR004")
+					(reference "#PWR904")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR004")
+					(reference "#PWR904")
 					(unit 1)
 				)
 			)
@@ -10447,7 +10447,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "2edb3657-218e-563c-8d77-46c2c0688de8")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR915"
 			(at 129.54 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -10506,25 +10506,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR015")
+					(reference "#PWR915")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR015")
+					(reference "#PWR915")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR015")
+					(reference "#PWR915")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR015")
+					(reference "#PWR915")
 					(unit 1)
 				)
 			)
@@ -10648,7 +10648,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "321fb0ab-cbc7-5516-b82e-8fbc47aea2a8")
-		(property "Reference" "#PWR010"
+		(property "Reference" "#PWR910"
 			(at 320.04 34.29 0)
 			(hide yes)
 			(show_name no)
@@ -10707,25 +10707,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR010")
+					(reference "#PWR910")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR010")
+					(reference "#PWR910")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR010")
+					(reference "#PWR910")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR010")
+					(reference "#PWR910")
 					(unit 1)
 				)
 			)
@@ -10742,7 +10742,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "36a43298-5f4d-5ba3-890b-910fa2a29d44")
-		(property "Reference" "#PWR007"
+		(property "Reference" "#PWR907"
 			(at 121.92 36.83 0)
 			(hide yes)
 			(show_name no)
@@ -10801,25 +10801,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR007")
+					(reference "#PWR907")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR007")
+					(reference "#PWR907")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR007")
+					(reference "#PWR907")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR007")
+					(reference "#PWR907")
 					(unit 1)
 				)
 			)
@@ -10836,7 +10836,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "3d4da742-b263-51c2-b048-cb7c88de555c")
-		(property "Reference" "#PWR019"
+		(property "Reference" "#PWR919"
 			(at 57.15 109.22 0)
 			(hide yes)
 			(show_name no)
@@ -10895,25 +10895,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR019")
+					(reference "#PWR919")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR019")
+					(reference "#PWR919")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR019")
+					(reference "#PWR919")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR019")
+					(reference "#PWR919")
 					(unit 1)
 				)
 			)
@@ -10930,7 +10930,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "3e7bc42a-98fc-505a-b5cf-e8b989fcac79")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR914"
 			(at 139.7 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -10989,25 +10989,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR014")
+					(reference "#PWR914")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR014")
+					(reference "#PWR914")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR014")
+					(reference "#PWR914")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR014")
+					(reference "#PWR914")
 					(unit 1)
 				)
 			)
@@ -11024,7 +11024,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "3ef5c59c-dbd5-5b94-bf7b-22e95c7fed27")
-		(property "Reference" "#PWR025"
+		(property "Reference" "#PWR925"
 			(at 93.98 172.72 0)
 			(hide yes)
 			(show_name no)
@@ -11083,25 +11083,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR025")
+					(reference "#PWR925")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR025")
+					(reference "#PWR925")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR025")
+					(reference "#PWR925")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR025")
+					(reference "#PWR925")
 					(unit 1)
 				)
 			)
@@ -11323,7 +11323,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "4395da13-8888-5405-b3a3-708edda909e6")
-		(property "Reference" "#PWR049"
+		(property "Reference" "#PWR949"
 			(at 124.46 259.08 0)
 			(hide yes)
 			(show_name no)
@@ -11382,25 +11382,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR049")
+					(reference "#PWR949")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR049")
+					(reference "#PWR949")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR049")
+					(reference "#PWR949")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR049")
+					(reference "#PWR949")
 					(unit 1)
 				)
 			)
@@ -11513,7 +11513,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "4bee1279-b6b3-5743-9337-0bc37b5c82c6")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR912"
 			(at 214.63 210.82 0)
 			(hide yes)
 			(show_name no)
@@ -11572,25 +11572,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR012")
+					(reference "#PWR912")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR012")
+					(reference "#PWR912")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR012")
+					(reference "#PWR912")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR012")
+					(reference "#PWR912")
 					(unit 1)
 				)
 			)
@@ -11705,7 +11705,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "50b73b5d-b0a4-5e9c-bfe5-9bd320a67d22")
-		(property "Reference" "#PWR026"
+		(property "Reference" "#PWR926"
 			(at 93.98 182.88 0)
 			(hide yes)
 			(show_name no)
@@ -11764,25 +11764,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR026")
+					(reference "#PWR926")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR026")
+					(reference "#PWR926")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR026")
+					(reference "#PWR926")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR026")
+					(reference "#PWR926")
 					(unit 1)
 				)
 			)
@@ -12932,7 +12932,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "72fd38bd-71ca-5b91-94e1-8e452f9b2425")
-		(property "Reference" "#PWR001"
+		(property "Reference" "#PWR901"
 			(at 30.48 36.83 0)
 			(hide yes)
 			(show_name no)
@@ -12991,25 +12991,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR001")
+					(reference "#PWR901")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR001")
+					(reference "#PWR901")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR001")
+					(reference "#PWR901")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR001")
+					(reference "#PWR901")
 					(unit 1)
 				)
 			)
@@ -13244,7 +13244,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "7966dcc4-0998-5853-b803-392f3ecaf7d6")
-		(property "Reference" "#PWR009"
+		(property "Reference" "#PWR909"
 			(at 299.72 57.15 0)
 			(hide yes)
 			(show_name no)
@@ -13303,25 +13303,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR009")
+					(reference "#PWR909")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR009")
+					(reference "#PWR909")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR009")
+					(reference "#PWR909")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR009")
+					(reference "#PWR909")
 					(unit 1)
 				)
 			)
@@ -13338,7 +13338,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "7adebc97-46c3-55bf-8077-c5f95df438b1")
-		(property "Reference" "#PWR017"
+		(property "Reference" "#PWR917"
 			(at 137.16 167.64 0)
 			(hide yes)
 			(show_name no)
@@ -13397,25 +13397,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR017")
+					(reference "#PWR917")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR017")
+					(reference "#PWR917")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR017")
+					(reference "#PWR917")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR017")
+					(reference "#PWR917")
 					(unit 1)
 				)
 			)
@@ -13432,7 +13432,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "7aeb5b50-921d-5731-b319-cebfa26bb0b2")
-		(property "Reference" "#FLG046"
+		(property "Reference" "#FLG946"
 			(at 110.49 259.08 0)
 			(hide yes)
 			(show_name no)
@@ -13491,25 +13491,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#FLG046")
+					(reference "#FLG946")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#FLG046")
+					(reference "#FLG946")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#FLG046")
+					(reference "#FLG946")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#FLG046")
+					(reference "#FLG946")
 					(unit 1)
 				)
 			)
@@ -13526,7 +13526,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "7c73cf20-32d8-52d9-a0e5-4fb5f35748e4")
-		(property "Reference" "#FLG048"
+		(property "Reference" "#FLG948"
 			(at 124.46 259.08 0)
 			(hide yes)
 			(show_name no)
@@ -13585,25 +13585,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#FLG048")
+					(reference "#FLG948")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#FLG048")
+					(reference "#FLG948")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#FLG048")
+					(reference "#FLG948")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#FLG048")
+					(reference "#FLG948")
 					(unit 1)
 				)
 			)
@@ -13718,7 +13718,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "858916e1-6967-5890-9727-abdd0c77bba3")
-		(property "Reference" "#PWR044"
+		(property "Reference" "#PWR944"
 			(at 252.73 229.87 0)
 			(hide yes)
 			(show_name no)
@@ -13777,25 +13777,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR044")
+					(reference "#PWR944")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR044")
+					(reference "#PWR944")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR044")
+					(reference "#PWR944")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR044")
+					(reference "#PWR944")
 					(unit 1)
 				)
 			)
@@ -13812,7 +13812,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "88dbb40f-a91f-5e06-a084-fef0200be896")
-		(property "Reference" "#PWR028"
+		(property "Reference" "#PWR928"
 			(at 30.48 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -13871,25 +13871,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR028")
+					(reference "#PWR928")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR028")
+					(reference "#PWR928")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR028")
+					(reference "#PWR928")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR028")
+					(reference "#PWR928")
 					(unit 1)
 				)
 			)
@@ -14015,7 +14015,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "914c6b88-784a-5c8c-93bc-0a8aa7c850ba")
-		(property "Reference" "#PWR035"
+		(property "Reference" "#PWR935"
 			(at 133.35 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -14074,25 +14074,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR035")
+					(reference "#PWR935")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR035")
+					(reference "#PWR935")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR035")
+					(reference "#PWR935")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR035")
+					(reference "#PWR935")
 					(unit 1)
 				)
 			)
@@ -14109,7 +14109,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "95ce3443-7964-5a5d-ab0e-665c5ce0f365")
-		(property "Reference" "#PWR032"
+		(property "Reference" "#PWR932"
 			(at 81.28 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -14168,25 +14168,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR032")
+					(reference "#PWR932")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR032")
+					(reference "#PWR932")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR032")
+					(reference "#PWR932")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR032")
+					(reference "#PWR932")
 					(unit 1)
 				)
 			)
@@ -14203,7 +14203,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "95d5e636-0207-5e06-9ff4-9ce72fcffef7")
-		(property "Reference" "#PWR018"
+		(property "Reference" "#PWR918"
 			(at 160.02 167.64 0)
 			(hide yes)
 			(show_name no)
@@ -14262,25 +14262,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR018")
+					(reference "#PWR918")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR018")
+					(reference "#PWR918")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR018")
+					(reference "#PWR918")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR018")
+					(reference "#PWR918")
 					(unit 1)
 				)
 			)
@@ -14297,7 +14297,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "992ee624-7871-5460-8028-c081575170e0")
-		(property "Reference" "#PWR040"
+		(property "Reference" "#PWR940"
 			(at 304.8 137.16 0)
 			(hide yes)
 			(show_name no)
@@ -14356,25 +14356,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR040")
+					(reference "#PWR940")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR040")
+					(reference "#PWR940")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR040")
+					(reference "#PWR940")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR040")
+					(reference "#PWR940")
 					(unit 1)
 				)
 			)
@@ -14391,7 +14391,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "9d92195c-055c-51a9-992e-52eebbf32487")
-		(property "Reference" "#PWR029"
+		(property "Reference" "#PWR929"
 			(at 43.18 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -14450,25 +14450,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR029")
+					(reference "#PWR929")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR029")
+					(reference "#PWR929")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR029")
+					(reference "#PWR929")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR029")
+					(reference "#PWR929")
 					(unit 1)
 				)
 			)
@@ -14485,7 +14485,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "9fc529c5-e827-5b13-a8ac-456bcd554df3")
-		(property "Reference" "#PWR003"
+		(property "Reference" "#PWR903"
 			(at 55.88 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -14544,25 +14544,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR003")
+					(reference "#PWR903")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR003")
+					(reference "#PWR903")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR003")
+					(reference "#PWR903")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR003")
+					(reference "#PWR903")
 					(unit 1)
 				)
 			)
@@ -14579,7 +14579,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "a4dd9384-01b1-5aba-b506-d9b2f2c62c21")
-		(property "Reference" "#PWR024"
+		(property "Reference" "#PWR924"
 			(at 81.28 172.72 0)
 			(hide yes)
 			(show_name no)
@@ -14638,25 +14638,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR024")
+					(reference "#PWR924")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR024")
+					(reference "#PWR924")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR024")
+					(reference "#PWR924")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR024")
+					(reference "#PWR924")
 					(unit 1)
 				)
 			)
@@ -14673,7 +14673,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "abf36bfa-73d8-5c11-9954-f0fcabbc9055")
-		(property "Reference" "#PWR020"
+		(property "Reference" "#PWR920"
 			(at 39.37 134.62 0)
 			(hide yes)
 			(show_name no)
@@ -14732,25 +14732,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR020")
+					(reference "#PWR920")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR020")
+					(reference "#PWR920")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR020")
+					(reference "#PWR920")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR020")
+					(reference "#PWR920")
 					(unit 1)
 				)
 			)
@@ -14767,7 +14767,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "ac2bf85a-1b27-5845-8308-4e93631d89de")
-		(property "Reference" "#PWR030"
+		(property "Reference" "#PWR930"
 			(at 55.88 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -14826,25 +14826,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR030")
+					(reference "#PWR930")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR030")
+					(reference "#PWR930")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR030")
+					(reference "#PWR930")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR030")
+					(reference "#PWR930")
 					(unit 1)
 				)
 			)
@@ -15175,7 +15175,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "ba944bef-2e70-508c-99d4-d4a7e650b212")
-		(property "Reference" "#PWR033"
+		(property "Reference" "#PWR933"
 			(at 93.98 232.41 0)
 			(hide yes)
 			(show_name no)
@@ -15234,25 +15234,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR033")
+					(reference "#PWR933")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR033")
+					(reference "#PWR933")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR033")
+					(reference "#PWR933")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR033")
+					(reference "#PWR933")
 					(unit 1)
 				)
 			)
@@ -15670,7 +15670,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "cd13f781-5101-5fc6-88e1-0157c569098b")
-		(property "Reference" "#PWR002"
+		(property "Reference" "#PWR902"
 			(at 43.18 54.61 0)
 			(hide yes)
 			(show_name no)
@@ -15729,25 +15729,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR002")
+					(reference "#PWR902")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR002")
+					(reference "#PWR902")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR002")
+					(reference "#PWR902")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR002")
+					(reference "#PWR902")
 					(unit 1)
 				)
 			)
@@ -16069,7 +16069,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "d33fe30b-3eba-5f2f-b14f-b4254cabe088")
-		(property "Reference" "#PWR039"
+		(property "Reference" "#PWR939"
 			(at 342.9 101.6 0)
 			(hide yes)
 			(show_name no)
@@ -16128,25 +16128,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR039")
+					(reference "#PWR939")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR039")
+					(reference "#PWR939")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR039")
+					(reference "#PWR939")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR039")
+					(reference "#PWR939")
 					(unit 1)
 				)
 			)
@@ -16261,7 +16261,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "dc24ee91-d2ce-5a42-8340-690050b78f8e")
-		(property "Reference" "#PWR047"
+		(property "Reference" "#PWR947"
 			(at 110.49 259.08 0)
 			(hide yes)
 			(show_name no)
@@ -16320,25 +16320,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR047")
+					(reference "#PWR947")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR047")
+					(reference "#PWR947")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR047")
+					(reference "#PWR947")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR047")
+					(reference "#PWR947")
 					(unit 1)
 				)
 			)
@@ -16464,7 +16464,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "dd247c13-5568-5100-a920-8c6b16a33e81")
-		(property "Reference" "#PWR027"
+		(property "Reference" "#PWR927"
 			(at 25.4 222.25 0)
 			(hide yes)
 			(show_name no)
@@ -16523,25 +16523,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR027")
+					(reference "#PWR927")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR027")
+					(reference "#PWR927")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR027")
+					(reference "#PWR927")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR027")
+					(reference "#PWR927")
 					(unit 1)
 				)
 			)
@@ -16878,7 +16878,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "e098dbeb-ccb6-5a07-9aa9-9a99c277e183")
-		(property "Reference" "#PWR041"
+		(property "Reference" "#PWR941"
 			(at 322.58 190.5 0)
 			(hide yes)
 			(show_name no)
@@ -16937,25 +16937,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR041")
+					(reference "#PWR941")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR041")
+					(reference "#PWR941")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR041")
+					(reference "#PWR941")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR041")
+					(reference "#PWR941")
 					(unit 1)
 				)
 			)
@@ -17070,7 +17070,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "e3266351-aae0-559c-98b8-d7303435577b")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR916"
 			(at 148.59 162.56 0)
 			(hide yes)
 			(show_name no)
@@ -17129,25 +17129,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR016")
+					(reference "#PWR916")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR016")
+					(reference "#PWR916")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR016")
+					(reference "#PWR916")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR016")
+					(reference "#PWR916")
 					(unit 1)
 				)
 			)
@@ -17259,7 +17259,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "fad6839c-4fa3-5f53-94a4-9e6ebfc9aa3a")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR911"
 			(at 204.47 104.14 0)
 			(hide yes)
 			(show_name no)
@@ -17318,25 +17318,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR011")
+					(reference "#PWR911")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR011")
+					(reference "#PWR911")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR011")
+					(reference "#PWR911")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR011")
+					(reference "#PWR911")
 					(unit 1)
 				)
 			)
@@ -17369,7 +17369,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "e5df4615-e21a-59b0-9864-24c2d988ee04")
-		(property "Reference" "#PWR021"
+		(property "Reference" "#PWR921"
 			(at 219.71 101.14 0)
 			(hide yes)
 			(show_name no)
@@ -17428,25 +17428,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR021")
+					(reference "#PWR921")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR021")
+					(reference "#PWR921")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR021")
+					(reference "#PWR921")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR021")
+					(reference "#PWR921")
 					(unit 1)
 				)
 			)
@@ -17589,7 +17589,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "934b18a2-cbfd-5b09-9e2d-fc2904efdd78")
-		(property "Reference" "#PWR022"
+		(property "Reference" "#PWR922"
 			(at 129.54 99.87 0)
 			(hide yes)
 			(show_name no)
@@ -17648,25 +17648,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR022")
+					(reference "#PWR922")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR022")
+					(reference "#PWR922")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR022")
+					(reference "#PWR922")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR022")
+					(reference "#PWR922")
 					(unit 1)
 				)
 			)
@@ -18167,7 +18167,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "077e4f66-55bb-5899-b2f0-2a35b21bab5b")
-		(property "Reference" "#PWR023"
+		(property "Reference" "#PWR923"
 			(at 304.8 118.92 0)
 			(hide yes)
 			(show_name no)
@@ -18226,25 +18226,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR023")
+					(reference "#PWR923")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR023")
+					(reference "#PWR923")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR023")
+					(reference "#PWR923")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR023")
+					(reference "#PWR923")
 					(unit 1)
 				)
 			)
@@ -18283,7 +18283,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "32d963e0-777a-579d-a8c0-7524b09beb0a")
-		(property "Reference" "#PWR036"
+		(property "Reference" "#PWR936"
 			(at 340.36 118.92 0)
 			(hide yes)
 			(show_name no)
@@ -18342,25 +18342,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR036")
+					(reference "#PWR936")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR036")
+					(reference "#PWR936")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR036")
+					(reference "#PWR936")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR036")
+					(reference "#PWR936")
 					(unit 1)
 				)
 			)
@@ -18497,7 +18497,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "820ce9ad-0e92-5998-a9c3-c0c80af807d6")
-		(property "Reference" "#PWR046"
+		(property "Reference" "#PWR946"
 			(at 325.12 135.43 0)
 			(hide yes)
 			(show_name no)
@@ -18556,25 +18556,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR046")
+					(reference "#PWR946")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR046")
+					(reference "#PWR946")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR046")
+					(reference "#PWR946")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR046")
+					(reference "#PWR946")
 					(unit 1)
 				)
 			)
@@ -18700,7 +18700,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "2b1131ea-5da5-5fea-ad9a-8c415de02472")
-		(property "Reference" "#PWR048"
+		(property "Reference" "#PWR948"
 			(at 332.74 135.43 0)
 			(hide yes)
 			(show_name no)
@@ -18759,25 +18759,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR048")
+					(reference "#PWR948")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR048")
+					(reference "#PWR948")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR048")
+					(reference "#PWR948")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR048")
+					(reference "#PWR948")
 					(unit 1)
 				)
 			)
@@ -18827,7 +18827,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "18d69937-f240-598d-8f72-6458006e68d5")
-		(property "Reference" "#FLG001"
+		(property "Reference" "#FLG901"
 			(at 138.43 263.53 0)
 			(hide yes)
 			(show_name no)
@@ -18886,25 +18886,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#FLG001")
+					(reference "#FLG901")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#FLG001")
+					(reference "#FLG901")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#FLG001")
+					(reference "#FLG901")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#FLG001")
+					(reference "#FLG901")
 					(unit 1)
 				)
 			)
@@ -18921,7 +18921,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "59bd8a43-989b-53b2-a89d-26b65afffdda")
-		(property "Reference" "#PWR043"
+		(property "Reference" "#PWR943"
 			(at 138.43 258.62 0)
 			(hide yes)
 			(show_name no)
@@ -18980,25 +18980,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR043")
+					(reference "#PWR943")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR043")
+					(reference "#PWR943")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR043")
+					(reference "#PWR943")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR043")
+					(reference "#PWR943")
 					(unit 1)
 				)
 			)
@@ -19015,7 +19015,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "ce69eaa5-6cb2-5a91-bff8-04a74c511ac5")
-		(property "Reference" "#FLG002"
+		(property "Reference" "#FLG902"
 			(at 152.4 263.53 0)
 			(hide yes)
 			(show_name no)
@@ -19074,25 +19074,25 @@
 		(instances
 			(project "modulmag"
 				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#FLG002")
+					(reference "#FLG902")
 					(unit 1)
 				)
 			)
 			(project "bemeneti-modul"
 				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#FLG002")
+					(reference "#FLG902")
 					(unit 1)
 				)
 			)
 			(project "rele-modul"
 				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#FLG002")
+					(reference "#FLG902")
 					(unit 1)
 				)
 			)
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#FLG002")
+					(reference "#FLG902")
 					(unit 1)
 				)
 			)

@@ -91,6 +91,13 @@ def erc(build):
             for t, m in blokkok:
                 hiba(f'{lap} ERC: [{t}] {m}')
         print(f'  {lap}: {sum(tip.values())} jelzés {tip or ""}')
+        # annotálás (2026-11-02): a parancssori ERC nem nézi, a KiCad viszont nélküle nem frissíti a NYÁK-ot (F8) –
+        # pl. a modulmag és a modul saját lapjának azonos #PWR-jelölései (a modulmag tápszimbólumai: #PWR9xx / #FLG9xx)
+        if lap != 'modulmag':
+            r = subprocess.run(KCLI + ['sch', 'export', 'netlist', '-o', f'{H}/out/{lap}.annot.net', f'{H}/{lap}/{lap}.kicad_sch'],
+                               capture_output=True, text=True)
+            if 'annotation error' in (r.stdout + r.stderr):
+                hiba(f'{lap}: annotálási hiba (ismétlődő vagy hiányzó jelölés) – a KiCad így nem frissíti a NYÁK-ot (F8)')
 
 
 # ---------------------------------------------------------------------------------------------------- 2. láb ↔ pad

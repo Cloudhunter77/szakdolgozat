@@ -63,6 +63,12 @@ DAC1_OUT1 → COMP2 INM, ADC1_IN8 + COMP2_INP a PA3-on) a CubeMX-ben kézzel kel
 Kapcsolók: `--no-build` (a meglévő netlistákból), `--no-cubemx`. „HIBA” = javítandó; a szitanyomat-jelzések a
 layoutnál rendeződnek (figyelmeztetés). Kilépési kód 1, ha van hiba.
 
+**NYÁK-módosítás szkriptből (2026-11-02):** a KiCad Pythonjának `SaveBoard`-ja a `.kicad_pro`-t is újraírja, és ilyenkor kiesnek
+belőle a kapcsolási rajz beállításai, valamint a sáv- és via-előbeállítások. Utána: `git restore <lap>/<lap>.kicad_pro`.
+A zónákat **ne** a Pythonban töltsd ki, mert az nem olvassa a `.kicad_dru` szabályait (pl. a 0,8 mm-es leválasztást), hanem így:
+`kicad-cli pcb drc --refill-zones --save-board …` (vagy KiCad-ben: B). Előtte nézd meg, hogy Balázs mentett-e (mtime), utána nála
+File → Revert.
+
 **UUID-k (10-22):** a generátor determinisztikus – a szimbólumok UUID-je a projekt + hivatkozási jel alapján képződik, így
 újragenerálás után is egyezik a NYÁK footprintjeinek útvonalával („Update PCB from Schematic” működik); a többi elem UUID-je
 laponként sorszámból képződik (két futás bájtra azonos fájlt ad).

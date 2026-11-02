@@ -151,7 +151,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D97 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D98 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, izolált CAN, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni
