@@ -11,7 +11,7 @@
 "D4","piros","LED_SMD:LED_0603_1608Metric","1","állapot-LED, a PC13 nyeli"
 "D5","SMF5.0A","Diode_SMD:D_SOD-123F","1","ESD / hot-plug tüskék ellen, a J2/J3 mellé"
 "D105","SMBJ28A","Diode_SMD:D_SMB","1","TVS, 28 V standoff"
-"D106","BZT52C15","Diode_SMD:D_SOD-123","1","15 V – a gate–source-feszültség határa (±20 V) alatt"
+"D106 D107","BZT52C15","Diode_SMD:D_SOD-123","2","15 V – a gate–source-feszültség határa (±20 V) alatt,Tekercs-kioltás a COM-ágban: a kimenet ~24 + 15 V-on fog (26 V-os tápnál ~42 V, az ULN2803A 50 V-os határa alatt) → gyorsabb elengedés, kisebb ív az érintkezőn"
 "F100","0,5A","Fuse:Fuse_1206_3216Metric","1","≥ 32 V, gyors, 1206; 4 tekercs × ~17 mA"
 "J1","DEBUG","Connector_PinHeader_2.54mm:PinHeader_1x07_P2.54mm_Vertical","1",""
 "J2","BUS_IN","Connector_JST:JST_XH_B4B-XH-A_1x04_P2.50mm_Vertical","1",""

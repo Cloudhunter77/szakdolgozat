@@ -108,6 +108,7 @@ BOARDS = {
         lock=['J100', 'J2', 'J3', 'JP1', 'J105', 'K1', 'K2', 'K3', 'K4', 'J101', 'J102', 'J103', 'J104'],
         attach={'D105': 'F100', 'C105': 'F100'},   # (F100 rögzített: '@F100' csoport)   # +24V_P: TVS, puffer a betáp-ágnál (D100 – D90)
         pin_attach={'R114': 'Q100', 'D106': 'Q100', 'C104': 'U101',   # a Q100 gate-eleme a gate-hez, a 10 µF a relé-táphoz
+                    'D107': 'U101', 'R117': 'U101',                  # D96: a COM-ági Zener és az áthidalása (DNP) a COM (10) mellé
                     'R115': 'U6', 'R116': 'U6', 'C107': 'U6',        # D89: a HW_REV-osztó a blokkon kívül, a PB0 (26) mellett
                     'R9': 'D4', 'R113': 'J2', 'R100': 'J2',   # D94: V_BUS → +5V
                     'U100': 'U2', 'C100': 'U100', 'C108': 'U100', 'C109': 'U100'},   # D95: izolált DC-DC helye (DNP)                        # D90 után ezek nem fértek el: az állapot-LED-hez, a busz GND-jéhez

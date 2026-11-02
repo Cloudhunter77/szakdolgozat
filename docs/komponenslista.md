@@ -471,6 +471,8 @@ C104 (10 µF / 50 V, kerámia), C105 (47 µF / 50 V, elektrolit): a tekercs-táp
 
 U101 (ULN2803A, 8 csatornás Darlington-tranzisztorsor): a mikrovezérlő 3,3 V-os kimenetei ezen át kapcsolják a 24 V-os relétekercseket; a beépített diódák elvezetik a tekercs kikapcsolásakor keletkező feszültségtüskét. Bekapcsoláskor (lebegő bemenet) a kimenetek KI vannak.
 
+D107 (BZT52C15, 15 V-os Zener-dióda) + R117 (0 Ω, alapból nincs beültetve): a ULN2803A közös diódalába (COM) a Zeneren át jut a 24 V-os tekercs-tápra. Kikapcsoláskor a tekercs feszültsége így ~24 + 15 V-ig nőhet (26 V-os tápnál ~42 V, az ULN2803A 50 V-os határa alatt), ezért az áram gyorsabban lecseng, a relé gyorsabban enged el, és az érintkezőn kisebb az ív (induktív 230 V-os terhelésnél, pl. motor, szivattyú, ez számít). Az R117 a Zener áthidalására van, ha mégsem kell a gyors kioltás.
+
 K1–K4 (Schrack RTD14024, 16 A-es, 24 V-os relé): a 230 V-os terhelések kapcsolása, galvanikus leválasztással.
 
 R103–R106 (10 k) + D101–D104 (zöld LED): relé-állapot LED-ek – akkor világítanak, ha az adott tekercs be van kapcsolva (az előlapon, fényvezető alatt).
@@ -525,7 +527,7 @@ C304–C307 (1 µF): a csoport-tápok pufferei.
 
 J301–J316 (JST-PH, 3 tű: táp, GND, jel): bemenetenként egy csatlakozó – kapcsoló, reed-relé, Hall-érzékelő vagy más digitális jel köthető rá.
 
-R330–R345 (10 k): felhúzó ellenállások a csatlakozó oldalán – nyitott kontaktusnál a bemenet 1, zártnál 0 (kontaktus-érzékelőkhöz nem kell külső ellenállás). 12/24 V-os jelnél kivehető.
+R330–R345 (10 k): felhúzó ellenállások a csatlakozó oldalán, a mikrovezérlő +3,3 V-jára – nyitott kontaktusnál a bemenet 1, zártnál 0 (kontaktus-érzékelőkhöz nem kell külső ellenállás). **Osztó nélkül csak ≤ 5 V-os jel mehet a bemenetre:** egy félrekötött 24 V a felhúzáson át bemenetenként ~2 mA-t táplálna vissza a 3,3 V-os sínre (16 bemeneten ~33 mA), amit a stabilizátor nem tud elnyelni, így a sín feszültsége megemelkedhet. 12/24 V-os aktív érzékelőhöz az osztót be kell ültetni, a felhúzást ki kell hagyni.
 
 R310–R325 (10 k, soros): áramkorlát a mikrovezérlő lába előtt – ha valaki tévedésből 24 V-ot köt egy osztó nélküli bemenetre, legfeljebb ~2 mA folyik, és ezt az ESD-védő tömb (U303–U306) veszi fel. A láb feszültsége ekkor az ESD-tömb letörési feszültségére áll be, ami a mikrovezérlő 5 V-tűrő lábának határa (~7,3 V) körül van – ez csak félrekötés elleni tartalék, 12/24 V-os jelhez az osztót be kell ültetni.
 

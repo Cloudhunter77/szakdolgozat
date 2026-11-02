@@ -1,4 +1,17 @@
-# Ütemterv a NYÁK-rendelésig – 2026-10-14 → 2026-10-31
+# Ütemterv a NYÁK-rendelésig – 2026-10-14 → ~~2026-10-31~~ 2026-11-05 (D97)
+
+## Hajrá – huzalozás és rendelés (11-02 H → 11-05 Cs, D97)
+A konzultáció (10-28) utáni módosítások (D93–D96) miatt a rendelés 11-05-re került. A teendők sorrendje: `NYAK-ELOKESZITES.md` eleje.
+
+| Nap | Balázs | Claude Code |
+|---|---|---|
+| H 11-02 | [ ] vezérlő-NYÁK: F8 · [ ] LED-NYÁK: F8 → Claude → Revert → a busz-sarok kézzel | [x] commit (D93–D95) · [x] D96 a rajzokon + relé-NYÁK · [ ] a LED-modul modulmag-sarka |
+| K 11-03 | [ ] LED-NYÁK kész · [ ] **vezérlő** huzalozása | [ ] ellenőrzés (`gen/ellenorzes.py`) |
+| Sze 11-04 | [ ] **relé** és **bemeneti** huzalozása | [ ] ellenőrzés; gerber, fúrás, BOM, CPL |
+| **Cs 11-05** | [ ] JLC-ajánlat (4 réteg + stencil) → javítások → **NYÁK + stencil + LCSC-alkatrészek megrendelése** | [ ] a gyártási fájlok végső ellenőrzése |
+
+Ha csúszik: a vezérlő + LED- + relémodul megy 11-05-én, a bemeneti modul (a többi nem függ tőle) külön rendelésben.
+
 
 A D25 hármas felosztására épül: kapcsolási rajz → layout → átnézés + rendelés. Ami kész, azt pipáld ki; ha
 csúszik valami, itt írd át a dátumot (a régi dátumot hagyd meg áthúzva: ~~10-16~~ 10-17).

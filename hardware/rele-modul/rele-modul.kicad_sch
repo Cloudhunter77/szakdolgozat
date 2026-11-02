@@ -3705,7 +3705,7 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "RELÉMEGHAJTÓ – ULN2803A: belső kioltó diódák"
+	(text "RELÉMEGHAJTÓ – ULN2803A: belső kioltó diódák,"
 		(exclude_from_sim no)
 		(at 141.75 137.46 0)
 		(effects
@@ -3738,7 +3738,7 @@
 		)
 		(uuid "29a25927-a86e-5b15-98aa-c33c47249ded")
 	)
-	(text "lehúzása → bekapcsoláskor minden relé KI"
+	(text "a bemenetek belső lehúzása → bekapcsoláskor minden relé KI"
 		(exclude_from_sim no)
 		(at 141.75 146.46 0)
 		(effects
@@ -3826,7 +3826,7 @@
 		)
 		(uuid "c852f181-b0c7-5235-a378-204adba1eb45")
 	)
-	(text "a COM-on (10) át a +24V_P-re; a bemenetek belső"
+	(text "a COM (10) a D107 Zeneren (15 V) át a +24V_P-re → gyorsabb elengedés;"
 		(exclude_from_sim no)
 		(at 141.75 142.46 0)
 		(effects
@@ -5232,17 +5232,6 @@
 			(type default)
 		)
 		(uuid "d354593c-077a-54c4-b233-1a0efd4af94e")
-	)
-	(wire
-		(pts
-			(xy 181.61 165.1)
-			(xy 181.61 157.48)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d6d087c7-d7ab-5711-a1e3-b20f33469b4d")
 	)
 	(wire
 		(pts
@@ -11915,7 +11904,7 @@
 	)
 	(symbol
 		(lib_id "power:+24V")
-		(at 181.61 157.48 0)
+		(at 181.61 154.94 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -11925,7 +11914,7 @@
 		(dnp no)
 		(uuid "a77ed0e3-ef55-5f71-8215-cc8be94c4b32")
 		(property "Reference" "#PWR008"
-			(at 181.61 154.48 0)
+			(at 181.61 151.94 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11936,7 +11925,7 @@
 			)
 		)
 		(property "Value" "+24V_P"
-			(at 181.61 153.67 0)
+			(at 181.61 151.13 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -11946,7 +11935,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 181.61 157.48 0)
+			(at 181.61 154.94 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11957,7 +11946,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 181.61 157.48 0)
+			(at 181.61 154.94 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11968,7 +11957,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 181.61 157.48 0)
+			(at 181.61 154.94 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -13283,5 +13272,232 @@
 			(justify left bottom)
 		)
 		(uuid "d7058b0e-aec7-56d2-9bcc-93001d613bab")
+	)
+	(wire
+		(pts
+			(xy 181.61 165.1)
+			(xy 181.61 162.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8a3e117f-8ed1-51ad-911c-be45eb0b86c9")
+	)
+	(symbol
+		(lib_id "Device:D_Zener")
+		(at 181.61 158.75 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "67a03f50-0c44-5618-a5b9-96d3b06f3346")
+		(property "Reference" "D107"
+			(at 179.07 157.48 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "BZT52C15"
+			(at 179.07 160.02 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Diode_SMD:D_SOD-123"
+			(at 181.61 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 181.61 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 181.61 158.75 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Megjegyzés" "Tekercs-kioltás a COM-ágban: a kimenet ~24 + 15 V-on fog (26 V-os tápnál ~42 V, az ULN2803A 50 V-os határa alatt) → gyorsabb elengedés, kisebb ív az érintkezőn"
+			(at 181.61 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "cdc35f9d-8339-5162-8a33-e390122c43d0")
+		)
+		(pin "2"
+			(uuid "780dee38-6b5a-5ad1-a018-adaee42070f4")
+		)
+		(instances
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622"
+					(reference "D107")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 189.23 158.75 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp yes)
+		(uuid "4c06795f-0e3d-5d1f-9db5-78aafe45998a")
+		(property "Reference" "R117"
+			(at 191.77 157.48 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "0R"
+			(at 191.77 160.02 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
+			(at 189.23 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 189.23 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 189.23 158.75 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Megjegyzés" "0 Ω (DNP): a D107 áthidalása, ha mégsem kell a gyors kioltás – akkor a COM közvetlenül a +24V_P-n"
+			(at 189.23 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "585ffd54-358f-566d-87b0-1a7d73b5c829")
+		)
+		(pin "2"
+			(uuid "fe6001e6-9acf-5e61-ab01-2d464f83443b")
+		)
+		(instances
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622"
+					(reference "R117")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 181.61 154.94)
+			(xy 189.23 154.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "95b0d0a5-30b5-5504-a6a9-0a4388de4627")
+	)
+	(wire
+		(pts
+			(xy 181.61 162.56)
+			(xy 189.23 162.56)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7f10f595-ea94-52d5-a7d9-98a0bd058eea")
+	)
+	(junction
+		(at 181.61 154.94)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "f2c1f07a-8b0c-56f4-bae6-e7f8072e13d0")
+	)
+	(junction
+		(at 181.61 162.56)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9913ae3b-5831-513a-bc04-ea461b8c05ae")
 	)
 )

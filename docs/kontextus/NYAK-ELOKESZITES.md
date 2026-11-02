@@ -1,8 +1,8 @@
 # NYÁK-rajzolás előtt eldöntendő – 2026-10-13, frissítve 2026-10-14
 
 ## ▶ Huzalozás előtt (2026-11-01, D93–D95 után) – Balázs teendői, sorrendben
-1. [ ] **Commit** a D93–D95 állapotról (biztos visszaállási pont).
-2. [ ] **Döntések**, amelyek a még huzalozatlan lapok alkatrészeit változtatják (Claude javaslata zárójelben):
+1. [x] **Commit** a D93–D95 állapotról (biztos visszaállási pont) – `b4f8c70`, 11-02.
+2. [x] **Döntések** (11-02: **D96** – az U2 marad, a Zener bekerült, a bemenetinél leírás; **D97** – rendelés 11-05), amelyek a még huzalozatlan lapok alkatrészeit változtatják (Claude javaslata zárójelben):
    - vezérlő: az U2 (LMR33630, 36 V) marad, vagy 60 V-os buck? (marad: ≤ 26 V-os szabály + a C1 ESR-je)
    - relé: Zener (BZT52C15 + 0 Ω) az ULN2803A COM-ágába a gyorsabb elengedésért? (igen – egy alkatrész, a BOM-ban már van)
    - bemeneti: a +3V3-ra menő felhúzás visszatáplálása félrekötött 24 V-nál (leírás: osztó nélkül csak ≤ 5 V; 24 V-os
@@ -20,7 +20,8 @@
    - a sarok újrahuzalozása: a J2.1/J3.1 most V_BUS (nem +5V), a D5 és az U3 GND-je GND_BUS; a régi lógó +3V3-csonk (R6 mellett) törlése;
    - DRC: csak szitanyomat-figyelmeztetés maradjon, rajz ↔ NYÁK eltérés 0 (Claude: `gen/ellenorzes.py`).
 5. [ ] **Relé-NYÁK:** a generált kezdő elhelyezés szerint; a **C105 és a J4 nem fért el** (a lapon kívül állnak) – helyet keresni,
-   vagy eldönteni, melyik opcionális elem (J4 bővítő, U100 DC-DC-hely) maradjon.
+   vagy a J4 bővítőt kihagyni (az U100 DC-DC-hely marad, D95). A D107 + R117 (D96) a COM (U101.10) mellett, a C104 a D105 mellé,
+   az R9 a D4 mellé került (11-02, a többi elhelyezés változatlan).
 6. [ ] **Bemeneti-NYÁK:** a generált kezdő elhelyezés szerint; a felső PH-sor elemei 0,26 mm-re vannak egymástól (a generátor
    0,5 mm-t kér) – ellenőrizni.
 7. [ ] Ajánlott a véglegesítés előtt: **egy Gainta D4MG ház** megvétele és lemérése (bordák, fésű, magasságok – lásd lent).

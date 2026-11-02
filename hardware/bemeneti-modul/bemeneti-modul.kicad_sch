@@ -3347,7 +3347,7 @@
 		)
 		(uuid "7424c698-2e56-5486-8810-a9af95d276e2")
 	)
-	(text "Alap: R_fel 10k + R_s 10k + C 10n – félrekötött 24 V-nál ~2 mA az ESD-tömbbe, a láb ~VBR-en → 12/24 V-hoz osztó kell. 12/24 V-os jel: R_fel ki, R_s 68k, R_le 10k; 5 V: R_s 2k2, R_le 3k9."
+	(text "Alap: R_fel 10k + R_s 10k + C 10n – osztó nélkül csak ≤ 5 V-os jel mehet a bemenetre. 12/24 V-os jel: R_fel ki, R_s 68k, R_le 10k; 5 V: R_s 2k2, R_le 3k9."
 		(exclude_from_sim no)
 		(at 80 97.5 0)
 		(effects
@@ -29301,5 +29301,16 @@
 			(justify left bottom)
 		)
 		(uuid "183a4bab-9a7c-5e50-a602-3d02681dc2e0")
+	)
+	(text "Félrekötött 24 V osztó nélkül: bemenetenként ~2 mA az ESD-tömbbe, és az R_fel-en át a +3V3-ra is visszatáplál (16 bemeneten ~33 mA – az LDO nem nyeli el, a sín megemelkedhet)."
+		(exclude_from_sim no)
+		(at 80 101 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "69b71604-5e40-5f46-901e-f439ca99054f")
 	)
 )
