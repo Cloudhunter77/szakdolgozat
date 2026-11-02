@@ -170,7 +170,7 @@ Egy készlet (vezérlő + 3 modul) + tartalék. A `gen/beszerzes.py` soronként 
   TI-rendelésből jön. Feltöltés: lcsc.com → BOM Tool → `bom/lcsc-kosar.csv` (LCSC-kód, darab). Szállítás: a JLC-s NYÁK-rendeléssel
   egy csomagban (az LCSC pénztárában ellenőrizni); néhány passzívnál 100 db a minimum (összesen legfeljebb +1–2 eFt).
 - **Hestore: nincs rendelés.** A böngészőben összerakott Hestore-kosár (10-22) elavult – üríthető.
-- **Később:** Gainta D4MG × 3 + D6MG × 1 (~8 200 Ft, Hestore) – a működő prototípushoz nem kell.
+- **Később:** Gainta D4MG × 4 (D100: a bemeneti modul is 4 M-es) – a működő prototípushoz nem kell.
 - **Kézben:** ST-Link és Nucleo (programozás, firmware-kezdés), STM32L433, SN65HVD230, MCP9701A, IRFR1205/IRFR120N, relék, zöld LED,
   74HCT14, a relékimenet 5,08-as sorkapcsai (D83).
 - **TI-rendelés (8 tétel, ha megjön);** ha nem: ugyanezek az LCSC-n ~6 400 Ft (a `beszerzes.csv` „Alternatíva” oszlopa).

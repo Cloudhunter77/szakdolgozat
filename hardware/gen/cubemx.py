@@ -60,8 +60,7 @@ MODULES = {
         ('PA0', 'ADC1_IN5', 'IN5-Single-Ended', 'CT_SENSE'),
         ('PB1', 'ADC1_IN16', 'IN16-Single-Ended', 'VIN_SENSE'),   # D71, D78: a tekercs-táp
     ],
-    'bemeneti-modul': [(f'PA{i}', EXTI, None, f'IN{i}') for i in range(11)]
-                      + [(f'PB{i}', EXTI, None, f'IN{i}') for i in range(11, 16)]
+    'bemeneti-modul': [(f'PA{i}', EXTI, None, f'IN{i}') for i in range(7)]      # D100: 7 bemenet (IN0–IN6, ADC-képes lábak)
                       + [('PB8', 'I2C1_SCL', 'I2C', 'I2C1_SCL'),
                          ('PB9', 'I2C1_SDA', 'I2C', 'I2C1_SDA'),
                          # PC2 EXTI-ként az IN2 (PA2) EXTI2-vonalával ütközne → sima bemenet, a firmware lekérdezi

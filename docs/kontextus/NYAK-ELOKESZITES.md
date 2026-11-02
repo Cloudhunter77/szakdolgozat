@@ -22,8 +22,8 @@
 5. [ ] **Relé-NYÁK:** a generált kezdő elhelyezés szerint; a **C105 és a J4 nem fért el** (a lapon kívül állnak) – helyet keresni,
    vagy a J4 bővítőt kihagyni (az U100 DC-DC-hely marad, D95). A D107 + R117 (D96) a COM (U101.10) mellett, a C104 a D105 mellé,
    az R9 a D4 mellé került (11-02, a többi elhelyezés változatlan).
-6. [ ] **Bemeneti-NYÁK:** a generált kezdő elhelyezés szerint; a felső PH-sor elemei 0,26 mm-re vannak egymástól (a generátor
-   0,5 mm-t kér) – ellenőrizni.
+6. [ ] **Bemeneti-NYÁK (D100, 11-03):** 7 bemenet, 86,5 × 68 mm – újragenerált kezdő elhelyezés (alul a 7 PH egy sorban, felül a
+   modulmag-blokk, az I²C, az érzékelő-táp és a HDC3020); huzalozandó.
 7. [ ] Ajánlott a véglegesítés előtt: **egy Gainta D4MG ház** megvétele és lemérése (bordák, fésű, magasságok – lásd lent).
 8. [ ] **Beültetéskor (LED-modul, D99):** réz drót (~1 mm², pl. 1,5 mm²-es vezeték ere) forrasztva a fedetlen nagyáramú sávokra: +24V_IN (J201 → F201), +24V_RAIL (F201 → F202–F204, alul is), +24V_B1–B3, a drain-sávok (FET → sorkapocs), PGND_SH (a FET-ek source-ai → sönt, felül és alul), a GND-sáv a söntől a Q201-ig és a GND_IN (Q201 → J201). A rendelésnél: F201 = 20 A (0451020.MRL), C203 = low-ESR (ERG50V470M10X20); a blokkbiztosítékokból a szalaghoz választani (≤ 75 %).
 
@@ -120,7 +120,7 @@ vállakon a kábelcsatornába futnak, és van hozzá kereskedelmi ház is.
 | Vezérlő | 4 M (~71 mm) | **86,5 × 68 mm** (D73) | 24 V be, busz BE/KI (2 × XH), jumper, USB-C | RJ45 |
 | LED-modul | 4 M | **86,5 × 68 mm** (D73) | 24 V be (2,5 mm², 20 A), busz BE/KI, jumper | 3 × 3 pólusú kimenet (~45–50 mm) |
 | Relémodul | 4 M | **86,5 × 68 mm** (D73) | 24 V be, busz BE/KI, jumper | 4 relé kimenete (4 × 2 pólus, COM + NO) |
-| Bemeneti modul | 6 M (~106 mm) | **86,5 × 103 mm** (D73) | 24 V be, busz BE/KI, jumper + ~6 bemenet | ~10 bemenet |
+| Bemeneti modul | ~~6 M (~106 mm)~~ **4 M (D100)** | ~~86,5 × 103 mm~~ **86,5 × 68 mm** (D100, 7 bemenet) | 24 V be, busz BE/KI, jumper + ~6 bemenet | ~10 bemenet |
 
 - Egy 3 tűs XH kb. 10 mm, egy PH kb. 8 mm széles → 16 XH a busz mellett a 6 M-es ház vállain már nagyon szoros,
   PH-val kényelmes (D51).
@@ -181,7 +181,7 @@ A NYÁK-koordináták a NYÁK felső élétől (a felső váll felől), a 86,5 �
 - [ ] **STM32 lábkiosztás ellenőrzése STM32CubeMX-ben – L433 (D78, D79; `hardware/cubemx/`):** CAN PA11/PA12,
       USART3 PC4/PC5, SWD, HSE, HW-ID PC0, VBUS_SENSE PC1, HW_REV PB0, VIN_SENSE PB1; LED-modulon TIM1 (PA8–PA10) +
       TIM15 (PB14/PB15) + TIM16 (PB8), PA3 → ADC1_IN8 + COMP2, DAC1 → COMP2 INM, COMP2 → TIM1/TIM15/TIM16 break;
-      relé PB12–PB15; bemeneti modul 16 bemenet + I²C1 PB8/PB9. A `gen/ellenorzes.py` a lábakat az L433-adatbázisból
+      relé PB12–PB15; bemeneti modul 7 bemenet (PA0–PA6, D100) + I²C1 PB8/PB9. A `gen/ellenorzes.py` a lábakat az L433-adatbázisból
       már ellenőrzi (10-22) – a CubeMX-ben a belső kapcsolatokat kell megnézni.
 - [x] **Kvarc az STM32-re (HSE, 8 MHz)** – a CAN pontos órajelet kér. Rajz közben: a választott kvarc CL értékéből a
       két terhelőkondenzátor (`MODULMAG-SPEC.md` 3.2); a W5500 25 MHz-ese ugyanígy (`VEZERLO-SPEC.md` 4.3).

@@ -170,8 +170,7 @@ FORRAS = {
 # BOM-on kívüli tételek: (forrás-dict, darab, mire); kesobb = most nem vesszük (D85: a házak később), az összegbe nem számít.
 # Programozó (ST-Link) és fejlesztőpanel (Nucleo) kézben van (D85).
 EXTRA = [
-    (dict(h='10039981', vesz=3, kesobb=1), 3, 'DIN-ház, 4 M: vezérlő, LED-, relémodul – D73'),
-    (dict(h='10039989', vesz=1, kesobb=1), 1, 'DIN-ház, 6 M: bemeneti modul – D73'),
+    (dict(h='10039981', vesz=4, kesobb=1), 4, 'DIN-ház, 4 M: vezérlő, LED-, relé- és bemeneti modul – D73, D100'),
     (dict(l={'q': '2.54mm jumper cap'}, vesz=5), 4, 'jumper a LEZÁRÁS tüskesorokra (JP1)'),
     (dict(h='10041545', l={'q': 'XHP-4', 'tipus': 'XHP-4'}, vesz=8, opc=1), 8, 'kábeloldal: XH-ház a buszkábelekhez (4 kábel × 2 vég)'),
     (dict(h='10035076', l={'q': 'SXH-001T-P0.6', 'tipus': 'SXH-001T'}, vesz=40, opc=1), 32, 'kábeloldal: XH-érintkező'),

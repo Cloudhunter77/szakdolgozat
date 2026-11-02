@@ -52,7 +52,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
 - **Lábkiosztás (D54, D79; CubeMX-ben ellenőrizni):** modulmag: CAN PA11/12, USART3 PC4/5, SWD, HSE, HW-ID PC0,
   VBUS_SENSE PC1, LED PC13; VIN_SENSE (24 V) **PB1** a LED- és a relémodulon. LED-modul: TIM1 PA8–10 + TIM15 PB14/15 + TIM16 PB8,
   I_SENSE PA3 (COMP2 → TIM1/15/16 break), DAC1 PA4, DRV_EN PB12. Relé: PB12–15.
-  Bemeneti: 16 bemenet külön EXTI-vonalon, I²C1 PB8/9.
+  Bemeneti: 7 bemenet (PA0–PA6, ADC-képes) külön EXTI-vonalon, I²C1 PB8/9 (D100).
 - **Modulok (v1):**
   - **LED (D43, D47, D53):** 6 csatorna (2 × RGB / 3 × CCT / 6 × egyszínű), low-side → a közös vezeték a +24 V;
     3 × [+24 V, CHa, CHb]; 10 A/csatorna, össz. 15 A (D84, D99: F201 20 A, FET-hűtés In2 + B.Cu, réz drót a nagyáramú utakon, C203 low-ESR); UCC27524 + 60 V-os FET, 25 kHz. Mérés: 24 V a biztosíték
@@ -61,15 +61,15 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
     D78: polaritásvédelem **N-FET a GND-ágban** (NCEP6090AGU – D85, az LM74700 helyett), hőmérő **MCP9701A**; csavaros sorkapocs (D79).
   - **Relé (D62):** 4 × Schrack RTD14024 (16 A, 24 V DC) + ULN2803A; kimenet COM + NO (4 × 2 pólus);
     230 V-ra tervezve (≥ 8 mm + marás); fogyasztásmérés v2 (D37).
-  - **Általános bemeneti (D44, D48, D51, D66):** 16 bemenet külön 3 tűs JST-PH-n; 10 k felhúzás a csatlakozó oldalán + 10 k soros + 10 nF (D75)
-    (+ osztó-footprint 5/12/24 V-hoz) + ESD; 4 érzékelő-tápcsoport (3,3 / 5 V jumperrel, PTC-vel, külön 3,3 V-os
+  - **Általános bemeneti (D44, D51, D66, D100):** 7 bemenet külön 3 tűs JST-PH-n; 10 k felhúzás a csatlakozó oldalán + 10 k soros + 10 nF (D75)
+    (+ osztó-footprint 5/12/24 V-hoz) + ESD; 2 érzékelő-tápcsoport (IN0–IN3, IN4–IN6; 3,3 / 5 V jumperrel, PTC-vel, külön 3,3 V-os
     LDO); HDC3020 a NYÁK-on + 4 tűs PH I²C-csatlakozó külső érzékelőhöz.
   - **Vezérlő (D45, D58–D61):** ESP32-C6-WROOM-1-N8 (D84; fém szekrénybe -1U, ugyanarra a footprintre – D63), W5500 +
     MagJack (opcionálisan beültetve), TCAN1044AV (±58 V), USB-C (táp busz nélkül), 2 XH, RGB LED + táp-LED;
     3,3 V: LMR36015; 5 V: LMR33630 + LM66200; V_BUS: TPS2595 (D71). Bemenet 12–26 V (F1 2 A, Q1 N-FET a GND-ágban – D78).
 - **Mechanika (D50, javaslat):** DIN 43880-as ház-forma, a NYÁK a ház alján; felső váll: 24 V + busz + jumper,
   alsó váll: terepi csatlakozók, előlap: LED-ek fényvezetővel. 4 M (~66 × 85 mm NYÁK) a vezérlő, LED- és
-  relémodul, 6 M (~100 × 85 mm) a bemeneti modul. NYÁK: 4 réteg, SMD csak felül, stencil (D42).
+  relémodul és a bemeneti modul is (D100; korábban 6 M). NYÁK: 4 réteg, SMD csak felül, stencil (D42).
 - **Okos modulok (D20, D31):** UID-alapú címkiosztás, egységes regisztertábla, firmware-frissítés a buszon;
   protokoll CANopen-fogalmakkal (heartbeat, SDO/PDO-szerű, LSS-szerű).
 - **Matter (D21):** Aggregator + modulonként Bridged Node endpoint (UID → endpoint az NVS-ben); új modul
@@ -120,11 +120,9 @@ SCT-013-030 (v2) és az ULN2803A.
   hely közös anyaga (D13).
 
 ## Nyitott kérdések / teendők
-- [ ] **LED-NYÁK a D94 után (Balázs):** KiCad-ben *Update PCB from Schematic* (F8; a footprintek frissítése és a rajzon már nem
-      szereplők törlése bekapcsolva) → az U2 most széles SOIC-8 (CA-IS3052G); új: C20/C21, U208 (DC-DC, SIP-4, ~10 mm magas – a ~13 mm-es
-      borda alá nem kerülhet), C216–C218; kikerül: R12, R293. A busz-sarokban GND_BUS-zóna minden rétegen (a DRC ≥ 0,8 mm-t ír elő a modul
-      GND-jétől). A modulmag-blokk új elrendezése a relé-NYÁK-on látható. **Vezérlő-NYÁK:** F8 (az R7 kikerül, a +24V_F beolvad).
-      **Relé-NYÁK:** a DC-DC helye (U100, DNP – D95) a C105 helyére került; a C105 és a J4 kézzel helyezendő; a D107/R117 (D96) a COM mellett.
+- [ ] **NYÁK-ok (11-03):** ✅ **LED-modul huzalozva és átnézve** (D98, D99: F201 20 A, FET-hűtés In2 + B.Cu, C203 low-ESR, réz drót a nagyáramú
+      utakra – beültetéskor); **vezérlő:** F8 (az R7 kikerül, a +24V_F beolvad), utána huzalozás; **relé:** a C105 és a J4 kézzel helyezendő (a J4
+      elhagyható), a D107/R117 (D96) a COM mellett; **bemeneti (D100):** 7 bemenet, 4 M-es lap – új kezdő elhelyezés, huzalozandó.
 - [ ] **A konzultáció (10-28) után még nyitott** (kész: D93, D94; **D96** – az U2 marad, relé: D107 Zener + R117 a COM-ágban, bemeneti:
       csak leírás): F202–F204 megjegyzése érthetőbben; firmware: COMP2-küszöb a csatornaáramokból (átlapolódás), **a TIM1 csatornái fázisban eltolva (D99 – a C203 ripple-árama)**, a frekvencia-dithering
       minden időzítőn egyszerre
@@ -133,7 +131,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] **Sample-kérések:** TI-kérelem elküldve (11 típus, `SAMPLE-KERESEK.md`); ha a TI elutasít: LMR36015 és W5500 megvenni
 - [ ] **Rajz közben:** a két spec „ellenőrizni” fejezete (CubeMX; kvarcok CL-je; F1/USB-C/gombok típusa;
       ~~W5500 MDI-hálózat~~ ✅ (D72, WIZnet-referencia); MagJack lábkiosztása (KiCad Hanrun-szimbólum szerint); RGB LED + 74HCT14 vagy WS2812B-V5)
-- [ ] **DIN-ház (D73):** Gainta D4MG, NYÁK 86,5 × 68 mm (bemeneti: 86,5 × 103 mm) ✅; a ház rajzából ellenőrizve (10-27): a ~13 és
+- [ ] **DIN-ház (D73):** Gainta D4MG, NYÁK 86,5 × 68 mm, mind a négy lap (D100) ✅; a ház rajzából ellenőrizve (10-27): a ~13 és
       ~73,5 mm-es belső bordák a vezérlő J6/J5-jét és a relé sorkapcsait érintik → **egy D4MG-t venni és lemérni a rendelés előtt**
 - [ ] 4 rétegű NYÁK ára a JLC-ajánlatkérőben (D42); stencil
 - [ ] **Beszerzés (D85 – legolcsóbb):** minden az LCSC-ről, a JLC-s NYÁK-rendeléssel együtt – 97 tétel, ~17,5 eFt ÁFA-val (11-02);

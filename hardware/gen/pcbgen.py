@@ -184,22 +184,22 @@ BOARDS = {
         lock=['J201', 'J2', 'J3', 'JP1', 'J202', 'J203', 'J204'],
     ),
     'bemeneti-modul': dict(
-        size=(103.0, L),
-        blokk=(0.5, 0),          # D86: modulmag-blokk a bal felső részen (a felső élen jobbra a PH-k)
-        fixed={'U302': (99.5, 43, None)},        # HDC3020 a jobb szélen, a melegedő részektől távol (D66)
-        lock=['J2', 'J3', 'JP1', 'J320'] + ['J3%02d' % i for i in range(1, 17)],
-        # bemenetenként: felhúzó (csatlakozó-oldal) · soros 10 k · 10 nF · osztóhely (DNP) egy oszlopban a csatlakozó mellett;
-        # az ESD-tömbök (MCU-oldali hálózatokon) a blokk jobb szélén, ahol a 16 jel az STM32 felé belép
-        csatorna_oszlop={'esd': ['U303', 'U304', 'U305', 'U306'], 'esd_x': 37.5, 'esd_y0': 24.0},
+        # D100: 7 bemenet (IN0–IN6), 2 tápcsoport, 4 M-es lap (mint a többi modul)
+        size=(W4, L),
+        blokk=(0.5, 0),          # D86: modulmag-blokk a bal felső részen (mellette jobbra az I²C, az érzékelő-táp és a HDC3020)
+        fixed={'U302': (64.5, 43, None)},        # HDC3020 a jobb szélen, a melegedő részektől távol (D66)
+        lock=['J2', 'J3', 'JP1', 'J320'] + ['J3%02d' % i for i in range(1, 8)],
+        # bemenetenként: felhúzó (csatlakozó-oldal) · soros 10 k · 10 nF · osztóhely (DNP) egy sorban a csatlakozó fölött;
+        # az ESD-tömbök (MCU-oldali hálózatokon) a blokk jobb szélén, ahol a 7 jel az STM32 felé belép
+        csatorna_oszlop={'esd': ['U303', 'U304'], 'esd_x': 37.5, 'esd_y0': 24.0},
         pin_attach={'R303': 'U6', 'R304': 'U6', 'C308': 'U6',       # D89: a HW_REV-osztó a blokkon kívül, a PB0 (26) mellett
                     'C303': 'U301', 'C302': 'U301', 'C330': 'U302', 'R371': 'J320', 'R372': 'J320', 'R374': 'J320', 'R375': 'J320',
                     'U307': 'J320', 'F305': 'J320', 'F301': 'J302', 'C304': 'J302', 'F302': 'J306', 'C305': 'J306',
-                    'F303': 'J310', 'C306': 'J310', 'F304': 'J314', 'C307': 'J314',
-                    'JP301': 'F301', 'JP302': 'F302', 'JP303': 'F303', 'JP304': 'F304', 'R300': 'J2',   # D94: V_BUS → +5V
+                    'JP301': 'F301', 'JP302': 'F302', 'R300': 'J2',   # D94: V_BUS → +5V
                     'U300': 'U2', 'C300': 'U300', 'C309': 'U300', 'C326': 'U300'},   # D95: izolált DC-DC helye (DNP)
-        anchors={'U301': (40, 10, 70, 24)},
-        edge_rows={'N': (36, 103, ['J3%02d' % i for i in range(1, 7)] + ['J320']),          # felső váll: PH-k
-                   'S': (0, 103, ['J3%02d' % i for i in range(7, 17)])},                   # alsó váll
+        anchors={'U301': (36, 10, 67, 24)},
+        edge_rows={'N': (36, W4, ['J320']),                                                  # felső váll: I²C
+                   'S': (0, W4, ['J3%02d' % i for i in range(1, 8)])},                      # alsó váll: a 7 bemenet
     ),
 }
 

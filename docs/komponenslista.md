@@ -491,11 +491,11 @@ R109 (terhelő-ellenállás): csak áramkimenetes áramváltóhoz kell.
 
 R110 (1 k), C103 (10 nF): soros ellenállás és szűrő az ADC (PA0) előtt.
 
-# 5. Bemeneti modul (16 bemenet + klíma-érzékelő)
+# 5. Bemeneti modul (7 bemenet + klíma-érzékelő)
 
 ## Modulmag
 
-A mikrovezérlő, a busz-táp és a CAN a modulmag fejezetben (1.) van leírva. A 16 bemenet a PA0–PA10 és a PB11–PB15 lábakon van, mindegyik külön megszakítás-vonalon.
+A mikrovezérlő, a busz-táp és a CAN a modulmag fejezetben (1.) van leírva. A 7 bemenet a PA0–PA6 lábakon van (mind ADC-képes, analóg jelre is), mindegyik külön megszakítás-vonalon.
 
 ## Azonosítás
 
@@ -517,25 +517,25 @@ U301 (AP2112K-3.3, kis ejtésű lineáris stabilizátor): külön 3,3 V-os sín 
 
 C303 (10 µF, kerámia): a stabilizátor kimeneti kondenzátora.
 
-JP301–JP304 (3 padas jumper): a négy érzékelőcsoport tápjának kiválasztása (3,3 V vagy 5 V) – csoportonként 4 bemenet.
+JP301, JP302 (3 padas jumper): a két érzékelőcsoport tápjának kiválasztása (3,3 V vagy 5 V) – IN0–IN3 és IN4–IN6.
 
-F301–F304 (PTC, 0,2 A, visszaálló biztosíték): csoportonként – egy zárlatos érzékelő-kábel csak a saját csoportját kapcsolja le, és a hiba megszűnése után magától visszaáll.
+F301, F302 (PTC, 0,2 A, visszaálló biztosíték): csoportonként – egy zárlatos érzékelő-kábel csak a saját csoportját kapcsolja le, és a hiba megszűnése után magától visszaáll.
 
-C304–C307 (1 µF): a csoport-tápok pufferei.
+C304, C305 (1 µF): a csoport-tápok pufferei.
 
 ## Bemenetek (× 16)
 
-J301–J316 (JST-PH, 3 tű: táp, GND, jel): bemenetenként egy csatlakozó – kapcsoló, reed-relé, Hall-érzékelő vagy más digitális jel köthető rá.
+J301–J307 (JST-PH, 3 tű: táp, GND, jel): bemenetenként egy csatlakozó – kapcsoló, reed-relé, Hall-érzékelő vagy más digitális jel köthető rá.
 
-R330–R345 (10 k): felhúzó ellenállások a csatlakozó oldalán, a mikrovezérlő +3,3 V-jára – nyitott kontaktusnál a bemenet 1, zártnál 0 (kontaktus-érzékelőkhöz nem kell külső ellenállás). **Osztó nélkül csak ≤ 5 V-os jel mehet a bemenetre:** egy félrekötött 24 V a felhúzáson át bemenetenként ~2 mA-t táplálna vissza a 3,3 V-os sínre (16 bemeneten ~33 mA), amit a stabilizátor nem tud elnyelni, így a sín feszültsége megemelkedhet. 12/24 V-os aktív érzékelőhöz az osztót be kell ültetni, a felhúzást ki kell hagyni.
+R330–R336 (10 k): felhúzó ellenállások a csatlakozó oldalán, a mikrovezérlő +3,3 V-jára – nyitott kontaktusnál a bemenet 1, zártnál 0 (kontaktus-érzékelőkhöz nem kell külső ellenállás). **Osztó nélkül csak ≤ 5 V-os jel mehet a bemenetre:** egy félrekötött 24 V a felhúzáson át bemenetenként ~2 mA-t táplálna vissza a 3,3 V-os sínre (16 bemeneten ~33 mA), amit a stabilizátor nem tud elnyelni, így a sín feszültsége megemelkedhet. 12/24 V-os aktív érzékelőhöz az osztót be kell ültetni, a felhúzást ki kell hagyni.
 
-R310–R325 (10 k, soros): áramkorlát a mikrovezérlő lába előtt – ha valaki tévedésből 24 V-ot köt egy osztó nélküli bemenetre, legfeljebb ~2 mA folyik, és ezt az ESD-védő tömb (U303–U306) veszi fel. A láb feszültsége ekkor az ESD-tömb letörési feszültségére áll be, ami a mikrovezérlő 5 V-tűrő lábának határa (~7,3 V) körül van – ez csak félrekötés elleni tartalék, 12/24 V-os jelhez az osztót be kell ültetni.
+R310–R316 (10 k, soros): áramkorlát a mikrovezérlő lába előtt – ha valaki tévedésből 24 V-ot köt egy osztó nélküli bemenetre, legfeljebb ~2 mA folyik, és ezt az ESD-védő tömb (U303–U306) veszi fel. A láb feszültsége ekkor az ESD-tömb letörési feszültségére áll be, ami a mikrovezérlő 5 V-tűrő lábának határa (~7,3 V) körül van – ez csak félrekötés elleni tartalék, 12/24 V-os jelhez az osztót be kell ültetni.
 
-R350–R365 (DNP): feszültségosztó alsó tagja – 5/12/24 V-os jelhez beültethető (akkor a soros ellenállás 68 k).
+R350–R356 (DNP): feszültségosztó alsó tagja – 5/12/24 V-os jelhez beültethető (akkor a soros ellenállás 68 k).
 
-C310–C325 (10 nF): aluláteresztő szűrő – a kontaktuspergést és a kábelen összeszedett zavart szűri.
+C310–C316 (10 nF): aluláteresztő szűrő – a kontaktuspergést és a kábelen összeszedett zavart szűri.
 
-U303–U306 (TPD4E05U06, 4 csatornás ESD-védő): az ESD-tüskéket vezetik le a bemeneteken, tokonként 4 bemenet.
+U303, U304 (TPD4E05U06, 4 csatornás ESD-védő): az ESD-tüskéket vezetik le a bemeneteken, tokonként 4 bemenet (az U304 negyedik csatornája szabad).
 
 ## Klíma-érzékelő és külső I²C
 

@@ -21,5 +21,5 @@ Ami nem kerül a védésre készülő prototípusba (v1, NYÁK-rendelés ≈ 202
 - Az ADE7953 sample-t (ADI) most nem kell kérni.
 - Javaslat: a v1 relémodul NYÁK-ján ne foglaljunk helyet a mérésnek, a v2 legyen új relémodul-revízió (nincs
   megerősítve).
-- 16-nál több bemenethez nem bővítő, hanem még egy bemeneti modul kerül a láncra (D48) – ez nem v2-es tétel,
+- 7-nél több bemenethez nem bővítő, hanem még egy bemeneti modul kerül a láncra (D48, D100) – ez nem v2-es tétel,
   a rendszer így működik.

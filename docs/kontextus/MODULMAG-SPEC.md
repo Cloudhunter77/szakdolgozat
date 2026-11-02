@@ -223,8 +223,8 @@ egyetlen kiépítés van: a 2. fejezet.
 
 ## 7. Lábkiosztás – minden modul egyszerre
 
-A modulmag lábai minden modulon azonosak; a modulspecifikus lábak nem ütköznek velük. A bemeneti modul 16
-bemenete 16 különböző lábszámon van → mindegyik saját EXTI-megszakítást kap. (Minden lábfunkciót az ST pin-adatai
+A modulmag lábai minden modulon azonosak; a modulspecifikus lábak nem ütköznek velük. A bemeneti modul 7
+bemenete (D100) 7 különböző lábszámon van → mindegyik saját EXTI-megszakítást kap. (Minden lábfunkciót az ST pin-adatai
 alapján ellenőriztünk.) **D78 óta az ADC-csatornák az L433 szerint** (egy ADC: PC0–PC3 = IN1–4, PA0–PA7 = IN5–12,
 PC4/PC5 = IN13/14, PB0/PB1 = IN15/16); a PB11–PB15 L433-on nem ADC-s.
 
@@ -240,16 +240,16 @@ PC4/PC5 = IN13/14, PB0/PB1 = IN15/16); a PB11–PB15 L433-on nem ADC-s.
 | 17 | PA3 | | **I_SENSE** (INA181 kimenet → ADC1_IN8 + COMP2_INP – D78) | | IN3 (ADC1_IN8) |
 | 20 | PA4 | | **DAC1_OUT1 – foglalt** (a komparátor küszöbe; kívül nem bekötve, csak tesztpont) | | IN4 (ADC1_IN9) |
 | 21, 22 | PA5, PA6 | | DS5, DS6 (drain-mérés, ADC1_IN10–11, D65) | | IN5, IN6 (ADC1_IN10–11) |
-| 23 | PA7 | | **DS4** (drain-mérés, ADC1_IN12 – D78) | | IN7 (ADC1_IN12) |
+| 23 | PA7 | | **DS4** (drain-mérés, ADC1_IN12 – D78) | | |
 | 24, 25 | PC4, PC5 | UART_TX/RX (L433: USART3, F303: USART1) | | | |
 | 27 | PB1 | | **VIN_SENSE** (24 V az F201 előtt, ADC1_IN16 – D78) | **VIN_SENSE** (tekercs-táp, ADC1_IN16 – D78) | |
-| 30 | PB11 | | | | IN11 (digitális) |
-| 33 | PB12 | | DRV_EN (3 × UCC27524 EN) | REL1 | IN12 (digitális) |
-| 34 | PB13 | | | REL2 | IN13 (digitális) |
-| 35, 36 | PB14, PB15 | | **CH4, CH5 (TIM15_CH1/CH2 – D78)** | REL3, REL4 | IN14, IN15 (digitális) |
+| 30 | PB11 | | | | |
+| 33 | PB12 | | DRV_EN (3 × UCC27524 EN) | REL1 | |
+| 34 | PB13 | | | REL2 | |
+| 35, 36 | PB14, PB15 | | **CH4, CH5 (TIM15_CH1/CH2 – D78)** | REL3, REL4 | |
 | 61 | PB8 | | **CH6 (TIM16_CH1 – D78)** | | I²C1 SCL (HDC3020) |
 | 37–39 | PC6–PC8 | szabad (L433-on nincs rajtuk időzítő) | | | |
-| 41–43 | PA8–PA10 | | CH1–CH3 (TIM1_CH1–3) | | IN8–IN10 |
+| 41–43 | PA8–PA10 | | CH1–CH3 (TIM1_CH1–3) | | |
 | 44, 45 | PA11, PA12 | CAN_RX / CAN_TX | | | |
 | 46, 49 | PA13, PA14 | SWDIO / SWCLK | | | |
 | 60 | PH3-BOOT0 (F303: BOOT0) | 10 kΩ GND-re | | | |
@@ -274,11 +274,10 @@ Megjegyzések:
   ~1,5 V lett volna, D65) → boot alatt a driverek tiltva. A driverek
   IN-lábain belső lehúzás van, a lebegő PWM-láb is KI-t jelent.
 - **Relék:** a ULN2803A bemenetein opcionális 100 kΩ lehúzás (boot alatti lebegés ellen).
-- A bemeneti modulon L433-mal **8 bemenet ADC-képes (IN0–IN7)**, a többi csak digitális (F303-mal 13 volt) – a
-  PA8–PA10 és a PB11–PB15 5 V-tűrő (FT); az ADC-s lábak ≤ 3,6 V-ot bírnak → 5 V-os jelhez osztó (D66). A HDC3020 ALERT-je a PC2-n.
+- A bemeneti modulon (D100: 7 bemenet) **mind a 7 bemenet ADC-képes (IN0–IN6 = PA0–PA6)**; ezek nem 5 V-tűrők (≤ 3,6 V) → 5 V-os jelhez az osztó (D66). A HDC3020 ALERT-je a PC2-n.
 - **EXTI-ütközés (CubeMX-adatbázis, 2026-10-20):** a PC2 az EXTI2 vonalon osztozna az IN2-vel (PA2) – egy EXTI-vonal
   egyszerre csak egy porté. Ezért a HDC3020 ALERT-je **sima bemenet, a firmware lekérdezi** (a riasztás úgyis lassú
-  esemény). Más lábra tenni sem segítene: az IN0–IN15 mind a 16 EXTI-vonalat lefoglalja.
+  esemény). (D100 óta az IN0–IN6 az EXTI0–6-ot foglalja; a PC2 így is az IN2 vonalán osztozna.)
 
 ## 8. Layout-irányelvek
 - A modulmag **mindhárom lapon ugyanott**, a felső vállnál (D50). KiCad-ben a layoutot is újrahasználható
