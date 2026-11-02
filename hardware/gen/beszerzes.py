@@ -30,8 +30,8 @@ TUSKE = {'q': 'PZ254V-11-40P', 'tipus': 'PZ254V-11-40P'}
 FORRAS = {
     # --- kondenzátorok (a többi 0603/0805/1206/1210-es ellenállás és kondenzátor magától: LCSC + a lenti Hestore-kód)
     ('47µ/50V', 'CP_Elec_6.3x7.7'): dict(l={'q': '47uF 50V SMD electrolytic', 'tok': 'd6.3xl7.7'}),
-    ('470µ/50V', 'CP_Radial_D10.0mm_P5.00mm'): dict(h='10028502', l={'q': '470uF 50V electrolytic', 'tok': 'd10xl'},
-                                                    n='Ø10 × 20 mm – a magasságot a ház fedeléhez ellenőrizni'),
+    ('470µ/50V', 'CP_Radial_D10.0mm_P5.00mm'): dict(l={'q': 'ERG50V470M10X20', 'tipus': 'ERG50V470M10X20'},
+                                                    n='D99: low-ESR, 1,56 A @ 100 kHz (nem polimer – az ESR csillapít); Ø10 × 20 mm'),
     ('100n', 'C_0603_1608Metric'): dict(h='10024356'),
     ('10n', 'C_0603_1608Metric'): dict(h='10027791'),
     ('1n', 'C_0603_1608Metric'): dict(h='10027792'),
@@ -108,7 +108,9 @@ FORRAS = {
     ('PTC 0,2A', 'Fuse_1206_3216Metric'): dict(h='10039742', l={'q': '1206 resettable fuse 200mA', 'tok': '1206'}),
     ('10A', 'Fuse_Littelfuse-NANO2-451_453'): dict(l={'q': '0451010.MRL', 'tipus': '0451010'},
                                                   n='D76: a szalaghoz kisebb is (0451004.MRL, 4 A)'),
-    ('15A', 'Fuse_Littelfuse-NANO2-451_453'): dict(l={'q': '0451015.MRL', 'tipus': '0451015'}, n='D85: F201 – beforrasztott NANO²'),
+    ('15A', 'Fuse_Littelfuse-NANO2-451_453'): dict(l={'q': '0451015.MRL', 'tipus': '0451015'}, n='D99: blokkbiztosíték 10 A-es csatornához'),
+    ('20A', 'Fuse_Littelfuse-NANO2-451_453'): dict(l={'q': '0451020.MRL', 'tipus': '0451020'},
+                                                  n='D99: F201 – 20 A, a 75 %-os szabállyal tartósan 15 A'),
     # --- csatlakozók
     (None, 'JST_PH_B3B-PH-K_1x03_P2.00mm_Vertical'): dict(h='10049114', l={'q': 'B3B-PH-K-S', 'tipus': 'B3B-PH-K-S'}),
     (None, 'JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical'): dict(l={'q': 'B4B-PH-K-S', 'tipus': 'B4B-PH-K-S'}, vesz=2),

@@ -10728,7 +10728,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "Littelfuse 451/453 NANO² (2410) – értéke a bekötött szalag szerint: ≤ 100 W-os ághoz 4 A (24 V) / 8 A (12 V); legfeljebb 10 A (0451010.MRL)"
+		(property "Megjegyzés" "Littelfuse 451/453 NANO² (2410), a szalaghoz választva: a szalag árama legfeljebb a biztosíték 75 %-a. ≤ 100 W-os ághoz 4 A (24 V) / 8 A (12 V) → a szalag ≤ 3 A / 6 A; 10 A-es csatornához 15 A (0451015.MRL)"
 			(at 321.31 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -11726,7 +11726,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "low-ESR, 105 °C; GND-oldala a sönt ELŐTT"
+		(property "Megjegyzés" "low-ESR, ≥ 1,5 A ripple 100 kHz-en (pl. ERG50V470M10X20), nem polimer – az ESR csillapítja a bemeneti LC-kört; GND-oldala a sönt ELŐTT"
 			(at 151.13 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -21070,7 +21070,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "Littelfuse 451/453 NANO² (2410) – értéke a bekötött szalag szerint: ≤ 100 W-os ághoz 4 A (24 V) / 8 A (12 V); legfeljebb 10 A (0451010.MRL)"
+		(property "Megjegyzés" "Littelfuse 451/453 NANO² (2410), a szalaghoz választva: a szalag árama legfeljebb a biztosíték 75 %-a. ≤ 100 W-os ághoz 4 A (24 V) / 8 A (12 V) → a szalag ≤ 3 A / 6 A; 10 A-es csatornához 15 A (0451015.MRL)"
 			(at 354.33 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -22633,7 +22633,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "Littelfuse 451/453 NANO² (2410) – értéke a bekötött szalag szerint: ≤ 100 W-os ághoz 4 A (24 V) / 8 A (12 V); legfeljebb 10 A (0451010.MRL)"
+		(property "Megjegyzés" "Littelfuse 451/453 NANO² (2410), a szalaghoz választva: a szalag árama legfeljebb a biztosíték 75 %-a. ≤ 100 W-os ághoz 4 A (24 V) / 8 A (12 V) → a szalag ≤ 3 A / 6 A; 10 A-es csatornához 15 A (0451015.MRL)"
 			(at 288.29 53.34 0)
 			(hide yes)
 			(show_name no)
@@ -24025,7 +24025,7 @@
 				)
 			)
 		)
-		(property "Value" "15A"
+		(property "Value" "20A"
 			(at 93.98 46.99 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -24067,7 +24067,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "Littelfuse 0451015.MRL (NANO² 15 A, 2410) – beforrasztott; 15 A = a J201 névleges árama"
+		(property "Megjegyzés" "Littelfuse 0451020.MRL (NANO² 20 A, 2410, 65 V) – beforrasztott; tartósan legfeljebb a 75 %-a → 15 A"
 			(at 93.98 44.45 90)
 			(hide yes)
 			(show_name no)

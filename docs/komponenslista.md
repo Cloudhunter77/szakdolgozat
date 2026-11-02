@@ -362,13 +362,13 @@ C218 (2,2 nF / 1 kV, DNP): a két föld közötti EMC-kondenzátor helye – ha 
 
 J201 (2 pólusú csavaros sorkapocs, Degson DG128, 15 A UL / 18 A IEC): a LED-szalagok 12–26 V-os betápja – a modul össz-árama ehhez igazodik (15 A).
 
-F201 (15 A, NANO² SMD biztosíték, beforrasztva): a teljes modul főbiztosítéka – zárlatnál leválasztja a tápot.
+F201 (20 A, NANO² SMD biztosíték, beforrasztva): a teljes modul főbiztosítéka – zárlatnál leválasztja a tápot. A biztosítékot tartósan a névleges áramának legfeljebb 75 %-ával szabad terhelni, ezért a 15 A-es modulhoz 20 A-es kell.
 
 Q201 (NCEP6090AGU, N-csatornás FET a GND-ágban, ~2,8 mΩ) + R294 (10 k) + D202 (BZT52C15, 15 V-os Zener): fordított polaritás elleni védelem. Fordított bekötésnél a FET zár, így a +24 V nem jut a lap GND-jére, és a közös földön (busz) át sem alakul ki zárlat. Helyes polaritásnál a FET nyitva van: a legnagyobb, 15 A-es áramnál ~42 mV esik rajta (~0,6 W). Az R294 a gate-et a 24 V-os sínről nyitja, a Zener a gate-feszültséget 15 V-ra korlátozza. (Ez váltja ki a korábbi ideális diódát, az LM74700-at.)
 
 D201 (SMBJ28A, TVS): túlfeszültség-védelem a sínen (pl. a szalagkábelek induktivitásából eredő tüskék).
 
-C203 (470 µF / 50 V, elektrolit): a sín fő puffere – a PWM-kapcsolás nagy áramimpulzusait helyben szolgáltatja, és csillapítja a betápkábelen a lengést.
+C203 (470 µF / 50 V, low-ESR elektrolit, ≥ 1,5 A ripple 100 kHz-en): a sín fő puffere – a PWM-kapcsolás nagy áramimpulzusait helyben szolgáltatja, és az ESR-je (~40 mΩ) csillapítja a betápkábelen a lengést. Polimer kondenzátor ide nem jó, mert az alig csillapít. Hogy ne melegedjen túl, a firmware a csatornákat fázisban eltolva kapcsolja.
 
 C204–C206 (10 µF / 50 V, kerámia): nagyfrekvenciás pufferek közvetlenül a FET-ek mellett.
 
@@ -390,13 +390,13 @@ R205 (1 k): a közös engedélyező vonal (DRV_EN, PB12) lehúzása – bekapcso
 
 ## Kimeneti blokkok
 
-F202–F204 (NANO² SMD biztosíték, a szalaghoz méretezve: ≤ 100 W-os ághoz 4 A, legfeljebb 10 A): blokkonként (2 csatornánként) külön biztosíték – egy szalag zárlata nem viszi le a többit, és a kis ágbiztosíték a vékonyabb szalagvezetéket is védi.
+F202–F204 (NANO² SMD biztosíték, a szalaghoz méretezve): blokkonként (2 csatornánként) külön biztosíték – egy szalag zárlata nem viszi le a többit. A szalag árama legfeljebb a biztosíték 75 %-a lehet: ≤ 100 W-os ághoz (tűzvédelem) 24 V-on 4 A-es → a szalag ≤ 3 A, 12 V-on 8 A-es → ≤ 6 A; 10 A-es csatornához 15 A-es.
 
 J202–J204 (3 pólusú csavaros sorkapocs, KF128, 10 A): a kimenetek – blokkonként +24 V, CHa, CHb (pl. egy CCT-szalag két színe).
 
 ## Csatornák (× 6)
 
-Q202–Q207 (NCE6080K, 60 V-os N-csatornás FET, ~8,5 mΩ, DPAK): az alsó oldali kapcsolók – a szalag negatív vezetékét kapcsolják a GND-re PWM-mel (fényerő-szabályozás, 25 kHz).
+Q202–Q207 (NCE6080K, 60 V-os N-csatornás FET, ~8,5 mΩ, DPAK): az alsó oldali kapcsolók – a szalag negatív vezetékét kapcsolják a GND-re PWM-mel (fényerő-szabályozás, 25 kHz). 10 A-en egy FET ~1,3–1,5 W-ot disszipál; ezért a drain-fül alatt a belső (In2) és az alsó rétegen is drain-rézfelület van, termikus viákkal összekötve (~2,5–3 cm² FET-enként).
 
 R211–R216 (10 Ω): gate-ellenállások – lassítják a kapcsolási élt (kisebb EMC-zavar, csillapítják a gate-kör lengését).
 

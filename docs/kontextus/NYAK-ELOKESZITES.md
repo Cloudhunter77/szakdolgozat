@@ -25,6 +25,7 @@
 6. [ ] **Bemeneti-NYÁK:** a generált kezdő elhelyezés szerint; a felső PH-sor elemei 0,26 mm-re vannak egymástól (a generátor
    0,5 mm-t kér) – ellenőrizni.
 7. [ ] Ajánlott a véglegesítés előtt: **egy Gainta D4MG ház** megvétele és lemérése (bordák, fésű, magasságok – lásd lent).
+8. [ ] **Beültetéskor (LED-modul, D99):** réz drót (~1 mm², pl. 1,5 mm²-es vezeték ere) forrasztva a fedetlen nagyáramú sávokra: +24V_IN (J201 → F201), +24V_RAIL (F201 → F202–F204, alul is), +24V_B1–B3, a drain-sávok (FET → sorkapocs), PGND_SH (a FET-ek source-ai → sönt, felül és alul), a GND-sáv a söntől a Q201-ig és a GND_IN (Q201 → J201). A rendelésnél: F201 = 20 A (0451020.MRL), C203 = low-ESR (ERG50V470M10X20); a blokkbiztosítékokból a szalaghoz választani (≤ 75 %).
 
 > **2026-10-20/21 – D71–D73 felülírja:** a modulokon nincs P78E05/NCP1117/ISO1042/GND_BUS (központi 5 V, közös föld,
 > TCAN1044AV, AP2112K); a vezérlőn LMR33630 + LM66200 + TPS2595; 12–26 V; a ház Gainta D4MG, NYÁK 86,5 × 68 mm

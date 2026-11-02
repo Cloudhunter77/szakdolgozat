@@ -19,7 +19,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
   N-FET a GND-ágban, 1 oz + fedetlen nagyáramú sávok – D82); ellenőrzés: `hardware/gen/ellenorzes.py`; darabjegyzék: `hardware/bom/`;
   konzulensnek: `docs/komponenslista.md` + `hardware/out/kapcsolasi-rajzok-2026-10-27.pdf`.
 - 💰 **D84–D85 (10-22/23): legolcsóbb beszerzés** – minden az LCSC-ről a JLC-s NYÁK-rendeléssel (~17,5 eFt, 11-02); a megszűnt NTD5C648NL /
-  NTMFS5C604NL helyett NCE6080K / NCEP6090AGU; F201 NANO² 15 A → a LED-modul össz-árama 15 A; betáp-sorkapcsok DG128.
+  NTMFS5C604NL helyett NCE6080K / NCEP6090AGU; F201 NANO² **20 A** (D99: tartósan 75 % → 15 A össz-áram); betáp-sorkapcsok DG128.
 - ✏️ **D67:** a kézzel szerkesztett lapnál a `.kicad_sch` a forrás – **10-23 óta mind az öt lap kézi** (`hardware/gen/kezi-lapok.txt`;
   a `build.sh` ezeket csak ellenőrzi); munkafolyamat: `hardware/README.md`
 - 🛠️ **D86–D91 (10-23 – 10-27):** JLC-szabályok, elrendezés; **a LED-modul kézzel huzalozva és átnézve** (maszknyitás – D82,
@@ -55,7 +55,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
   Bemeneti: 16 bemenet külön EXTI-vonalon, I²C1 PB8/9.
 - **Modulok (v1):**
   - **LED (D43, D47, D53):** 6 csatorna (2 × RGB / 3 × CCT / 6 × egyszínű), low-side → a közös vezeték a +24 V;
-    3 × [+24 V, CHa, CHb]; 10 A/csatorna, össz. 15 A (D84: a J201 sorkapocs és F201); UCC27524 + 60 V-os FET, 25 kHz. Mérés: 24 V a biztosíték
+    3 × [+24 V, CHa, CHb]; 10 A/csatorna, össz. 15 A (D84, D99: F201 20 A, FET-hűtés In2 + B.Cu, réz drót a nagyáramú utakon, C203 low-ESR); UCC27524 + 60 V-os FET, 25 kHz. Mérés: 24 V a biztosíték
     előtt/után, össz-áram (1 mΩ + INA181A2) → COMP2 + DAC-küszöb → TIM1/TIM15/TIM16 break (hardveres lekapcsolás).
     D65: FET NCE6080K (DPAK; D85 – az NTD5C648NL megszűnt), blokkbiztosíték a szalaghoz (D76), csatornánként gate- és drain-LED, drain → ADC.
     D78: polaritásvédelem **N-FET a GND-ágban** (NCEP6090AGU – D85, az LM74700 helyett), hőmérő **MCP9701A**; csavaros sorkapocs (D79).
@@ -126,7 +126,7 @@ SCT-013-030 (v2) és az ULN2803A.
       GND-jétől). A modulmag-blokk új elrendezése a relé-NYÁK-on látható. **Vezérlő-NYÁK:** F8 (az R7 kikerül, a +24V_F beolvad).
       **Relé-NYÁK:** a DC-DC helye (U100, DNP – D95) a C105 helyére került; a C105 és a J4 kézzel helyezendő; a D107/R117 (D96) a COM mellett.
 - [ ] **A konzultáció (10-28) után még nyitott** (kész: D93, D94; **D96** – az U2 marad, relé: D107 Zener + R117 a COM-ágban, bemeneti:
-      csak leírás): F202–F204 megjegyzése érthetőbben; firmware: COMP2-küszöb a csatornaáramokból (átlapolódás), a frekvencia-dithering
+      csak leírás): F202–F204 megjegyzése érthetőbben; firmware: COMP2-küszöb a csatornaáramokból (átlapolódás), **a TIM1 csatornái fázisban eltolva (D99 – a C203 ripple-árama)**, a frekvencia-dithering
       minden időzítőn egyszerre
 - [ ] **Beültetés előtt:** a relékimenet THT sorkapcsainak névleges értéke (≥ 16 A / 250 V, D83) és a magasságok a Gainta-ház
       vállához (relé ~16 mm, sorkapcsok, elkók); 12/24 V-os bemenethez az osztót beültetni (D66, D81 elvetve)
@@ -139,7 +139,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] **Beszerzés (D85 – legolcsóbb):** minden az LCSC-ről, a JLC-s NYÁK-rendeléssel együtt – 97 tétel, ~17,5 eFt ÁFA-val (11-02);
       kosár: `hardware/bom/lcsc-kosar.csv` (lista: `beszerzes.csv`, `gen/beszerzes.py`); házak később (~8 eFt, Hestore); TI-rendelés 8;
       fiók-érzékelők (AH1911 / reed) később; **a LED-modul blokkbiztosítékaiból (F202–F204, NANO² 2410) többféle érték** – a kosárban
-      most csak 4 × 10 A (0451010.MRL); mellé pl. 4 A (0451004.MRL) és 8 A (0451008.MRL), hogy a szalaghoz lehessen választani
+      most csak 4 × 10 A (0451010.MRL); mellé pl. 4 A (0451004.MRL), 8 A (0451008.MRL) és a 10 A-es csatornához 15 A (0451015.MRL) – a szalag ≤ a biztosíték 75 %-a (D99)
 - [ ] NYÁK: rajzok ✅, szabályok + elrendezés mind a négy lapon ✅ (D86, D87 – vezérlő: U4 a jobb élen, buckok a TI-ajánlás szerint); **huzalozás (Balázs): a LED-modul kész (10-27, kézi – D67)**, következik a vezérlő, majd a relé és a bemeneti; rendelés 11-05 (D97)
 - [ ] Firmware később (L433; a meglévő Nucleón / ST-Linkkel kezdhető – D85): LED-modul (önteszt, árammintavétel, 15 A-es korlát (D84), DAC-küszöb,
       kiégett biztosíték, prémium halványítás kis fényerőn is – D92), csatorna-csoportok → Matter-lámpák; modul-protokoll + bootloader; vezérlő: V_BUS-kezelés
@@ -151,7 +151,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D98 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D99 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, izolált CAN, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni
