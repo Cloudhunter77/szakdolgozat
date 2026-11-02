@@ -8,7 +8,7 @@ A modulmag egy közös hierarchikus lap: a LED-, a relé- és a bemeneti modulon
 
 Jelölések: DNP = az alkatrész helye (footprintje) a NYÁK-on van, de alapból nincs beültetve (későbbi bővítés vagy mérés utáni hangolás).
 
-Állapot: 2026-10-27 (STM32L433 a modulokon, SN65HVD230 a modulok CAN-transceivere, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V; a konzulensi átnézés után: NRST-felhúzás, a ferritgyöngyök, a vezérlő második 24 V-os TVS-e (D7), az RGB-adatvonal soros ellenállása (R31) és a relémodul soros diódája (D100) kivéve). A lista a kapcsolási rajzok mostani állapotát írja le; a LED-modul NYÁK-ja huzalozva, a többi hátra van.
+Állapot: 2026-11-01 (STM32L433 a modulokon, izolált CAN-transceiver a modulokon – a LED-modul leválasztva a busztól, polaritásvédő FET a GND-ágban, AP2112K-s 3,3 V; a konzulensi átnézés után: NRST-felhúzás, a ferritgyöngyök, a vezérlő második 24 V-os TVS-e (D7), az RGB-adatvonal soros ellenállása (R31) és a relémodul soros diódája (D100) kivéve). A lista a kapcsolási rajzok mostani állapotát írja le; a LED-modul NYÁK-ja huzalozva, a többi hátra van.
 
 # 1. Modulmag (közös lap: a LED-, a relé- és a bemeneti modulon azonos)
 
@@ -79,11 +79,11 @@ J4 (2 × 5 tűs tüskesor, DNP): tartalék lábak kivezetése (SPI1, I²C1, egy 
 
 ### Transceiver
 
-U2 (SN65HVD230D, 3,3 V-os CAN-transceiver): a mikrovezérlő logikai CAN-jeleit (TX/RX) alakítja át a busz differenciális jelévé (CAN_H/CAN_L) és vissza. 86 db van belőle kézben. Korlát: a buszlábai −4…16 V-ot bírnak.
+U2 (CA-IS3052G, izolált CAN-transceiver): a mikrovezérlő logikai CAN-jeleit (TX/RX) alakítja át a busz differenciális jelévé (CAN_H/CAN_L) és vissza, a két oldal között galvanikus leválasztással (5 kVrms). A modul-oldala a +3,3 V-ról és a modul GND-jéről, a busz-oldala a busz 5 V-járól (V_BUS) és a busz földjéről (GND_BUS) jár. Buszlábai ±58 V-ot bírnak. Lábkompatibilis a TI ISO1042BDWVR-rel (az drágább alternatíva ugyanarra a helyre). A közös modulmag miatt mindhárom modulon ez van, de ténylegesen csak a LED-modulon választ le; a másik kettőn a két oldal össze van kötve.
 
-C18 (100 nF), C19 (4,7 µF): a transceiver tápjának hidegítése (a CAN-meghajtó adáskor impulzusszerűen vesz áramot).
+C18 (100 nF), C19 (4,7 µF): a transceiver modul-oldali tápjának hidegítése.
 
-R12 (0 Ω): az Rs lábat a GND-re köti – nagy sebességű üzemmód. Helyére 10–100 k tehető, ha az EMC-mérés lassabb élt kíván.
+C20 (100 nF), C21 (4,7 µF): a transceiver busz-oldali tápjának hidegítése (a CAN-meghajtó adáskor impulzusszerűen ~70 mA-t vesz fel).
 
 R1 (10 k): a TX vonal felhúzása – bekapcsoláskor és reset alatt (amikor a mikrovezérlő lába még nem kimenet) a busz recesszív marad, a modul nem zavarja a többieket.
 
@@ -147,10 +147,8 @@ TP3 (mérőpont, +3V3).
 
 ### 5 V (U2 LMR33630) – a busz tápja
 
-R7 (0 Ω, 2512): a buck ágának leválasztási pontja – szükség esetén 10 Ω-os impulzusbíró ellenállás tehető a helyére (bekapcsolási áramkorlát, csillapítás).
 
-
-C1 (47 µF / 50 V, elektrolit): kötelező csillapító kondenzátor – a betápkábel induktivitása és a kerámia-kondenzátorok által alkotott rezgőkört csillapítja, különben bedugáskor a feszültség a táp kétszereséig is felléphet.
+C1 (47 µF / 50 V, elektrolit): kötelező csillapító kondenzátor – a betápkábel induktivitása és a kerámia-kondenzátorok rezgőkört alkotnak, és élő tápra kötéskor a feszültség túllőhet. A csillapítást az elkó ESR-je adja (~0,2–1 Ω a jó tartomány), ezért nem polimer vagy nagyon kis ESR-ű típus kell.
 
 C2 (10 µF / 50 V), C53 (220 nF): a buck bemeneti kondenzátorai, a VIN-lábaknál.
 
@@ -354,7 +352,11 @@ R295 (10 k, 1 %), R296 (715 Ω, 1 %), C295 (100 nF): HW_REV – a LED-modul NYÁ
 
 R290 (150 k), R291 (10 k), C290 (100 nF): a bejövő 12–26 V mérése a főbiztosíték előtt (24 V → 1,5 V a PB1-re) – a firmware ellenőrzi, hogy van-e táp, és hogy a szalag feszültségéhez illik-e.
 
-R293 (1 Ω, 1206): a busz GND-ér és a modul GND-je közötti ellenállás. A nagy (akár 15 A-es) visszatérő áram így nem a vékony busz-kábelen folyik vissza, hanem a saját vastag GND-vezetékén (legfeljebb ~0,2 A jut a buszra).
+U208 (B0505S-1WR3, 1 W-os izolált DC-DC, 5 V → 5 V): a modul logikájának tápja a busz 5 V-járól, galvanikus leválasztással. Így a LED-modul földje és a busz földje között nincs közvetlen kapcsolat: ha a betáp GND-vezetéke működés közben leesik, a szalag árama nem tud a buszon át visszafolyni – a szalag egyszerűen kialszik. A modul ~50–100 mA-t vesz fel, a konverter 200 mA-t bír. Ugyanerre a helyre a 12 V-os vagy 24 V-os bemenetű változat (B1205S, B2405S) is beültethető, ha a busz feszültsége egyszer változna.
+
+C216 (4,7 µF), C217 (10 µF): a DC-DC bemeneti (busz-oldali) és kimeneti (modul-oldali) kondenzátora.
+
+C218 (2,2 nF / 1 kV, DNP): a két föld közötti EMC-kondenzátor helye – ha a mérés a DC-DC kapcsolási zaját mutatja a buszon, beültethető.
 
 ## Betáp és a 24 V-os sín
 
@@ -418,7 +420,7 @@ U206 (INA181A2, áramérzékelő erősítő, ×50): a sönt kis feszültségét 
 
 C240 (100 nF): az erősítő tápjának hidegítése.
 
-R207 (100 Ω), C241 (1 nF): aluláteresztő szűrő az erősítő kimenetén – a PWM-tüskéket szűri az ADC és a komparátor előtt.
+R207 (1 kΩ), C241 (1 nF): RC-tag az erősítő kimenetén – leválasztja az erősítőt a kapacitív terheléstől (az INA181 közvetlenül legfeljebb 1 nF-ot bír), töltést ad az ADC mintavevőjének, és ~160 kHz fölött levágja a zajt; a komparátort csak ~1 µs-mal lassítja.
 
 A túláram-lekapcsolás hardveres: a mért jel (I_SENSE, PA3) a mikrovezérlő belső komparátorára megy, amelynek küszöbét a belső DAC (PA4) adja; túllépéskor a komparátor közvetlenül leállítja mind a hat PWM-et (timer break), szoftver közreműködése nélkül, mikroszekundumok alatt.
 
@@ -446,7 +448,11 @@ R115 (10 k, 1 %), R116 (715 Ω, 1 %), C107 (100 nF): HW_REV – a relémodul NY�
 
 R111 (150 k), R112 (10 k), C106 (100 nF): a tekercs-táp mérése (PB1) – a firmware összeveti a HW-ID-vel, és letiltja a kapcsolást, ha pl. 24 V-os relék mellett csak 12 V a táp (a relé nem húzna be megbízhatóan).
 
-R113 (0 Ω, 1206): a busz GND-ér és a modul GND-je közötti kapcsolat – itt 0 Ω, mert a tekercsek árama kicsi; ha hurokáram mérhető, 1 Ω tehető a helyére.
+R113 (0 Ω, 1206): a busz GND-ér és a modul GND-je közötti kapcsolat – a relémodul nincs leválasztva a busztól (a tekercsek árama kicsi).
+
+R100 (0 Ω, 1206): a busz 5 V-ja (V_BUS) és a modul +5 V-ja közötti átkötés – a LED-modulon ennek a helyén izolált DC-DC van.
+
+U100 (B0505S-1WR3, DNP) + C100 (4,7 µF), C108 (10 µF), C109 (2,2 nF / 1 kV): az izolált DC-DC helye, mint a LED-modulon. Ha a relémodult is le kell választani a busztól, az R100 és az R113 helyett ezek kerülnek be (a kettő együtt nem).
 
 ## Betáp és tekercs-táp
 
@@ -496,6 +502,10 @@ R301 (10 k, 1 %), R302 (2,49 k, 1 %), C301 (100 nF): HW-ID – bemeneti modul = 
 R303 (10 k, 1 %), R304 (715 Ω, 1 %), C308 (100 nF): HW_REV – a bemeneti modul NYÁK-revíziója (v1 = 1. sáv).
 
 R390 (0 Ω, 1206): a busz GND-ér és a modul GND-je – itt 0 Ω, mert a modul teljesen a buszról jár (nincs saját betápja), ellenállás itt nem lehet.
+
+R300 (0 Ω, 1206): a busz 5 V-ja (V_BUS) és a modul +5 V-ja közötti átkötés – az érzékelők tápja is ezen megy (≤ ~1 A).
+
+U300 (B0505S-1WR3, DNP) + C300 (4,7 µF), C309 (10 µF), C326 (2,2 nF / 1 kV): az izolált DC-DC helye. Leválasztáshoz az R300 és az R390 helyett ezek kerülnek be – ilyenkor a DC-DC ~200 mA-jéből az érzékelőknek ~100 mA marad.
 
 ## Érzékelő-táp
 

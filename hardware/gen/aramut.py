@@ -9,7 +9,7 @@ import pcbnew
 mm = pcbnew.ToMM
 LAP = sys.argv[1]
 NAGY = (1.5, 2.5)          # nagyáramú út (fedetlen, ónozott – D82): minimum, javasolt (mm)
-BUSZ = (0.5, 0.6)          # a busz átmenő +5V / GND_BUS: 2 A (D71)
+BUSZ = (0.5, 0.6)          # a busz átmenő V_BUS / GND_BUS: 2 A (D71; D94 óta a modulon is V_BUS a neve)
 UTAK = {   # név, hálózat, kulcspadok, (minimum, javasolt)
     'led-modul': [
         ('+24V betáp', '+24V_IN', 'J201.1 F201.1', NAGY), ('sín F201 → F202–F204', '+24V_RAIL', 'F201.2 F202.1 F203.1 F204.1', NAGY),
@@ -19,13 +19,13 @@ UTAK = {   # név, hálózat, kulcspadok, (minimum, javasolt)
           [(1, 'J202.3'), (2, 'J202.1'), (3, 'J203.3'), (4, 'J203.1'), (5, 'J204.3'), (6, 'J204.1')]],
         ('FET-ek → sönt', 'PGND_SH', 'R209.1 Q202.3 Q203.3 Q204.3 Q205.3 Q206.3 Q207.3', NAGY),
         ('sönt → Q201', 'GND', 'R209.4 Q201.1 Q201.2 Q201.3', NAGY), ('Q201 → betáp', '/GND_IN', 'J201.2 Q201.5', NAGY),
-        ('busz +5V', '+5V', 'J2.1 J3.1', BUSZ), ('busz GND', '/GND_BUS', 'J2.2 J3.2', BUSZ)],
-    'rele-modul': [('busz +5V', '+5V', 'J2.1 J3.1', BUSZ), ('busz GND', '/GND_BUS', 'J2.2 J3.2', BUSZ),
+        ('busz V_BUS', 'V_BUS', 'J2.1 J3.1', BUSZ), ('busz GND', '/GND_BUS', 'J2.2 J3.2', BUSZ)],
+    'rele-modul': [('busz V_BUS', 'V_BUS', 'J2.1 J3.1', BUSZ), ('busz GND', '/GND_BUS', 'J2.2 J3.2', BUSZ),
                    *[(f'{k} COM/NO → J10{n}', None, f'{k}.11 J10{n}.1', (2.0, 3.0)) for n, k in
                      [(1, 'K1'), (2, 'K2'), (3, 'K3'), (4, 'K4')]],
                    *[(f'{k} NO → J10{n}', None, f'{k}.14 J10{n}.2', (2.0, 3.0)) for n, k in
                      [(1, 'K1'), (2, 'K2'), (3, 'K3'), (4, 'K4')]]],
-    'bemeneti-modul': [('busz +5V', '+5V', 'J2.1 J3.1', BUSZ), ('busz GND', '/GND_BUS', 'J2.2 J3.2', BUSZ)],
+    'bemeneti-modul': [('busz V_BUS', 'V_BUS', 'J2.1 J3.1', BUSZ), ('busz GND', '/GND_BUS', 'J2.2 J3.2', BUSZ)],
     'vezerlo': [('V_BUS (eFuse → busz)', 'V_BUS', 'U3.5 J2.1 J3.1', BUSZ), ('+5V (U12 → eFuse)', '+5V', 'U12.2 U3.3', BUSZ),
                 ('24 V betáp', '+24V_IN', 'J1.1 F1.1', BUSZ)],
 }

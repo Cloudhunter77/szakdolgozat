@@ -142,7 +142,7 @@ def elvar(lap, pin, ref, lab, halo, megj=''):
 
 
 def modulmag():
-    print('\n== 3. Modulmag (STM32L433, SN65HVD230, AP2112K) – mindhárom modulban')
+    print('\n== 3. Modulmag (STM32L433, ISO1042, AP2112K) – mindhárom modulban')
     for lap in MODULOK:
         comps, pin, func, nets = netlista(lap)
         if comps['U6']['value'] != 'STM32L433RCT3':
@@ -157,15 +157,15 @@ def modulmag():
                      '5': 'OSC_IN', '6': 'OSC_OUT', '8': 'HW_ID', '9': 'VBUS_SENSE', '26': 'HW_REV', '24': 'UART_TX',
                      '25': 'UART_RX', '2': 'STATUS_LED'}.items():
             elvar(lap, pin, 'U6', p, n)
-        # SN65HVD230: 1 D, 2 GND, 3 VCC, 4 R, 5 Vref (nyitva), 6 CANL, 7 CANH, 8 Rs
-        if comps['U2']['value'] != 'SN65HVD230D':
-            hiba(f'{lap}: U2 = {comps["U2"]["value"]}')
-        for p, n in {'1': 'CAN_TX', '2': 'GND', '3': '+3V3', '4': 'CAN_RX', '6': 'CAN_L_T', '7': 'CAN_H_T'}.items():
+        # CA-IS3052G / ISO1042 (D94): 1 VCC1, 2 TXD, 3 RXD, 4 GND1 (modul-oldal) · 5 GND2, 6 CANL, 7 CANH, 8 VCC2 (busz-oldal)
+        if comps['U2']['value'] not in ('CA-IS3052G', 'ISO1042BDWVR'):
+            hiba(f'{lap}: U2 = {comps["U2"]["value"]} (D94: CA-IS3052G vagy a lábkompatibilis ISO1042BDWVR)')
+        for p, n in {'1': '+3V3', '2': 'CAN_TX', '3': 'CAN_RX', '4': 'GND', '5': 'GND_BUS', '6': 'CAN_L_T', '7': 'CAN_H_T',
+                     '8': 'V_BUS'}.items():
             elvar(lap, pin, 'U2', p, n)
-        elvar(lap, pin, 'U2', '5', lambda v: v is None or v.startswith('unconnected'), 'nyitva')
-        rs = pin.get(('U2', '8'))
-        if sorted(r for r, _ in nets.get(rs, [])) != ['R12', 'U2'] or 'GND' not in (pin.get(('R12', '1')), pin.get(('R12', '2'))):
-            hiba(f'{lap}: az U2 Rs-lába nem R12-n át megy a GND-re ({rs}: {nets.get(rs)})')
+        for p, n in {'1': 'V_BUS', '2': 'GND_BUS'}.items():                 # a busz TVS-e a busz-oldalon
+            elvar(lap, pin, 'D5', p, n)
+        elvar(lap, pin, 'U3', '3', 'GND_BUS')
         # TXD felhúzás
         if {pin.get(('R1', '1')), pin.get(('R1', '2'))} != {'+3V3', 'CAN_TX'}:
             hiba(f'{lap}: R1 nem a CAN_TX felhúzása a 3V3-ra')
@@ -180,10 +180,23 @@ def modulmag():
         # BOOT0 lehúzás
         if {pin.get(('R2', '1')), pin.get(('R2', '2'))} != {'BOOT0', 'GND'}:
             hiba(f'{lap}: R2 nem a BOOT0 lehúzása')
-        # busz-GND ellenállás (D74)
-        r = {'led-modul': ('R293', '1R'), 'rele-modul': ('R113', '0R'), 'bemeneti-modul': ('R390', '0R')}[lap]
-        if comps[r[0]]['value'] != r[1] or {pin.get((r[0], '1')), pin.get((r[0], '2'))} != {'GND_BUS', 'GND'}:
-            hiba(f'{lap}: {r[0]} nem {r[1]} a GND_BUS és a GND között')
+        # a busz-oldal és a modul-oldal kapcsolata (D94): LED-modul – csak az izolált DC-DC (U208); relé / bemeneti – 0 Ω-ok
+        if lap == 'led-modul':
+            for p, n in {'1': 'GND_BUS', '2': 'V_BUS', '3': 'GND', '4': '+5V'}.items():
+                elvar(lap, pin, 'U208', p, n)
+            busz = {r for (r, p), v in pin.items() if v in ('GND_BUS', 'V_BUS')}
+            for r in sorted(busz - {'U2', 'U208', 'C218'}):              # C218: EMC-kondenzátor helye (DNP)
+                ki = {v for (rr, p), v in pin.items() if rr == r} & {'GND', '+5V', '+3V3'}
+                if ki:
+                    hiba(f'{lap}: {r} összeköti a busz-oldalt a modul-oldallal ({ki})')
+        else:
+            for r, a_, b_ in {'rele-modul': (('R113', 'GND_BUS', 'GND'), ('R100', 'V_BUS', '+5V')),
+                              'bemeneti-modul': (('R390', 'GND_BUS', 'GND'), ('R300', 'V_BUS', '+5V'))}[lap]:
+                if comps[r]['value'] != '0R' or {pin.get((r, '1')), pin.get((r, '2'))} != {a_, b_}:
+                    hiba(f'{lap}: {r} nem 0 Ω a {a_} és a {b_} között')
+            u = {'rele-modul': 'U100', 'bemeneti-modul': 'U300'}[lap]                 # D95: a DC-DC helye (DNP)
+            for p, n in {'1': 'GND_BUS', '2': 'V_BUS', '3': 'GND', '4': '+5V'}.items():
+                elvar(lap, pin, u, p, n)
         print(f'  {lap}: kész')
 
 

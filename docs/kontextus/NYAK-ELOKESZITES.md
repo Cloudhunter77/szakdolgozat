@@ -1,5 +1,30 @@
 # NYÁK-rajzolás előtt eldöntendő – 2026-10-13, frissítve 2026-10-14
 
+## ▶ Huzalozás előtt (2026-11-01, D93–D95 után) – Balázs teendői, sorrendben
+1. [ ] **Commit** a D93–D95 állapotról (biztos visszaállási pont).
+2. [ ] **Döntések**, amelyek a még huzalozatlan lapok alkatrészeit változtatják (Claude javaslata zárójelben):
+   - vezérlő: az U2 (LMR33630, 36 V) marad, vagy 60 V-os buck? (marad: ≤ 26 V-os szabály + a C1 ESR-je)
+   - relé: Zener (BZT52C15 + 0 Ω) az ULN2803A COM-ágába a gyorsabb elengedésért? (igen – egy alkatrész, a BOM-ban már van)
+   - bemeneti: a +3V3-ra menő felhúzás visszatáplálása félrekötött 24 V-nál (leírás: osztó nélkül csak ≤ 5 V; 24 V-os
+     érzékelőhöz az osztót beültetni, a felhúzást kihagyni)
+   - az új rendelési dátum
+3. [ ] **Vezérlő-NYÁK:** megnyitás (a 10-27 20:41-es automatikus mentést visszaállítani, ha az a te munkád) → **F8** (az R7
+   kikerül, a +24V_F beolvad a +24V_P-be) → mentés.
+4. [ ] **LED-NYÁK:** **F8** (a footprintek frissítése és a rajzon már nem szereplők törlése bekapcsolva; ha kéri: újrakapcsolás a
+   hivatkozási jel szerint) → mentés → szólni Claude-nak: a modulmag-sarkot (U2 széles SOIC-8, C18–C21, R1, JP2/JP3, L1, TP1) a
+   relé szerinti helyre teszi → **File → Revert**. Utána kézzel:
+   - U208 (DC-DC, ~10 mm magas): a felső éltől ≥ 15 mm-re (a ~13 mm-es borda alá nem), az 1–2. lába a busz felé; C216 / C217 /
+     C218 mellé;
+   - **GND_BUS-zóna** a busz-sarokban minden rézrétegen (J2/J3, U3, D5, L1/JP-k, U2 jobb oldala, U208 1–2., C20/C21/C216),
+     nagyobb prioritással, mint a GND – a ≥ 0,8 mm-es rést a DRC-szabály adja;
+   - a sarok újrahuzalozása: a J2.1/J3.1 most V_BUS (nem +5V), a D5 és az U3 GND-je GND_BUS; a régi lógó +3V3-csonk (R6 mellett) törlése;
+   - DRC: csak szitanyomat-figyelmeztetés maradjon, rajz ↔ NYÁK eltérés 0 (Claude: `gen/ellenorzes.py`).
+5. [ ] **Relé-NYÁK:** a generált kezdő elhelyezés szerint; a **C105 és a J4 nem fért el** (a lapon kívül állnak) – helyet keresni,
+   vagy eldönteni, melyik opcionális elem (J4 bővítő, U100 DC-DC-hely) maradjon.
+6. [ ] **Bemeneti-NYÁK:** a generált kezdő elhelyezés szerint; a felső PH-sor elemei 0,26 mm-re vannak egymástól (a generátor
+   0,5 mm-t kér) – ellenőrizni.
+7. [ ] Ajánlott a véglegesítés előtt: **egy Gainta D4MG ház** megvétele és lemérése (bordák, fésű, magasságok – lásd lent).
+
 > **2026-10-20/21 – D71–D73 felülírja:** a modulokon nincs P78E05/NCP1117/ISO1042/GND_BUS (központi 5 V, közös föld,
 > TCAN1044AV, AP2112K); a vezérlőn LMR33630 + LM66200 + TPS2595; 12–26 V; a ház Gainta D4MG, NYÁK 86,5 × 68 mm
 > (bemeneti 86,5 × 103 mm). Az alábbi régi pontok ennek fényében olvasandók; a friss állapot a két specben van.

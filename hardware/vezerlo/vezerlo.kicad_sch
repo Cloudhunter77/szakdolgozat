@@ -13235,7 +13235,7 @@
 		)
 		(uuid "e780af92-0d8c-58a5-952a-9a3d3b768824")
 	)
-	(text "1. TÁP (12–26 V): +24V_IN → F1 → +24V_P (Q1 a GND-ágban) → D8 → VIN_BUCK (U1 LMR36015 → 3,3 V); +24V_P → R7 → +24V_F → U2 LMR33630 (5,2 V) → U12 LM66200 → +5V"
+	(text "1. TÁP (12–26 V): +24V_IN → F1 → +24V_P (Q1 a GND-ágban) → D8 → VIN_BUCK (U1 LMR36015 → 3,3 V); +24V_P → U2 LMR33630 (5,2 V) → U12 LM66200 → +5V"
 		(exclude_from_sim no)
 		(at 20 22 0)
 		(effects
@@ -24416,95 +24416,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 123.19 45.72 90)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "32ffedf6-7001-5574-a062-ee46b94846b6")
-		(property "Reference" "R7"
-			(at 123.19 43.18 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "0R"
-			(at 123.19 48.26 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_2512_6332Metric"
-			(at 123.19 45.72 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 123.19 45.72 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 123.19 45.72 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Megjegyzés" "0 Ω; a footprint marad – szükség esetén 10 Ω impulzusbíró"
-			(at 123.19 45.72 90)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "26c98f8a-1478-53ad-a0cc-809119840980")
-		)
-		(pin "2"
-			(uuid "2ff45fca-b8fb-52cb-b539-b305744fecac")
-		)
-		(instances
-			(project "vezerlo"
-				(path "/38061551-1954-569b-a6cc-2ddb0bf6dc96"
-					(reference "R7")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 292.1 58.42 0)
 		(unit 1)
@@ -33231,82 +33142,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:PWR_FLAG")
-		(at 161.29 396.24 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "754257c4-8e58-56c6-ac3b-0078c7ce39b5")
-		(property "Reference" "#FLG145"
-			(at 161.29 393.7 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "PWR_FLAG"
-			(at 161.29 392.176 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 161.29 396.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 161.29 396.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 161.29 396.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "6b357ad9-2f8f-5038-8c60-7c67d068bdc4")
-		)
-		(instances
-			(project "vezerlo"
-				(path "/38061551-1954-569b-a6cc-2ddb0bf6dc96"
-					(reference "#FLG145")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "power:GND")
 		(at 265.43 273.05 0)
 		(unit 1)
@@ -35447,7 +35282,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "elektrolit, low-ESR, 105 °C – KÖTELEZŐ"
+		(property "Megjegyzés" "elektrolit, 105 °C – KÖTELEZŐ: az ESR-je (~0,2–1 Ω) csillapítja a betápkábel LC-lengését; polimer / nagyon kis ESR-ű ne legyen"
 			(at 157.48 52.07 0)
 			(hide yes)
 			(show_name no)
@@ -47091,7 +46926,7 @@
 				)
 			)
 		)
-		(property "Value" "+24V_F"
+		(property "Value" "+24V_P"
 			(at 132.08 36.83 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -47140,82 +46975,6 @@
 			(project "vezerlo"
 				(path "/38061551-1954-569b-a6cc-2ddb0bf6dc96"
 					(reference "#PWR145")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+24V")
-		(at 161.29 396.24 180)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "9c01772b-a0e4-522b-bc20-1faff6c8ce61")
-		(property "Reference" "#PWR146"
-			(at 161.29 393.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+24V_F"
-			(at 161.29 400.05 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 161.29 396.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 161.29 396.24 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 161.29 396.24 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "a654dfe5-dcc2-538d-adc0-db85f2f57272")
-		)
-		(instances
-			(project "vezerlo"
-				(path "/38061551-1954-569b-a6cc-2ddb0bf6dc96"
-					(reference "#PWR146")
 					(unit 1)
 				)
 			)
@@ -48800,5 +48559,16 @@
 			(justify left bottom)
 		)
 		(uuid "41cf5d71-95bb-57ee-a68c-30bd5ca0495b")
+	)
+	(wire
+		(pts
+			(xy 119.38 45.72)
+			(xy 127 45.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b958b667-93a5-5931-98f9-51107a7a6cc3")
 	)
 )

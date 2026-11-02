@@ -14,6 +14,7 @@ Ami nem kerül a védésre készülő prototípusba (v1, NYÁK-rendelés ≈ 202
 | **További node-protokollok** | MQTT a Wi-Fi/Ethernetes node-okra; Zigbee firmware-változat (a C6 egyszerre csak Thread VAGY Zigbee) | A v1 Matter over Thread | D32 |
 | **Csatornánkénti árammérés a LED-modulon** (alacsony prioritás) | 6 sönt + erősítő (az F303 4 belső műveleti erősítője PGA-módban + 2 külső), Kelvin-bekötés csatornánként | Balázs szerint nem fontos; a v1-ben az össz-áram + induláskori önteszt + kitöltés-alapú becslés elég | D47 (2026-10-13) |
 | **Második modul-lánc a vezérlőn** | a C6 második TWAI vezérlője (a NYÁK-on a GPIO22/23 tesztpadként fenntartva) + egy második transceiver, lezárás és V_BUS-kapcsoló | A v1-ben egy lánc elég (2 átmenő XH, D58) | D58, `VEZERLO-SPEC.md` 3.2 (2026-10-14) |
+| **Nagyobb buszfeszültség (12 / 24 V a buszon)** | A hosszú láncon kisebb az ejtés. A LED-modulon az U208 helyére ugyanarra a SIP-4 footprintre B1205S / B2405S-1WR3; a busz TVS-e (D5) SMF12A / SMF24A ugyanarra a helyre; a transceiver busz-oldali tápjához (VCC2, 4,5–5,5 V) a busz-oldalon egy kis 5 V-os stabilizátor kellene; a relé- és a bemeneti modulon a 0 Ω helyére is átalakító (a bemenetin az érzékelők ~1 A-je miatt nagyobb teljesítményű) | A v1 busza 5 V (D71); a vezérlő tápja és a modulmag is erre épül | D94 (2026-11-01) |
 
 ## Megjegyzések
 - A fogyasztásméréshez szükséges SCT-013-030 az AliExpress-rendelésből kimaradt – a v1-hez így nem kell pótolni.

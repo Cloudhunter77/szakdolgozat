@@ -22,10 +22,10 @@
   (constraint text_height (min 0.8mm))
   (constraint text_thickness (min 0.15mm)))
 (rule "Táp: sáv 0.6mm"
-  (condition "A.NetName == '+5V' || A.NetName == '/GND_BUS' || A.NetName == '+12V'")
+  (condition "A.NetName == '+5V' || A.NetName == 'V_BUS' || A.NetName == '/GND_BUS' || A.NetName == '+12V'")
   (constraint track_width (min 0.2mm) (opt 0.6mm)))
 (rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
-  (condition "A.Type == 'Via' && (A.NetName == '+5V' || A.NetName == '/GND_BUS' || A.NetName == '+12V')")
+  (condition "A.Type == 'Via' && (A.NetName == '+5V' || A.NetName == 'V_BUS' || A.NetName == '/GND_BUS' || A.NetName == '+12V')")
   (constraint hole_size (min 0.3mm) (opt 0.4mm))
   (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
 (rule "Táp: sáv 0.4mm"
@@ -45,3 +45,10 @@
   (condition "A.Type == 'Via' && (A.NetName == '+24V_IN' || A.NetName == '+24V_RAIL' || A.NetName == '+24V_B?' || A.NetName == '/CH?_D' || A.NetName == 'PGND_SH' || A.NetName == '/GND_IN')")
   (constraint hole_size (min 0.3mm) (opt 0.6mm))
   (constraint via_diameter (min 0.45mm) (opt 1.0mm)))
+
+# D94: leválasztás – a busz-oldal (V_BUS, GND_BUS, a CAN a csatlakozó felé) és a modul-oldal (+5V, GND, minden más) között
+# ≥ 0,8 mm minden rétegen (funkcionális leválasztás, mindkét oldal SELV; hibánál ~24 V lehet köztük). Az U208 (DC-DC) és
+# az U2 (ISO1042) lábai ezt kiadják; a GND-zónákat a busz-sarok körül ki kell vágni, ott külön GND_BUS-zóna legyen.
+(rule "Leválasztás: busz ↔ modul ≥ 0,8 mm"
+  (constraint clearance (min 0.8mm))
+  (condition "(A.NetName == 'V_BUS' || A.NetName == '/GND_BUS' || A.NetName == '/modulmag/CAN_H' || A.NetName == '/modulmag/CAN_L' || A.NetName == '/modulmag/CAN_H_T' || A.NetName == '/modulmag/CAN_L_T' || A.NetName == 'Net-(JP1-B)') && !(B.NetName == 'V_BUS' || B.NetName == '/GND_BUS' || B.NetName == '/modulmag/CAN_H' || B.NetName == '/modulmag/CAN_L' || B.NetName == '/modulmag/CAN_H_T' || B.NetName == '/modulmag/CAN_L_T' || B.NetName == 'Net-(JP1-B)')"))

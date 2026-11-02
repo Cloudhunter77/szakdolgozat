@@ -88,6 +88,11 @@ FORRAS = {
     ('HDC3020DEFR', 'TI_WSON-8-1EP_2.5x2.5mm_DEF0008A'): dict(ti=1, l={'q': 'HDC3020DEFR', 'tipus': 'HDC3020'}),
     ('STM32L433RCT3', 'LQFP-64_10x10mm_P0.5mm'): dict(k=1),
     ('SN65HVD230D', 'SOIC-8_3.9x4.9mm_P1.27mm'): dict(k=1),
+    # D94: izolált CAN mindhárom modulon (a LED-modulon leválaszt), izolált 5 V-os DC-DC a LED-modulon
+    ('CA-IS3052G', 'SOIC-8_7.5x5.85mm_P1.27mm'): dict(l={'q': 'CA-IS3052G', 'tipus': 'CA-IS3052G'},
+                                                   n='lábkompatibilis: TI ISO1042BDWVR (LCSC C484409, ~6000 Ft/db) – a CA-IS3050G NEM'),
+    ('B0505S-1WR3', 'Converter_DCDC_TRACO_TME_03xxS_05xxS_12xxS_Single_THT'): dict(l={'q': 'B0505S-1WR3', 'tipus': 'B0505S-1WR3'},
+                                    n='SIP-4, 1 W; a B1205S / B2405S-1WR3 ugyanerre a footprintre (más buszfeszültséghez)'),
     ('MCP9701AT-E/TT', 'SOT-23'): dict(k=1),
     ('74HCT14D', 'SOIC-14_3.9x8.7mm_P1.27mm'): dict(k=1),
     ('IRFR1205', 'TO-252-2'): dict(k=1),

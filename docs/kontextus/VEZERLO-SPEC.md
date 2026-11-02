@@ -42,7 +42,6 @@ közben nézd át.
 |---|---|---|
 | `+24V_IN` | a 24 V-os sorkapocs | |
 | `+24V_P` | F1 után | csak 24 V-ról él; ezt méri a VIN_SENSE, ebből kapja az EN-t a V_BUS-kapcsoló |
-| `+24V_F` | R7 után, az LMR33630 bemenete | szűrt, a TVS-sel |
 | `VUSB` | az USB-C VBUS-a | |
 | `VIN_BUCK` | az LMR36015 bemenete | `+24V_P` (D8-on át) VAGY `VUSB` (D3-on át) |
 | `3V3` | C6, W5500 digitális, VIO | U1 |
@@ -62,14 +61,14 @@ trafón át leválasztott. Bekötési szabály: egy táp, csillagpontosan (D71).
 +24V_IN → F1 → +24V_P ──────┬─ D2 SMBJ28A → GND        (J1 GND-pólusa → GND_IN → Q1 → GND, D78)
                              ├─ R1/R2 → VIN_SENSE (GPIO0)
                              ├─ D8 → VIN_BUCK → U1 (LMR36015) → 3V3
-                             └─ R7 0 Ω → +24V_F ─ C1 47 µF elkó, C2 10 µF → U2 (LMR33630) → +5V_BUCK ─┐
+                             └─ C1 47 µF elkó, C2 10 µF → U2 (LMR33630) → +5V_BUCK ─────────────┐
 VUSB → D3 → VIN_BUCK                                                                           U12 LM66200 → +5V → U3 TPS2595 → V_BUS
 VUSB ──────────────────────────────────────────────────────────────────────────────────────────┘   (D71)
 ```
 
 - **Csak USB-ről** (24 V nélkül, D71): az USB a D3-on át az LMR36015-öt, az U12 VIN2-jén át a `+5V`-ot táplálja →
   a C6 + W5500 megy, és **a V_BUS is bekapcsol** (1–2 modul asztali teszteléséhez). Laptop-porton (0,5–0,9 A)
-  csak néhány modul fér el; túlterhelésnél a port maga kapcsol le. A buck (+24V_F) oldala nem kap feszültséget,
+  csak néhány modul fér el; túlterhelésnél a port maga kapcsol le. A buck (`+24V_P`) oldala nem kap feszültséget,
   mert az U12 nem táplál vissza.
 - **12 V-ról is működik (D71):** az LMR33630 (3,8 V-tól) és az LMR36015 (~4,2 V-tól) is jár; a szalag- és a
   tekercsfeszültség a modulokon a tápé (`MODULMAG-SPEC.md`, D71).
@@ -83,8 +82,7 @@ VUSB ─────────────────────────
 | D2 | TVS | SMBJ28A | `+24V_P` → GND; ~45 V-on fog (az LMR36015 60 V-os) |
 | D8 | Schottky | SS16 (60 V, 1 A) | `+24V_P` → `VIN_BUCK`; az USB ne táplálja vissza a 24 V-os oldalt |
 | D3 | Schottky | **SS56C** (60 V, 5 A, SMC – D84) | `VUSB` → `VIN_BUCK`. **60 V-os kell**: túlfeszültségnél a `VIN_BUCK` ~45 V is lehet, miközben a `VUSB` ~0 V. A 3 A-es dióda 0,5 A-en kisebbet ejt (~0,4 V) → USB-ről is meglegyen az LMR36015 4,2 V-ja |
-| R7 | ellenállás | **0 Ω (D70)**; a 2512-es footprint marad, szükség esetén 10 Ω impulzusbíró | a C1-gyel RC-szűrő az U2 (LMR33630) elé, korlátozza a D2 áramát, ha 10 Ω kerül be (D57 mintájára). Legrosszabb esetben ~0,16 A → 1,6 V, 0,26 W – ezért 2512 |
-| C1 | elektrolit – **kötelező** | 47 µF, 50 V, low-ESR, 105 °C | az R7-tel soros R-C a bemeneten → a betápkábel LC-lengését is csillapítja (D57) |
+| C1 | elektrolit – **kötelező** | 47 µF, 50 V, 105 °C; ESR ~0,2–1 Ω (nem polimer) | az ESR-je csillapítja a betápkábel induktivitása és a kerámiák LC-lengését (D57; az R7 a D93-mal kikerült) |
 | C2 | kerámia | 10 µF, 50 V, X7R (1210) | az U2 VIN–PGND lábai mellett (+ C53 220 nF) |
 | R1, R2, C3 | osztó | 150 kΩ / 10 kΩ, 100 nF | `+24V_P` → **GPIO0** (VIN_SENSE, ADC1_CH0): 24 V → 1,47 V; csak USB-ről 0 V |
 
@@ -391,7 +389,7 @@ gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UAR
 - **Előlapi ablak:** D5, D6 (fényvezető), SW1, SW2 – jobbra lent.
 - **Antenna (D87):** az U4 a **jobb élen**, az antenna kifelé (az oldalfal felé), az előlapi ablak magasságában – a J1/J2/J3-tól,
   az RJ45-től és az USB-C-től ≥ 15 mm-re; alatta és ±4 mm-en minden rézrétegen tiltás (3.3).
-- **Elrendezés (D87, `gen/pcbgen.py`):** bal felül a betáp (F1, Q1, TVS-ek, R7 + C1), középen az 5 V-os buck, a csatlakozók alatt
+- **Elrendezés (D87, `gen/pcbgen.py`):** bal felül a betáp (F1, Q1, TVS-ek, C1), középen az 5 V-os buck, a csatlakozók alatt
   az U12/U3 és a CAN, a 3,3 V-os buck az U4 3V3-lába fölött; lent balra a LoRa (DNP), a W5500 az RJ45 fölött.
 - **C1 (47 µF elkó):** 7,7 mm magas – a ház vállmagassága alá kell férnie. Az LMR33630 hűtőpadja alatt viák a GND-síkra.
 - **Ethernet:** a W5500 a MagJack mellett; a TX/RX párok rövidek, 100 Ω-osak (JLC impedancia-kalkulátor, a
@@ -429,7 +427,7 @@ forrasztható jumper · SW1/SW2 PTS525S5215A · kondenzátorok: 47 µF 50 V elek
 - [ ] **RGB LED:** WS2812B-V5 közvetlenül (R32) vagy a kézben lévő WS2812C-2020 a 74HCT14-gyel (U9) – a választott
       LED adatlapja szerint.
 - [ ] A 25 MHz-es kvarc CL-értéke → terhelőkondenzátorok.
-- [ ] F1 (**2 A**, ≥ 32 V, D71), R7 (0 Ω, D70), D3 (60 V-os, kis esésű Schottky), USB-C aljzat és
+- [ ] F1 (**2 A**, ≥ 32 V, D71), D3 (60 V-os, kis esésű Schottky), USB-C aljzat és
       nyomógombok konkrét típusa → footprint.
 - [ ] Footprintek: LMR36015 RNX (VQFN-HR), W5500 LQFP48 (7 × 7 mm), ESP32-C6-WROOM-1 (Espressif KiCad-könyvtár),
       BAT54 (a választott tok lábkiosztása). ✅ LMR36015, LM66200, TPS2595, E22 – a gyártói rajzokkal összevetve (10-20).
@@ -483,5 +481,5 @@ a generátor tri-state-re írja át (ERC).
 
 ### 15.4 R7 = 0 Ω (D70)
 A D57-féle 10 Ω helyett 0 Ω; a footprint marad. Bedugáskor a TVS nagyobb áramon, magasabban fog – a 24 V-os táp
-≤ 26 V szabály ezért fontosabb.
+≤ 26 V szabály ezért fontosabb. **D93 (2026-11-01):** az R7 és a `+24V_F` törölve, a csillapítást a C1 ESR-je adja.
 

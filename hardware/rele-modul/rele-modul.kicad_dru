@@ -29,10 +29,10 @@
   (constraint hole_size (min 0.3mm) (opt 0.4mm))
   (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
 (rule "Táp: sáv 0.6mm"
-  (condition "A.NetName == '+5V' || A.NetName == '/GND_BUS'")
+  (condition "A.NetName == '+5V' || A.NetName == 'V_BUS' || A.NetName == '/GND_BUS'")
   (constraint track_width (min 0.2mm) (opt 0.6mm)))
 (rule "Táp: via 0.4mm / 0.7mm (1 A felett több via)"
-  (condition "A.Type == 'Via' && (A.NetName == '+5V' || A.NetName == '/GND_BUS')")
+  (condition "A.Type == 'Via' && (A.NetName == '+5V' || A.NetName == 'V_BUS' || A.NetName == '/GND_BUS')")
   (constraint hole_size (min 0.3mm) (opt 0.4mm))
   (constraint via_diameter (min 0.45mm) (opt 0.7mm)))
 (rule "Táp: sáv 0.4mm"
@@ -57,3 +57,9 @@
 (rule "230 V: nincs via"
   (condition "A.Type == 'Via' && A.NetName == 'Net-(J10?-Pin_?)'")
   (constraint disallow via))
+
+# D95: a leválasztás lehetősége – alapból 0 Ω-os átkötők, de a DC-DC (DNP) beültetésekor a busz-oldal (V_BUS, GND_BUS, a CAN
+# a csatlakozó felé) és a modul-oldal között ≥ 0,8 mm kell minden rétegen; a GND_BUS-nak a busz-sarokban külön zóna.
+(rule "Leválasztás: busz ↔ modul ≥ 0,8 mm"
+  (constraint clearance (min 0.8mm))
+  (condition "(A.NetName == 'V_BUS' || A.NetName == '/GND_BUS' || A.NetName == '/modulmag/CAN_H' || A.NetName == '/modulmag/CAN_L' || A.NetName == '/modulmag/CAN_H_T' || A.NetName == '/modulmag/CAN_L_T' || A.NetName == 'Net-(JP1-B)') && !(B.NetName == 'V_BUS' || B.NetName == '/GND_BUS' || B.NetName == '/modulmag/CAN_H' || B.NetName == '/modulmag/CAN_L' || B.NetName == '/modulmag/CAN_H_T' || B.NetName == '/modulmag/CAN_L_T' || B.NetName == 'Net-(JP1-B)')"))

@@ -15,7 +15,7 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
 - ✅ `firmware/esphome-demo` → `cp-01-esphome-demo` · ✅ `firmware/matter-c6` (Thread, HA-ba párosítva, szín csak
   részben) → `cp-02-matter-thread-ha` · ✅ breadboard 24 V-os LED-meghajtó, 2 csatorna (D15)
 - 📝 CCT szalag firmware (D16): prompt kész, **még nincs lefuttatva**
-- 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`; **mind az öt KiCad-lap kész** (D71–D80: STM32L433RCT3, SN65HVD230,
+- 🔌 Specifikációk: `MODULMAG-SPEC.md`, `VEZERLO-SPEC.md`; **mind az öt KiCad-lap kész** (D71–D80: STM32L433RCT3, izolált CAN – D94,
   N-FET a GND-ágban, 1 oz + fedetlen nagyáramú sávok – D82); ellenőrzés: `hardware/gen/ellenorzes.py`; darabjegyzék: `hardware/bom/`;
   konzulensnek: `docs/komponenslista.md` + `hardware/out/kapcsolasi-rajzok-2026-10-27.pdf`.
 - 💰 **D84–D85 (10-22/23): legolcsóbb beszerzés** – minden az LCSC-ről a JLC-s NYÁK-rendeléssel (~15 eFt); a megszűnt NTD5C648NL /
@@ -33,10 +33,11 @@ endpointok. ESPHome csak gyors demókhoz. Audió nincs a rendszerben (D29). **12
 
 ## Architektúra (részletek: a két spec)
 - **Busz (D28, D38, D52, D71):** JST-XH 4 tű – **1 V_BUS (5 V), 2 GND, 3 CAN_L, 4 CAN_H**, laponként 2 átmenő XH;
-  nincs 24 V a láncon. **Közös föld, izoláció nincs (D71)**: a modulokon SN65HVD230 (kézben, −4…16 V – D79), a vezérlőn TCAN1044AV (±58 V). Lezárás: sima 120 Ω
+  nincs 24 V a láncon. **A LED-modul leválasztva (D94)**: a modulokon CA-IS3052G izolált transceiver (±58 V; a relén és a bemenetin a két
+  oldal 0 Ω-mal összekötve), a LED-modul logikája izolált DC-DC-ről (B0505S-1WR3); a vezérlőn TCAN1044AV (±58 V). Lezárás: sima 120 Ω
   jumperrel, csak a lánc két végén. CAN-bitráta firmware-ből állítható (D34). Bekötési szabály: **a vezérlő és
   minden modul egy (12–26 V-os) tápról, csillagpontosan** (több lebegő SELV-táp is mehet, 0 V egy ponton – D77);
-  busz-kábel AWG22. A busz-GND a modulon R-en át (LED-modul 1 Ω, a hurokáram ellen – D74); CAN-fojtó-hely minden lapon.
+  busz-kábel AWG22. A csillagpont-szabály a nem leválasztott lapokra (vezérlő, relé) kell; CAN-fojtó-hely minden lapon.
 - **V_BUS = központi 5 V (D71):** a vezérlő adja **minden modul logikai tápját** – LMR33630 (5,2 V, 3 A) → LM66200
   (VAGY az USB-vel) → TPS2595 eFuse (**2 A**, 5,7 V-os vágás). **USB-ről is van V_BUS** (1–2 modul teszteléséhez).
   A modulon csak 5 V-os TVS (ESD); minden modul méri a hozzá jutó V_BUS-t (PC1).
@@ -96,7 +97,7 @@ A demó-konfigok DevKitC-1-es lábakat feltételeznek:
   TXD-k felhúzva → recesszív busz).
 - **24 V-os sín:** 60 V-os FET, 12 V-os gate-driver-táp (MC78L12); EMC: fázistolás, dithering, gate-ellenállás,
   CM fojtó / snubber csak footprint (D24).
-- **D71 óta nincs a NYÁK-okon:** ISO1042, P78E05, NCP1117 (a készlet megmarad másra). **LMR36015** (csak a
+- **D71 óta nincs a NYÁK-okon:** P78E05, NCP1117 (a készlet megmarad másra); a D94 óta az SN65HVD230 sem (a modulokon CA-IS3052G). **LMR36015** (csak a
   vezérlőn): VQFN-HR, reflow + stencil, a B (1 MHz) változat. **LMR33630ADDA:** HSOIC-8 PowerPAD.
 - **XH vs. PH:** XH a busz (2,5 mm), PH az érzékelők (2,0 mm) – nem dughatók egymásba.
 - **Ajtóérzékelés:** AH1911 Hall + mágnes (mágnesnél LOW = csukva).
@@ -119,16 +120,15 @@ SCT-013-030 (v2) és az ULN2803A.
   hely közös anyaga (D13).
 
 ## Nyitott kérdések / teendők
-- [ ] **LED-modul földelése (Pali kérdése, 10-28):** a GND_IN szakadásakor a szalag árama a buszon (R293 → D5 → V_BUS) keres utat →
-      **javaslat: a LED-modul busz-oldali leválasztása** – ISO1042BDWVR (LCSC C484409) + B0505S-1WR3 (1 W, 5 V → 5 V izolált DC-DC); a
-      modulmagon mindhárom modulon ISO1042, a relé- és a bemeneti modulon 0 Ω-os átkötők. Palival megbeszélni (10-28); ha igen: rajz
-      10-28 este, LED-NYÁK busz-sarka 10-29, rendelés 10-30/31. Ha nem: firmware-es felismerés (VBUS_SENSE ADC-watchdog → DRV_EN le,
-      reteszelve). Részletek: `docs/konzultacio/2026-10-27-valaszok.md`
-- [ ] **A konzultáció (10-28) után eldönteni és átvezetni** (részletek: ugyanott): vezérlő U2 → 60 V-os buck, vagy R7 = 0,5 Ω a C1-gyel;
-      relé: Zener (BZT52C15 + 0 Ω) az ULN2803A COM-ágába a gyorsabb elengedésért; bemeneti: a +3V3-ra menő felhúzás visszatáplálása
-      félrekötött 24 V-nál (Schottky / leírás / terhelés); LED: R207 → 1 kΩ (vagy külön ADC-ág); rajzi megjegyzések: C1 (az ESR
-      számít, nem polimer), R7 (a 10 Ω elavult), F202–F204 (blokkbiztosíték, érthetőbben); firmware: COMP2-küszöb a csatornaáramokból
-      (átlapolódás), a frekvencia-dithering minden időzítőn egyszerre
+- [ ] **LED-NYÁK a D94 után (Balázs):** KiCad-ben *Update PCB from Schematic* (F8; a footprintek frissítése és a rajzon már nem
+      szereplők törlése bekapcsolva) → az U2 most széles SOIC-8 (CA-IS3052G); új: C20/C21, U208 (DC-DC, SIP-4, ~10 mm magas – a ~13 mm-es
+      borda alá nem kerülhet), C216–C218; kikerül: R12, R293. A busz-sarokban GND_BUS-zóna minden rétegen (a DRC ≥ 0,8 mm-t ír elő a modul
+      GND-jétől). A modulmag-blokk új elrendezése a relé-NYÁK-on látható. **Vezérlő-NYÁK:** F8 (az R7 kikerül, a +24V_F beolvad).
+      **Relé-NYÁK:** a DC-DC helye (U100, DNP – D95) a C105 helyére került; a C105 és a J4 kézzel helyezendő. **Új rendelési dátum?**
+- [ ] **A konzultáció (10-28) után még nyitott** (kész: D93 – R7 / +24V_F, R207 = 1 kΩ, a TPD4E05U06 marad; D94 – a LED-modul leválasztása):
+      vezérlő U2 → 60 V-os buck?; relé: Zener (BZT52C15 + 0 Ω) az ULN2803A COM-ágába a gyorsabb elengedésért; bemeneti: a +3V3-ra menő
+      felhúzás visszatáplálása félrekötött 24 V-nál (Schottky / leírás / terhelés); F202–F204 megjegyzése érthetőbben; firmware:
+      COMP2-küszöb a csatornaáramokból (átlapolódás), a frekvencia-dithering minden időzítőn egyszerre
 - [ ] **Beültetés előtt:** a relékimenet THT sorkapcsainak névleges értéke (≥ 16 A / 250 V, D83) és a magasságok a Gainta-ház
       vállához (relé ~16 mm, sorkapcsok, elkók); 12/24 V-os bemenethez az osztót beültetni (D66, D81 elvetve)
 - [ ] **Sample-kérések:** TI-kérelem elküldve (11 típus, `SAMPLE-KERESEK.md`); ha a TI elutasít: LMR36015 és W5500 megvenni
@@ -152,8 +152,8 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D92 (a 2026-10-14-i számozás-összefésülés a fejlécben)
-- `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, SN65HVD230, busz, HW-ID, lábkiosztás, BOM)
+- `DONTESEK.md` – döntésnapló, D01–D95 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, izolált CAN, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni
 - `NYAK-ELOKESZITES.md` – rajz/layout előtti teendők, mechanika, 4 réteg

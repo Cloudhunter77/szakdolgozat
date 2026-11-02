@@ -21,6 +21,13 @@ HAL COMP-leírás. Független ellenőrzés után javítva (2026-10-13). **2026-1
 > buszlábak −4…16 V – a TCAN1044AV ±58 V-jánál gyengébb, Balázs vállalja). A táp-LED (D3) a +5V-ról jár. A 3., 4. és
 > 7. fejezet ennek megfelelően frissítve; a régi F303-as lábszámok azonosak.
 
+> **2026-11-01 – D94: a busz-oldal leválasztható, a LED-modul leválasztva.** A konzultáción (10-28) kiderült: ha a LED-modul
+> GND_IN vezetéke leesik, a szalag árama a buszon át (R293 → D5 → V_BUS) keres utat. Ezért a CAN-transceiver **CA-IS3052G**
+> (izolált, lábkompatibilis a TI ISO1042BDWVR-rel), a busz-oldal (J2/J3, ESD2CAN24, D5, lezárás, fojtó) a **V_BUS / GND_BUS**-on
+> van, a modul-oldal (+5V, GND) a modul saját lapján kapcsolódik hozzá: a **relé- és a bemeneti modulon 0 Ω-mal** (R100/R113,
+> R300/R390 – nincs leválasztva), a **LED-modulon egy 1 W-os izolált DC-DC-vel** (U208 B0505S-1WR3; az R293 kikerült). A 4. és
+> az 5. fejezet ennek megfelelően átírva.
+
 ## 0. Tartalom és változatok
 
 | Blokk | Fő alkatrész | Fejezet |
@@ -40,9 +47,11 @@ HAL COMP-leírás. Független ellenőrzés után javítva (2026-10-13). **2026-1
 
 | Net | Honnan | Megjegyzés |
 |---|---|---|
-| `+5V` | J2/J3 1-es tű (a vezérlő V_BUS-a) | 4,5–5,2 V (a lánc végén kevesebb); az LDO bemenete, a táp-LED |
+| `V_BUS` | J2/J3 1-es tű (a vezérlő V_BUS-a) | busz-oldal (D94): 4,5–5,2 V (a lánc végén kevesebb); a CAN-transceiver VCC2-je, a D5 TVS |
+| `+5V` | a modul lapjáról (D94): a V_BUS 0 Ω-on át, a LED-modulon izolált DC-DC | modul-oldal: az LDO bemenete, a táp-LED, a VBUS_SENSE |
 | `+3V3` | U5 | MCU, CAN-transceiver, VDDA (ferrit nélkül – D90) |
-| `GND` | J2/J3 2-es tű + a modul saját GND-je | **közös föld** – a LED- és a relémodulon a 24 V-os GND is |
+| `GND_BUS` | J2/J3 2-es tű | busz-oldal (D94): a transceiver GND2-je, az ESD2CAN24, a D5 |
+| `GND` | a modul saját GND-je | a relén és a bemenetin 0 Ω-mal a `GND_BUS`-on, a LED-modulon leválasztva (D94) – a LED- és a relémodulon a 24 V-os GND is |
 | `CAN_H`, `CAN_L` | J2/J3 4-es / 3-as tű | |
 
 ## 2. Tápblokk: +5V (busz) → 3,3 V – AP2112K (D71)
@@ -57,7 +66,8 @@ Lánc: `+5V` (J2/J3) → C2 → U5 AP2112K-3.3 → `+3V3` (C3). A vezérlő TPS2
 | C3 | kerámia | 10 µF, 10 V, X7R (0805) | az AP2112 kerámiával stabil (nem kell tantál) |
 | R3, R4, C9 | osztó | 10 kΩ / 10 kΩ 1 %, 100 nF | `+5V` → **PC1** (VBUS_SENSE): 5 V → 2,5 V – a modul jelenti, mennyi busz-feszültség jut el hozzá |
 
-- Áramszükséglet a 3,3 V-on: STM32 ~20–30 mA + SN65HVD230 (~10 mA, adáskor ~17 mA) + LED-ek.
+- Áramszükséglet a 3,3 V-on: STM32 ~20–30 mA + a CA-IS3052G logikai oldala (néhány mA) + LED-ek; a transceiver busz-oldali
+  árama (adáskor ~70 mA) a V_BUS-ról közvetlenül jön (D94).
 - A 3,3 V a lánc végén ~3,6 V-ig tart (0,25 V ejtés + tartalék); a D79 óta nincs 5 V-os fogyasztó, ami ennél szűkebb lenne.
 
 ## 3. STM32L433RCT3 és körítése (D78; az F303RET6 lábra azonos)
@@ -139,47 +149,49 @@ ST-Link V2 klónhoz dupont-vezetékkel bekötve; a lap szélén, hozzáférhető
 - **Relémodul (a modul saját lapján):** J105 3,5 mm-es jack az SCT-013 lakatfogónak, R107/R108 10 k + C102 10 µF
   középfeszültség (1,65 V), R109 terhelő-ellenállás (csak áramkimenetes típushoz), R110 1 k + C103 10 nF → PA0. Minden DNP.
 
-## 4. CAN – SN65HVD230D (U2) – közös föld (D71, D79)
-A kézben lévő 86 db-ból (D79); 3,3 V-ról jár, 1 Mbit/s. A vezérlőn a TCAN1044AV marad (a JP2/JP3-mal ott is beültethető a HVD230).
+## 4. CAN – CA-IS3052G (U2), izolált (D94)
+Chipanalog CA-IS3052G: izolált CAN-transceiver, 5 kVrms, buszlábak ±58 V, közös módus ±30 V, 1 Mbit/s (a bxCAN-nek elég),
+SOIC8-WB (5,85 × 7,5 mm). **Lábkompatibilis a TI ISO1042BDWVR-rel** (az a drágább alternatíva ugyanarra a footprintre);
+a CA-IS3050G-vel **nem** (ott a TXD és az RXD fel van cserélve). Mindhárom modulon ez van – a közös modulmag miatt; a relé-
+és a bemeneti modulon a két oldal 0 Ω-mal össze van kötve, ott csak a robusztusabb buszlábak (±58 V) a haszon.
 
 | Láb | Név | Bekötés |
 |---|---|---|
-| 1 | TXD | **PA12** (45, CAN_TX) + **R1 10 kΩ felhúzás `3V3`-ra** (reset alatt recesszív busz) |
-| 2 | GND | `GND` |
-| 3 | VCC | `3V3` + C18 100 nF + C19 4,7 µF |
-| 4 | RXD | **PA11** (44, CAN_RX) |
-| 5 | Vref | nyitva (referenciakimenet, nem kell) |
+| 1 | VCC1 | `+3V3` + C18 100 nF + C19 4,7 µF (modul-oldal) |
+| 2 | TXD | **PA12** (45, CAN_TX) + **R1 10 kΩ felhúzás `3V3`-ra** (reset alatt recesszív busz) |
+| 3 | RXD | **PA11** (44, CAN_RX) |
+| 4 | GND1 | `GND` |
+| 5 | GND2 | `GND_BUS` |
 | 6 | CANL | `CAN_L_T` → JP3 (zárt) / L1 → `CAN_L` |
 | 7 | CANH | `CAN_H_T` → JP2 (zárt) / L1 → `CAN_H` |
-| 8 | Rs | **R12 0 Ω** → GND (nagy sebesség; 10–100 k-val meredekség-szabályozás, 3V3-ra: készenlét) |
+| 8 | VCC2 | `V_BUS` + C20 100 nF + C21 4,7 µF (busz-oldal, a GND_BUS-ra) |
 
-- VCC 3,0–3,6 V; **buszlábak −4…16 V**, közös módus −2…7 V – a földkülönbség (néhány tized V a bekötési szabály
-  mellett) belefér, de egy rákötött 24 V tönkreteszi (a TCAN1044AV ±58 V-ot bírt) – D79, Balázs vállalja. A 3,3 V-os és
-  az 5 V-os transceiverek egy buszon együtt működnek (ISO 11898-2).
-- **Miért nincs izoláció (D71):** a logika a buszról jár, így a modul GND-je eleve a busz GND-je – az ISO1042-nek
-  nem lenne mit leválasztania. A LED-modul 20 A-es visszatérő árama a saját vastag tápvezetékén megy vissza, ha
-  a bekötési szabályt (egy táp, csillagpont) betartjuk.
+- VCC1 2,5–5,5 V, **VCC2 4,5–5,5 V** – a V_BUS a lánc végén ~4,5 V-ig eshet (5.5), ez a határ; ha kevesebb, a modul VBUS_SENSE-e jelez.
+- A korábbi SN65HVD230 (kézben 86 db) és az R12 (Rs) kikerült; az SN65HVD230 −4…16 V-os buszlábai helyett ±58 V.
+- **Miért izolált (D94):** a LED-modulon a GND_IN szakadásakor a szalag árama a busz-GND-n, majd a D5-ön át a V_BUS-on
+  keresett utat (a V_BUS ~7 V-ra is felmehetett). Leválasztva a LED-modul földje és a busz földje között nincs galvanikus
+  kapcsolat: nincs hurokáram, a LED-ek PWM-zaja nem jut a buszra, és a LED-modul tápja bárhogy beköthető.
 
 ## 5. Busz
 
 ### 5.1 Csatlakozók – J2 (BUS_IN), J3 (BUS_OUT): JST-XH, 4 tű (B4B-XH-A)
 | Tű | Jel |
 |---|---|
-| 1 | `+5V` (a vezérlő V_BUS-a) |
-| 2 | `GND_BUS` → a modul lapján R-en át a `GND`-re (D74) |
+| 1 | `V_BUS` (a vezérlő V_BUS-a) |
+| 2 | `GND_BUS` (busz-oldal; a modul lapján a relén / bemenetin 0 Ω-mal a `GND`-re, a LED-modulon leválasztva – D94) |
 | 3 | `CAN_L` |
 | 4 | `CAN_H` |
 
 J2 és J3 azonos tűi közvetlenül összekötve (átmenő busz). Az XH tűnként 3 A-t bír; a vezérlő 2 A-nél korlátoz.
 
-**Busz-GND (D74):** a `GND_BUS` (XH 2-es tű) a modul saját lapján egy 1206-os ellenálláson át csatlakozik a `GND`-hez:
-**LED-modul R293 = 1 Ω**, relémodul R113 = 0 Ω, bemeneti modul R390 = 0 Ω (ott minden a buszról jár, ellenállás nem lehet).
-Miért: a LED-modul 20 A-es visszatérő árama két úton jut a tápra – a saját vastag vezetékén és a busz GND-ján a
-vezérlőn át. 1,5 m 2,5 mm²-es vezetéknél (~10 mΩ) és ~100 mΩ-os busz-útnál 0 Ω-mal **1–2 A** folyna a buszon,
-1 Ω-mal ~0,2 A. A modul így ~0,1–0,3 V-tal „feljebb” ül a busz GND-jénél – az SN65HVD230 közös módusú tartománya
-−2…7 V (D79), ez bőven belefér. Az SN65HVD230, az ESD2CAN24 és a D5 a modul GND-jére megy (a védőelemek a transceiver földjéhez képest fogjanak).
+**Busz-GND (D74 → D94):** a `GND_BUS` (XH 2-es tű) a busz-oldal földje: a transceiver GND2-je, az ESD2CAN24 és a D5 ehhez
+fog. A modul lapján: **relémodul R113 = 0 Ω, bemeneti modul R390 = 0 Ω** a `GND`-re (+ R100 / R300 0 Ω a V_BUS → +5V-ra);
+a **LED-modulon nincs kapcsolat** – a logika tápja az U208 izolált DC-DC-n át jön (C216 bemeneti, C217 kimeneti kondenzátor;
+C218: EMC-kondenzátor helye a két föld között, DNP). **D95:** a relé- és a bemeneti modulon is ott a DC-DC helye (U100 / U300 +
+kondenzátorok, DNP) – leválasztáshoz a két 0 Ω ki, a DC-DC be (a bemenetin így az érzékelőknek ~100 mA marad). A korábbi R293 (1 Ω) a hurokáramot csak csökkentette (~0,2 A), a GND_IN
+szakadását nem kezelte – ezért kikerült.
 
-**CAN-fojtó (D74):** a transceiver (SN65HVD230) és a busz között **L1** közös módusú fojtó (DNP, pl. TDK ACT45B / ACM3225) és két zárt
+**CAN-fojtó (D74):** a transceiver (CA-IS3052G) és a busz között **L1** közös módusú fojtó (DNP, pl. TDK ACT45B / ACM3225) és két zárt
 forrasztható áthidaló (**JP2, JP3**) – mint a vezérlőn. Fojtó beültetésekor a JP2/JP3 átvágandó.
 
 ### 5.2 Védelem a modulon
@@ -271,19 +283,19 @@ Megjegyzések:
 ## 8. Layout-irányelvek
 - A modulmag **mindhárom lapon ugyanott**, a felső vállnál (D50). KiCad-ben a layoutot is újrahasználható
   blokként kezelni.
-- **Busz** a felső él mentén: J2, J3, JP1, R5, U3, D5, az SN65HVD230 és a VCC-kondenzátorai; izolációs rés nincs (D71).
-  A busz GND-je és a modul GND-je egy sík – a LED-modulon a 20 A-es visszatérő út **ne** a busz-csatlakozók
-  alatt menjen (a nagy áram a saját sorkapcsán lépjen ki).
+- **Busz** a felső él mentén: J2, J3, JP1, R5, U3, D5, L1/JP2/JP3, a transceiver busz-oldala (5–8. láb) és a C20/C21 – ez a
+  busz-oldal (V_BUS, GND_BUS). **A LED-modulon** körülötte minden rétegen ≥ 0,8 mm rés a modul GND-jétől (D94: a DRC-szabály
+  ezt ellenőrzi), a GND_BUS-nak külön zóna; a határon csak az U2 és az U208 ül. A relé- és a bemeneti modulon rés nem kell.
 - **U5 (AP2112K):** C2 és C3 közvetlenül a lábainál; SOT-23-5, kis disszipáció.
 - **Kvarc:** a lábak mellett, GND-őrgyűrű, alatta semmi.
 - **Hidegítés:** minden 100 nF a saját lábánál, a via a kondenzátor GND-oldalán.
 - Debug-tüskesor a lap szélén; az állapot-LED-ek az előlap felőli szélen (fényvezető).
 
 ## 9. Darabjegyzék (egy modulmag, D71, D78, D79)
-U5 AP2112K-3.3TRG1 (D80) · U2 SN65HVD230D · U3 ESD2CAN24-Q1 · STM32L433RCT3 · Y1 8 MHz · D5 SMF5.0A ·
+U5 AP2112K-3.3TRG1 (D80) · U2 CA-IS3052G (D94) · U3 ESD2CAN24-Q1 · STM32L433RCT3 · Y1 8 MHz · D5 SMF5.0A ·
 D3/D4 zöld (522 nm, a +5V-ról)/piros LED · J1 1 × 7 tüskesor · J2/J3 B4B-XH-A · JP1 2 tűs + jumper · R6 10 k (NRST-felhúzás, D90) ·
-kondenzátorok: 10 µF 16 V (0805, 2 db), 100 nF (≈ 9 db), 1 µF, 4,7 µF (2), 10 nF, 2 × C_kvarc · ellenállások:
-10 k (több, ebből R3/R4 1 %), 0 Ω (R12), 1 k, 2,2 k, 120 Ω. (A HW-ID és a HW_REV osztója a modul saját lapján van, 3.5, 3.7 – D89.)
+kondenzátorok: 10 µF 16 V (0805, 2 db), 100 nF (≈ 10 db), 1 µF, 4,7 µF (3), 10 nF, 2 × C_kvarc · ellenállások:
+10 k (több, ebből R3/R4 1 %), 1 k, 2,2 k, 120 Ω. (A HW-ID és a HW_REV osztója a modul saját lapján van, 3.5, 3.7 – D89.)
 
 ## 10. Változások a korábbi döntésekhez
 - **Lezárás:** sima 120 Ω egy jumperrel, nem osztott (D49 pontosítva → D52).

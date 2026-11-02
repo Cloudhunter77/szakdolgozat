@@ -45,14 +45,16 @@ TOP, FRONT, BOT = (0, 0, W4, SH), (0, SH, W4, L - SH), (0, L - SH, W4, L)
 MODULMAG_BLOKK = {
     # busz és védelem (felső váll)
     'J2': (7.2, 4.5, 0), 'J3': (21.2, 4.5, 0), 'JP1': (31.6, 4.5, 0),
-    'D5': (3.2, 10.5, 0), 'U3': (14.6, 10.5, 0), 'L1': (24.5, 10.8, 0), 'R5': (31.5, 10.0, 270),
-    'JP2': (22.6, 14.4, 0), 'JP3': (26.5, 14.4, 0),
+    'D5': (3.2, 10.5, 0), 'U3': (14.6, 10.5, 0), 'L1': (24.5, 10.6, 0), 'R5': (31.5, 10.0, 270),
+    'JP2': (22.6, 14.0, 0), 'JP3': (26.5, 14.0, 0),          # D94: 0,4 mm-rel feljebb (az ISO1042 miatt)
     # 3,3 V a busz +5V-járól
     'C2': (4.6, 13.3, 0), 'U5': (4.6, 17.0, 270), 'C3': (4.6, 20.7, 0), 'TP2': (8.6, 20.0, 0),
-    # CAN-transceiver: lábai lefelé, a TXD (1) / RXD (4) a PA12 / PA11 felé – a két jel a C6 és az R10 között, keresztezés nélkül
-    'U2': (26.0, 20.0, 90), 'R12': (21.9, 17.8, 90), 'R1': (21.9, 21.6, 90), 'C18': (30.1, 20.6, 90), 'C19': (32.2, 20.6, 90),
+    # CAN-transceiver (D94: ISO1042, SOIC-8 széles): fekve, bal oldalt a modul-oldal (VCC1, TXD, RXD, GND1 – a PA12 / PA11 felé),
+    # jobb oldalt a busz-oldal (GND2, CANL, CANH, VCC2 – fölötte a C20/C21 hidegítés, a fojtó és a JP2/JP3 felé)
+    'U2': (27.75, 19.09, 0), 'C18': (17.88, 17.77, 90), 'C19': (19.94, 17.77, 90), 'R1': (19.19, 20.73, 0),
+    'C20': (29.52, 13.80, 90), 'C21': (31.58, 13.80, 90),
     # STM32 és hidegítés: a 100 nF-ok +3,3 V-os padja a VDD-, a GND-padja a VSS-láb felé
-    'TP1': (16.0, 21.2, 0), 'C13': (8.6, 23.0, 0), 'C5': (12.25, 23.9, 0), 'R2': (15.9, 23.9, 0),
+    'TP1': (15.8, 21.2, 0), 'C13': (8.6, 23.0, 0), 'C5': (12.25, 23.9, 0), 'R2': (15.9, 23.9, 0),
     'U6': (16.0, 32.0, 0), 'C4': (7.95, 28.0, 90), 'C6': (24.1, 28.2, 270),
     'C10': (4.4, 27.0, 0), 'Y1': (4.4, 30.3, 0), 'C11': (4.4, 33.6, 0), 'C16': (7.95, 31.6, 270),
     'C14': (7.95, 35.2, 90), 'C15': (5.8, 36.5, 90), 'R6': (3.6, 36.5, 90),    # D90: az FB1 helyén az NRST-felhúzás
@@ -107,7 +109,8 @@ BOARDS = {
         attach={'D105': 'F100', 'C105': 'F100'},   # (F100 rögzített: '@F100' csoport)   # +24V_P: TVS, puffer a betáp-ágnál (D100 – D90)
         pin_attach={'R114': 'Q100', 'D106': 'Q100', 'C104': 'U101',   # a Q100 gate-eleme a gate-hez, a 10 µF a relé-táphoz
                     'R115': 'U6', 'R116': 'U6', 'C107': 'U6',        # D89: a HW_REV-osztó a blokkon kívül, a PB0 (26) mellett
-                    'R9': 'D4', 'R113': 'J2'},                        # D90 után ezek nem fértek el: az állapot-LED-hez, a busz GND-jéhez
+                    'R9': 'D4', 'R113': 'J2', 'R100': 'J2',   # D94: V_BUS → +5V
+                    'U100': 'U2', 'C100': 'U100', 'C108': 'U100', 'C109': 'U100'},   # D95: izolált DC-DC helye (DNP)                        # D90 után ezek nem fértek el: az állapot-LED-hez, a busz GND-jéhez
     ),
     'vezerlo': dict(
         size=(W4, L),
@@ -191,7 +194,8 @@ BOARDS = {
                     'C303': 'U301', 'C302': 'U301', 'C330': 'U302', 'R371': 'J320', 'R372': 'J320', 'R374': 'J320', 'R375': 'J320',
                     'U307': 'J320', 'F305': 'J320', 'F301': 'J302', 'C304': 'J302', 'F302': 'J306', 'C305': 'J306',
                     'F303': 'J310', 'C306': 'J310', 'F304': 'J314', 'C307': 'J314',
-                    'JP301': 'F301', 'JP302': 'F302', 'JP303': 'F303', 'JP304': 'F304'},
+                    'JP301': 'F301', 'JP302': 'F302', 'JP303': 'F303', 'JP304': 'F304', 'R300': 'J2',   # D94: V_BUS → +5V
+                    'U300': 'U2', 'C300': 'U300', 'C309': 'U300', 'C326': 'U300'},   # D95: izolált DC-DC helye (DNP)
         anchors={'U301': (40, 10, 70, 24)},
         edge_rows={'N': (36, 103, ['J3%02d' % i for i in range(1, 7)] + ['J320']),          # felső váll: PH-k
                    'S': (0, 103, ['J3%02d' % i for i in range(7, 17)])},                   # alsó váll

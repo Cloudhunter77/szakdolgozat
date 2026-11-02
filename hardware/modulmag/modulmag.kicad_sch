@@ -5814,6 +5814,622 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "modularis:ISO1042BDWV"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at -6.35 6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "ISO1042BDWV"
+				(at 2.54 6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Package_SO:SOIC-8_7.5x5.85mm_P1.27mm"
+				(at 0 -10.16 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.ti.com/lit/ds/symlink/iso1042.pdf"
+				(at 0 -12.7 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Izolált CAN transceiver, 5 kVrms, ±70 V buszlábak, DWV (SOIC-8, 7,5 mm széles test). Lábkiosztás a TI adatlap 4-2. ábrája szerint."
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "CAN isolated transceiver ISO1042"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "SOIC*7.5x5.85mm*P1.27mm*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "ISO1042BDWV_0_1"
+				(rectangle
+					(start -7.62 5.08)
+					(end 7.62 -7.62)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 5.08)
+						(xy 0 3.81)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54)
+						(xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0)
+						(xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -2.54)
+						(xy 0 -3.81)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -5.08)
+						(xy 0 -6.35)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "ISO1042BDWV_1_1"
+				(pin power_in line
+					(at -10.16 2.54 0)
+					(length 2.54)
+					(name "VCC1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -10.16 -2.54 0)
+					(length 2.54)
+					(name "TXD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at -10.16 0 0)
+					(length 2.54)
+					(name "RXD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -10.16 -5.08 0)
+					(length 2.54)
+					(name "GND1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 10.16 -2.54 180)
+					(length 2.54)
+					(name "CANL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 10.16 0 180)
+					(length 2.54)
+					(name "CANH"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 10.16 -5.08 180)
+					(length 2.54)
+					(name "GND2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 10.16 2.54 180)
+					(length 2.54)
+					(name "VCC2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
+		(symbol "modularis:CA-IS3052G"
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at -6.35 6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "CA-IS3052G"
+				(at 2.54 6.35 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" "Package_SO:SOIC-8_7.5x5.85mm_P1.27mm"
+				(at 0 -10.16 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "https://e.chipanalog.com/Public/Uploads/uploadfile/files/20240605/CAIS305xdatasheetVersion1.08.pdf"
+				(at 0 -12.7 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Izolált CAN-transceiver (Chipanalog), 5 kVrms, ±58 V buszlábak, 1 Mbit/s, SOIC8-WB (5,85 × 7,5 mm). Lábkompatibilis a TI ISO1042BDWVR-rel (a CA-IS3050G-vel NEM: ott a TXD és az RXD fel van cserélve)."
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "CAN isolated transceiver ISO1042"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "SOIC*7.5x5.85mm*P1.27mm*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "CA-IS3052G_0_1"
+				(rectangle
+					(start -7.62 5.08)
+					(end 7.62 -7.62)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 5.08)
+						(xy 0 3.81)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54)
+						(xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 0)
+						(xy 0 -1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -2.54)
+						(xy 0 -3.81)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 -5.08)
+						(xy 0 -6.35)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "CA-IS3052G_1_1"
+				(pin power_in line
+					(at -10.16 2.54 0)
+					(length 2.54)
+					(name "VCC1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin input line
+					(at -10.16 -2.54 0)
+					(length 2.54)
+					(name "TXD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin output line
+					(at -10.16 0 0)
+					(length 2.54)
+					(name "RXD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -10.16 -5.08 0)
+					(length 2.54)
+					(name "GND1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "4"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 10.16 -2.54 180)
+					(length 2.54)
+					(name "CANL"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "6"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin bidirectional line
+					(at 10.16 0 180)
+					(length 2.54)
+					(name "CANH"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "7"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 10.16 -5.08 180)
+					(length 2.54)
+					(name "GND2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "5"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 10.16 2.54 180)
+					(length 2.54)
+					(name "VCC2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "8"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(text "VBUS_SENSE: 5 V → 2,5 V (PC1)"
 		(exclude_from_sim no)
@@ -5848,7 +6464,7 @@
 		)
 		(uuid "44ccfecc-4c64-5d3f-9df2-a30bd1d04096")
 	)
-	(text "1. TÁP: a busz +5V-ja (J2/J3, 1-es tű) → U5 AP2112K-3.3 (kis ejtésű LDO) → +3V3"
+	(text "1. TÁP: +5V (a modul lapjáról: a V_BUS 0 Ω-on át, a LED-modulon izolált DC-DC-n át) → U5 AP2112K-3.3 → +3V3"
 		(exclude_from_sim no)
 		(at 20 20 0)
 		(effects
@@ -5870,7 +6486,7 @@
 		)
 		(uuid "691649a1-2180-51ee-9249-8da088e68507")
 	)
-	(text "3. CAN – U2 SN65HVD230D (kézben): VCC = +3V3, Vref (5) nyitva, Rs (8) → GND = nagy sebesség"
+	(text "3. CAN – U2 CA-IS3052G (izolált; = ISO1042BDWVR lábkiosztás): VCC1 = +3V3, GND1 = GND (modul-oldal) · VCC2 = V_BUS, GND2 = GND_BUS (busz-oldal)"
 		(exclude_from_sim no)
 		(at 280 88 0)
 		(effects
@@ -5892,7 +6508,7 @@
 		)
 		(uuid "72e600f2-552c-5530-ae36-ca643d4f6ac0")
 	)
-	(text "Központi 5 V a vezérlőről, közös föld; 24 V a modulmagon nincs (a LED- és a relélap maga méri)"
+	(text "Központi 5 V a vezérlőről (V_BUS); a modul-oldal a modul lapján kapcsolódik hozzá; 24 V a modulmagon nincs"
 		(exclude_from_sim no)
 		(at 20 25 0)
 		(effects
@@ -5958,7 +6574,7 @@
 		)
 		(uuid "b5c51d05-d2c2-5f69-a1c5-1d78ae86c9a3")
 	)
-	(text "GND_BUS: a modul lapján R-en át a GND-re (LED-modul 1 Ω, a többi 0 Ω) – a nagyáramú modul hurokárama ne a buszon folyjon"
+	(text "GND_BUS: a relé- és a bemeneti modulon 0 Ω-mal a GND-re; a LED-modulon nincs kapcsolat (leválasztva – a szalag árama nem mehet a buszon)"
 		(exclude_from_sim no)
 		(at 256.54 174.68 0)
 		(effects
@@ -5969,7 +6585,7 @@
 		)
 		(uuid "c9fc01b7-7c5e-502c-9539-bef0ebe8cc0f")
 	)
-	(text "+5V TVS · CAN ESD · lezárás (JP1: csak a lánc két végén)"
+	(text "V_BUS TVS · CAN ESD · lezárás (JP1: csak a lánc két végén) – busz-oldal, GND_BUS"
 		(exclude_from_sim no)
 		(at 248 219 0)
 		(effects
@@ -5991,7 +6607,7 @@
 		)
 		(uuid "e88f2cb8-5271-58e0-9a5a-b4352cbef1d1")
 	)
-	(text "4. BUSZ: J2 és J3 azonos tűi átmenők (1 +5V · 2 GND_BUS · 3 CAN_L · 4 CAN_H); ESD és TVS a csatlakozók mellé"
+	(text "4. BUSZ: J2 és J3 azonos tűi átmenők (1 V_BUS · 2 GND_BUS · 3 CAN_L · 4 CAN_H); ESD és TVS a csatlakozók mellé"
 		(exclude_from_sim no)
 		(at 256.54 170.18 0)
 		(effects
@@ -6053,12 +6669,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "4a7883ce-5c6f-5d53-bd7d-f59c88043bb2")
-	)
-	(junction
-		(at 327.66 104.14)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "5212f1f8-62df-57ef-bd2f-78be85865d3d")
 	)
 	(junction
 		(at 111.76 44.45)
@@ -6181,10 +6791,6 @@
 	(no_connect
 		(at 196.85 160.02)
 		(uuid "7a93ba7f-f60c-55a1-813d-932a096e14e8")
-	)
-	(no_connect
-		(at 309.88 127)
-		(uuid "87ee3d63-038f-5850-a9ba-32ec300c95bb")
 	)
 	(no_connect
 		(at 196.85 134.62)
@@ -6578,17 +7184,6 @@
 	)
 	(wire
 		(pts
-			(xy 320.04 116.84)
-			(xy 320.04 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "49f72b3e-b7e5-5349-be4b-b00389db3b53")
-	)
-	(wire
-		(pts
 			(xy 382.27 201.93)
 			(xy 382.27 222.25)
 		)
@@ -6652,17 +7247,6 @@
 			(type default)
 		)
 		(uuid "5bc5d686-b867-544e-a712-4cb868d3f171")
-	)
-	(wire
-		(pts
-			(xy 320.04 104.14)
-			(xy 327.66 104.14)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5bfaf4bf-7bc7-5d23-a058-a03c522cedfe")
 	)
 	(wire
 		(pts
@@ -7915,16 +8499,6 @@
 		)
 		(uuid "c98bddb7-9d9d-5ada-a2b6-37fbbf3f74b5")
 	)
-	(label "CAN_TX"
-		(at 309.88 121.92 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "ca5493e9-b38d-5a80-9134-7ad37eeaa5fd")
-	)
 	(label "EXP_PB10"
 		(at 237.49 187.96 0)
 		(effects
@@ -8745,7 +9319,7 @@
 		)
 	)
 	(symbol
-		(lib_id "Interface_CAN_LIN:SN65HVD230")
+		(lib_id "modularis:CA-IS3052G")
 		(at 320.04 124.46 0)
 		(unit 1)
 		(body_style 1)
@@ -8756,28 +9330,26 @@
 		(dnp no)
 		(uuid "0fd34f10-a660-5430-9191-321d399e2780")
 		(property "Reference" "U2"
-			(at 323.85 135.89 0)
+			(at 320.04 116.84 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Value" "SN65HVD230D"
-			(at 323.85 138.43 0)
+		(property "Value" "CA-IS3052G"
+			(at 320.04 134.62 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
 			)
 		)
-		(property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm"
+		(property "Footprint" "Package_SO:SOIC-8_7.5x5.85mm_P1.27mm"
 			(at 320.04 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -8788,7 +9360,7 @@
 				)
 			)
 		)
-		(property "Datasheet" ""
+		(property "Datasheet" "https://e.chipanalog.com/Public/Uploads/uploadfile/files/20240605/CAIS305xdatasheetVersion1.08.pdf"
 			(at 320.04 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -8799,7 +9371,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Izolált CAN-transceiver, 5 kVrms, ±58 V, 1 Mbit/s, SOIC8-WB"
 			(at 320.04 124.46 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8809,7 +9381,7 @@
 				)
 			)
 		)
-		(property "Megjegyzés" "3,3 V, 1 Mbit/s; buszlábak −4…16 V, közös módus −2…7 V (a TCAN1044AV ±58 V-ja helyett – Balázs vállalja)"
+		(property "Megjegyzés" "VCC1 = +3V3 (modul-oldal), VCC2 = V_BUS (busz-oldal, 4,5–5,5 V); lábkompatibilis: TI ISO1042BDWVR (a CA-IS3050G nem!). A LED-modulon leválaszt, a relé- és a bemeneti modulon a két oldal 0 Ω-mal össze van kötve"
 			(at 320.04 124.46 0)
 			(hide yes)
 			(show_name no)
@@ -9228,7 +9800,7 @@
 				)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "V_BUS"
 			(at 341.63 209.55 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11848,100 +12420,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 252.73 245.11 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "6cb4ccee-9658-5569-a44c-ad8b090c4d2f")
-		(property "Reference" "#PWR043"
-			(at 252.73 242.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 252.73 247.65 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 252.73 245.11 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 252.73 245.11 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 252.73 245.11 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "155946e4-2f84-593c-b601-5dd284a7cfbc")
-		)
-		(instances
-			(project "modulmag"
-				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR043")
-					(unit 1)
-				)
-			)
-			(project "bemeneti-modul"
-				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR043")
-					(unit 1)
-				)
-			)
-			(project "rele-modul"
-				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR043")
-					(unit 1)
-				)
-			)
-			(project "led-modul"
-				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR043")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:C")
 		(at 43.18 53.34 0)
 		(unit 1)
@@ -13251,7 +13729,7 @@
 				)
 			)
 		)
-		(property "Value" "+5V"
+		(property "Value" "V_BUS"
 			(at 252.73 229.87 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -14491,100 +14969,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:GND")
-		(at 270.51 245.11 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "b4d40ffe-c913-5459-9807-173d36510547")
-		(property "Reference" "#PWR045"
-			(at 270.51 242.57 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 270.51 247.65 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 270.51 245.11 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 270.51 245.11 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 270.51 245.11 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "faf0f3d9-bf4a-5225-a14d-0a34fe6041a5")
-		)
-		(instances
-			(project "modulmag"
-				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR045")
-					(unit 1)
-				)
-			)
-			(project "bemeneti-modul"
-				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR045")
-					(unit 1)
-				)
-			)
-			(project "rele-modul"
-				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR045")
-					(unit 1)
-				)
-			)
-			(project "led-modul"
-				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR045")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:R")
 		(at 55.88 53.34 0)
 		(unit 1)
@@ -14775,115 +15159,6 @@
 			(project "led-modul"
 				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
 					(reference "R1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 304.8 135.89 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "ba4a1c02-3963-5145-ad9f-aef8e9c2a2e3")
-		(property "Reference" "R12"
-			(at 307.34 134.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "0R"
-			(at 307.34 137.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0603_1608Metric"
-			(at 304.8 135.89 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 304.8 135.89 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 304.8 135.89 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Megjegyzés" "Rs → GND: nagy sebesség; 10–100 k: meredekség-szabályozás (EMC); nyitva/3V3: készenlét"
-			(at 304.8 135.89 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "ec1f7a63-36c5-5096-a89f-f20f142c5d8b")
-		)
-		(pin "2"
-			(uuid "420bc7da-7258-545f-90b8-481700344b6c")
-		)
-		(instances
-			(project "modulmag"
-				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "R12")
-					(unit 1)
-				)
-			)
-			(project "bemeneti-modul"
-				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "R12")
-					(unit 1)
-				)
-			)
-			(project "rele-modul"
-				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "R12")
-					(unit 1)
-				)
-			)
-			(project "led-modul"
-				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "R12")
 					(unit 1)
 				)
 			)
@@ -17067,100 +17342,6 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:GND")
-		(at 320.04 134.62 0)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board no)
-		(in_pos_files yes)
-		(dnp no)
-		(uuid "fe662d3c-84f5-52e0-bd39-0d68a39caf9d")
-		(property "Reference" "#PWR036"
-			(at 320.04 132.08 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "GND"
-			(at 320.04 137.16 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 320.04 134.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 320.04 134.62 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 320.04 134.62 0)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "359ae9d1-2b03-5e40-b453-74d3c76d1dbf")
-		)
-		(instances
-			(project "modulmag"
-				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
-					(reference "#PWR036")
-					(unit 1)
-				)
-			)
-			(project "bemeneti-modul"
-				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
-					(reference "#PWR036")
-					(unit 1)
-				)
-			)
-			(project "rele-modul"
-				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
-					(reference "#PWR036")
-					(unit 1)
-				)
-			)
-			(project "led-modul"
-				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
-					(reference "#PWR036")
-					(unit 1)
-				)
-			)
-		)
-	)
 	(sheet_instances
 		(path "/"
 			(page "1")
@@ -17952,5 +18133,980 @@
 			(type default)
 		)
 		(uuid "3c6d5b67-bb9b-5ce2-b2a3-267b40bb7318")
+	)
+	(wire
+		(pts
+			(xy 304.8 132.08)
+			(xy 304.8 139.7)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "db48409c-8110-5f4b-afbc-d3efbcc08c63")
+	)
+	(wire
+		(pts
+			(xy 309.88 121.92)
+			(xy 304.8 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "70c81b9d-3d9f-52bb-8f38-2da7154b5d8d")
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 304.8 121.92 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "077e4f66-55bb-5899-b2f0-2a35b21bab5b")
+		(property "Reference" "#PWR023"
+			(at 304.8 118.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 304.8 118.11 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 304.8 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 304.8 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 304.8 121.92 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "30386421-9cd2-58e0-a87c-4f4d8dc711c8")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "#PWR023")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "#PWR023")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "#PWR023")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "#PWR023")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(label "CAN_TX"
+		(at 309.88 127 180)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "bbac6cdf-7194-5cfe-a915-22a69c870efe")
+	)
+	(wire
+		(pts
+			(xy 330.2 121.92)
+			(xy 340.36 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "04144cd9-11cb-5253-8be7-e80e2e395173")
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 340.36 121.92 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "32d963e0-777a-579d-a8c0-7524b09beb0a")
+		(property "Reference" "#PWR036"
+			(at 340.36 118.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "V_BUS"
+			(at 340.36 118.11 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 340.36 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 340.36 121.92 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 340.36 121.92 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "16e37dc8-f235-5a2a-92ff-4d8b91e45843")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "#PWR036")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "#PWR036")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "#PWR036")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "#PWR036")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 330.2 129.54)
+			(xy 335.28 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a442cb6d-8391-5939-8b2f-5213928316a5")
+	)
+	(hierarchical_label "GND_BUS"
+		(shape bidirectional)
+		(at 335.28 129.54 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b9454a3d-5091-5992-a4b0-0963515dc07b")
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 325.12 142.24 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "e54dd081-7512-5830-8152-6f3a26b88584")
+		(property "Reference" "C20"
+			(at 327.66 140.97 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100n"
+			(at 327.66 143.51 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 325.12 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 325.12 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 325.12 142.24 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "5ee274fd-babb-5e19-97a3-ae32aab9bdbf")
+		)
+		(pin "2"
+			(uuid "b60b026d-7be3-5814-a0ab-01d9acc9f400")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "C20")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "C20")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "C20")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "C20")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 325.12 138.43 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "820ce9ad-0e92-5998-a9c3-c0c80af807d6")
+		(property "Reference" "#PWR046"
+			(at 325.12 135.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "V_BUS"
+			(at 325.12 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 325.12 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 325.12 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 325.12 138.43 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "ff327bcf-d178-53d4-a6c2-66745fe812d7")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "#PWR046")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "#PWR046")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "#PWR046")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "#PWR046")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(hierarchical_label "GND_BUS"
+		(shape bidirectional)
+		(at 325.12 146.05 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "d5a4d600-9df8-5fe4-b6b8-1f4e167775e6")
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 332.74 142.24 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "4cf8c57a-26b7-5b01-a76c-91542a53858f")
+		(property "Reference" "C21"
+			(at 335.28 140.97 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "4µ7"
+			(at 335.28 143.51 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 332.74 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 332.74 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 332.74 142.24 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d03207b1-9a7f-5434-9d90-0eb60afd3a70")
+		)
+		(pin "2"
+			(uuid "3ffb706b-c786-5d1f-8aca-0b845a7dd71c")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "C21")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "C21")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "C21")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "C21")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 332.74 138.43 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "2b1131ea-5da5-5fea-ad9a-8c415de02472")
+		(property "Reference" "#PWR048"
+			(at 332.74 135.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "V_BUS"
+			(at 332.74 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 332.74 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 332.74 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 332.74 138.43 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d670a67a-a8db-593a-8460-873d7bcc5c75")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "#PWR048")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "#PWR048")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "#PWR048")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "#PWR048")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(hierarchical_label "GND_BUS"
+		(shape bidirectional)
+		(at 332.74 146.05 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "e62e57f2-4d56-5213-ac3a-de95a6573047")
+	)
+	(hierarchical_label "GND_BUS"
+		(shape bidirectional)
+		(at 270.51 245.11 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "25f4a7a6-5858-505a-9bb3-2e82265c398b")
+	)
+	(hierarchical_label "GND_BUS"
+		(shape bidirectional)
+		(at 252.73 245.11 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "6c297ad0-348d-535f-80be-2b69e36f7947")
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 138.43 261.62 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "18d69937-f240-598d-8f72-6458006e68d5")
+		(property "Reference" "#FLG001"
+			(at 138.43 263.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 138.43 266.7 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 138.43 261.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 138.43 261.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 138.43 261.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "0a3ae271-350b-5e94-a58a-26f284bf5e44")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "#FLG001")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "#FLG001")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "#FLG001")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "#FLG001")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 138.43 261.62 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "59bd8a43-989b-53b2-a89d-26b65afffdda")
+		(property "Reference" "#PWR043"
+			(at 138.43 258.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "V_BUS"
+			(at 138.43 257.81 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 138.43 261.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 138.43 261.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 138.43 261.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "20373d90-1908-5065-a7e1-d0b2f4d1d582")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "#PWR043")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "#PWR043")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "#PWR043")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "#PWR043")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 152.4 261.62 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board no)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "ce69eaa5-6cb2-5a91-bff8-04a74c511ac5")
+		(property "Reference" "#FLG002"
+			(at 152.4 263.53 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 152.4 266.7 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 152.4 261.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 152.4 261.62 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" ""
+			(at 152.4 261.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8dbbb96a-5949-5c93-b260-2f0f5d6de99e")
+		)
+		(instances
+			(project "modulmag"
+				(path "/3e5431dc-8a59-5b0c-9d95-b90c80601bc0"
+					(reference "#FLG002")
+					(unit 1)
+				)
+			)
+			(project "bemeneti-modul"
+				(path "/446a2be9-f856-5181-a62a-4b118def0931/0f33824e-be1e-5e41-9a6d-4dfee951f3a1"
+					(reference "#FLG002")
+					(unit 1)
+				)
+			)
+			(project "rele-modul"
+				(path "/f1e8e117-fec2-5881-ab14-36a3b00ac622/93dd9ec2-00f8-502d-b103-29d0223bee25"
+					(reference "#FLG002")
+					(unit 1)
+				)
+			)
+			(project "led-modul"
+				(path "/ffee81ca-1ba8-564b-90b8-3bf7e77c70b0/88276823-3607-51f3-bdce-5c2fc480512d"
+					(reference "#FLG002")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(hierarchical_label "GND_BUS"
+		(shape bidirectional)
+		(at 152.4 261.62 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9db2103d-15fe-5cc6-be0e-260590b42604")
 	)
 )
