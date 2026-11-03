@@ -5,7 +5,7 @@ A konzultáció (10-28) utáni módosítások (D93–D96) miatt a rendelés 11-0
 
 | Nap | Balázs | Claude Code |
 |---|---|---|
-| H 11-02 | [ ] vezérlő-NYÁK: F8 · [ ] LED-NYÁK: F8 → Claude → Revert → a busz-sarok kézzel | [x] commit (D93–D95) · [x] D96 a rajzokon + relé-NYÁK · [ ] a LED-modul modulmag-sarka |
+| H 11-02 | [x] vezérlő-NYÁK: F8 (11-03) · [ ] LED-NYÁK: F8 → Claude → Revert → a busz-sarok kézzel | [x] commit (D93–D95) · [x] D96 a rajzokon + relé-NYÁK · [ ] a LED-modul modulmag-sarka |
 | K 11-03 | [ ] LED-NYÁK kész · [ ] **vezérlő** huzalozása | [ ] ellenőrzés (`gen/ellenorzes.py`) |
 | Sze 11-04 | [ ] **relé** és **bemeneti** huzalozása | [ ] ellenőrzés; gerber, fúrás, BOM, CPL |
 | **Cs 11-05** | [ ] JLC-ajánlat (4 réteg + stencil) → javítások → **NYÁK + stencil + LCSC-alkatrészek megrendelése** | [ ] a gyártási fájlok végső ellenőrzése |

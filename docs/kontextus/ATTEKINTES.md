@@ -121,7 +121,7 @@ SCT-013-030 (v2) és az ULN2803A.
 
 ## Nyitott kérdések / teendők
 - [ ] **NYÁK-ok (11-03):** ✅ **LED-modul huzalozva és átnézve** (D98, D99: F201 20 A, FET-hűtés In2 + B.Cu, C203 low-ESR, réz drót a nagyáramú
-      utakra – beültetéskor); **vezérlő:** F8 (az R7 kikerül, a +24V_F beolvad), utána huzalozás; **relé:** a C105 és a J4 kézzel helyezendő (a J4
+      utakra – beültetéskor); **vezérlő:** F8 ✅ (11-03: az R7 kikerült, a C1/C2/C53/U2 a +24V_P-n), blokkokba rendezve (D101), **huzalozás folyamatban**; **relé:** a C105 és a J4 kézzel helyezendő (a J4
       elhagyható), a D107/R117 (D96) a COM mellett; **bemeneti (D100):** 7 bemenet, 4 M-es lap – új kezdő elhelyezés, huzalozandó.
 - [ ] **A konzultáció (10-28) után még nyitott** (kész: D93, D94; **D96** – az U2 marad, relé: D107 Zener + R117 a COM-ágban, bemeneti:
       csak leírás): F202–F204 megjegyzése érthetőbben; firmware: COMP2-küszöb a csatornaáramokból (átlapolódás), **a TIM1 csatornái fázisban eltolva (D99 – a C203 ripple-árama)**, a frekvencia-dithering
@@ -149,7 +149,7 @@ SCT-013-030 (v2) és az ULN2803A.
 - [ ] Design Reference + BOM bekerüljön-e a repóba
 
 ## Hol mi van
-- `DONTESEK.md` – döntésnapló, D01–D99 (a 2026-10-14-i számozás-összefésülés a fejlécben)
+- `DONTESEK.md` – döntésnapló, D01–D101 (a 2026-10-14-i számozás-összefésülés a fejlécben)
 - `MODULMAG-SPEC.md` – a modulmag kapcsolási specifikációja (táp a buszról, STM32L433, izolált CAN, busz, HW-ID, lábkiosztás, BOM)
 - `VEZERLO-SPEC.md` – a vezérlő kapcsolási specifikációja (táp + USB, LMR33630, LM66200, TPS2595, C6, W5500, CAN, USB-C, BOM)
 - `SAMPLE-KERESEK.md` – sample-lista gyártónként + ami kézben van + amit meg kell venni

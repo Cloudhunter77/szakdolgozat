@@ -389,7 +389,7 @@ gomb), GPIO15 (felhúzva). Semmi nem ütközik az USB-vel (GPIO12/13) és az UAR
 - **Előlapi ablak:** D5, D6 (fényvezető), SW1, SW2 – jobbra lent.
 - **Antenna (D87):** az U4 a **jobb élen**, az antenna kifelé (az oldalfal felé), az előlapi ablak magasságában – a J1/J2/J3-tól,
   az RJ45-től és az USB-C-től ≥ 15 mm-re; alatta és ±4 mm-en minden rézrétegen tiltás (3.3).
-- **Elrendezés (D87, `gen/pcbgen.py`):** bal felül a betáp (F1, Q1, TVS-ek, C1), középen az 5 V-os buck, a csatlakozók alatt
+- **Elrendezés (D87; 11-03 óta a D101 szerint – blokkok a User.Comments rétegen):** bal felül a betáp (F1, Q1, TVS-ek, C1), középen az 5 V-os buck, a csatlakozók alatt
   az U12/U3 és a CAN, a 3,3 V-os buck az U4 3V3-lába fölött; lent balra a LoRa (DNP), a W5500 az RJ45 fölött.
 - **C1 (47 µF elkó):** 7,7 mm magas – a ház vállmagassága alá kell férnie. Az LMR33630 hűtőpadja alatt viák a GND-síkra.
 - **Ethernet:** a W5500 a MagJack mellett; a TX/RX párok rövidek, 100 Ω-osak (JLC impedancia-kalkulátor, a

@@ -8,7 +8,7 @@
    - bemeneti: a +3V3-ra menő felhúzás visszatáplálása félrekötött 24 V-nál (leírás: osztó nélkül csak ≤ 5 V; 24 V-os
      érzékelőhöz az osztót beültetni, a felhúzást kihagyni)
    - az új rendelési dátum
-3. [ ] **Vezérlő-NYÁK:** megnyitás (a 10-27 20:41-es automatikus mentést visszaállítani, ha az a te munkád) → **F8** (az R7
+3. [x] **Vezérlő-NYÁK** (11-03 ✅ – 158 footprint, rajz ↔ NYÁK eltérés 0)**:** megnyitás (a 10-27 20:41-es automatikus mentést visszaállítani, ha az a te munkád) → **F8** (az R7
    kikerül, a +24V_F beolvad a +24V_P-be) → mentés.
 4. [ ] **LED-NYÁK:** **F8** (a footprintek frissítése és a rajzon már nem szereplők törlése bekapcsolva; ha kéri: újrakapcsolás a
    hivatkozási jel szerint) → mentés → szólni Claude-nak: a modulmag-sarkot (U2 széles SOIC-8, C18–C21, R1, JP2/JP3, L1, TP1) a
